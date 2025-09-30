@@ -3,123 +3,159 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>月经记录 + 身体变化 + 关系记录（移动优化・分表管理・修复偏移/支持删除）</title>
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="format-detection" content="telephone=no, email=no, address=no" />
+<title>周期日历｜iOS 优化版（iPhone 17 Pro Max）</title>
 <style>
+  /* ============== iOS 友好基础设置 ============== */
   :root{
-    --bg:#ffffff; --card:#ffffff; --muted:#7c847d; --text:#2f3a33; --accent:#d2a889;
-    --red:#c97b7b; --green:#9bb39c; --yellow:#d9c48c; --orange:#d2a889; --violet:#9b8bc1; --blue:#7aa7d9;
+    --bg:#faf9f7; --card:#ffffff; --muted:#7b8280; --text:#273028; --accent:#e1a27b;
+    --red:#e08585; --green:#84b89b; --yellow:#e6d37a; --orange:#e1a27b; --violet:#9a88c9; --blue:#75a9e0;
+    --border: rgba(0,0,0,.08); --shadow: 0 8px 30px rgba(0,0,0,.08);
   }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
-  .wrap{max-width:1100px;margin:12px auto;padding:0 12px}
+  @media (prefers-color-scheme: dark) {
+    :root{
+      --bg:#121513; --card:#1a1f1b; --muted:#98a39c; --text:#e9f0ea; --accent:#f0b28b;
+      --red:#d77f7f; --green:#79b392; --yellow:#d9c46e; --orange:#f0b28b; --violet:#8f82c1; --blue:#6ea3db;
+      --border: rgba(255,255,255,.1); --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{height:100%;-webkit-text-size-adjust:100%}
+  /* 使用小视口单位兼容 iOS 动态地址栏 */
+  body{min-height:100svh;margin:0;background:var(--bg);color:var(--text);
+       font:16px/1.55 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+       padding: env(safe-area-inset-top) env(safe-area-inset-right) calc(env(safe-area-inset-bottom)) env(safe-area-inset-left);
+  }
+  /* 触摸目标：避免双击缩放，保证44px可点击区 */
+  button, .chip, .tab {min-height:44px; touch-action:manipulation}
+  input, textarea, select {font-size:16px} /* 防止 iOS 自动放大 */
+  .wrap{max-width:1200px;margin:8px auto 0;padding:0 12px}
+  .topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--accent);font-weight:800;font-size:18px}
+  .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block}
+  .toolbar{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:var(--card);box-shadow:var(--shadow);cursor:pointer}
+  .chip input{accent-color:var(--accent);width:18px;height:18px}
   .grid{display:grid;gap:12px}
-  @media(min-width:980px){.grid{grid-template-columns:360px 1fr}}
-  @media(max-width:979px){.row{flex-direction:column} .kpi{grid-template-columns:1fr 1fr} .card .inner{padding:12px}}
-  .card{background:var(--card);border:1px solid rgba(0,0,0,.06);border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.06)}
-  .card h2{margin:0 0 8px;font-size:18px;color:var(--accent)}
+  @media(min-width:1000px){.grid{grid-template-columns:420px 1fr}}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+  .card h2{margin:0;font-size:18px;color:var(--accent)}
   .card .inner{padding:16px}
+  .section-head{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);padding:12px 16px;background:linear-gradient(180deg,rgba(0,0,0,.02),transparent);position:sticky;top:0;z-index:2}
   label{display:block;margin:10px 0 6px;color:var(--accent)}
-  input,select,button,textarea{font:inherit}
-  input[type="date"],select,textarea{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,.12);background:#fff;color:var(--text);outline:none}
-  textarea{min-height:68px;resize:vertical}
-  .row{display:flex;gap:10px}
+  input[type="date"],select,textarea, input[type="text"]{
+    width:100%;padding:12px;border-radius:12px;border:1px solid var(--border);
+    background:#ffffff0d;color:var(--text);outline:none;backdrop-filter:saturate(140%) blur(2px);
+    -webkit-appearance:none; appearance:none;
+  }
+  textarea{min-height:72px;resize:vertical}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
   .row>*{flex:1}
-  button{cursor:pointer;padding:8px 12px;border-radius:10px;border:1px solid var(--accent);background:#fff;color:var(--accent)}
-  button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
-  button.ghost{background:transparent;border-color:var(--accent);color:var(--accent)}
+  button{cursor:pointer;padding:12px 16px;border-radius:12px;border:1px solid var(--accent);
+    background:var(--accent);color:#fff;font-weight:700;box-shadow:var(--shadow)}
+  button.ghost{background:transparent;border-color:var(--accent);color:var(--accent);font-weight:600}
+  button.min{padding:8px 12px;border-radius:10px;font-size:14px}
   .muted{color:var(--muted)}
-  .tag{display:inline-block;padding:3px 8px;border-radius:999px;font-size:12px;border:1px solid rgba(0,0,0,.12)}
   .kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-  .kpi .item{padding:12px;border-radius:12px;background:#f9f9f9;border:1px solid rgba(0,0,0,.06)}
+  .kpi .item{padding:12px;border-radius:14px;background:#00000008;border:1px solid var(--border)}
   .kpi .item b{font-size:18px;color:var(--accent)}
-  table{width:100%;border-collapse:collapse}
-  th,td{padding:8px;border-bottom:1px solid rgba(0,0,0,.08);text-align:left;vertical-align:top}
-  th{color:var(--muted);font-weight:600}
-  td.actions{width:84px}
-  .btn-sm{padding:4px 8px;border-radius:8px;font-size:12px}
-  /* Calendar */
-  .cal{padding:10px}
-  .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;color:var(--accent);gap:8px}
-  .cal-head .ctrls{display:flex;gap:8px;flex-wrap:wrap}
-  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-  .dow{font-size:12px;text-align:center;color:var(--muted);margin:4px 0}
-  .cell{min-height:74px;border-radius:12px;padding:6px;border:1px solid rgba(0,0,0,.06);background:#fff;position:relative}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap}
+  .tab{padding:10px 14px;border-radius:999px;border:1px solid var(--border);cursor:pointer;background:var(--card)}
+  .tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  table{width:100%;border-collapse:separate;border-spacing:0 2px}
+  th,td{padding:12px 10px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+  th{color:var(--muted);font-weight:600;position:sticky;top:0;background:var(--card)}
+  td.actions{width:120px;white-space:nowrap}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;-webkit-overflow-scrolling:touch}
+  .cell{min-height:86px;border-radius:14px;padding:8px;border:1px solid var(--border);background:#fff0;position:relative}
   .cell .d{position:absolute;top:6px;right:8px;font-size:12px;color:var(--muted)}
   .cell.today{outline:2px solid var(--accent)}
-  .cell .mark{position:absolute;left:6px;bottom:6px;font-size:10px;padding:3px 6px;border-radius:6px;color:#fff;font-weight:700}
-  .m{background:var(--red)} /* Menstrual */
-  .f{background:var(--green)} /* Fertile */
-  .o{background:var(--yellow);color:#2f3a33} /* Ovulation */
-  .l{background:var(--orange)} /* Luteal */
-  .sx{background:var(--violet)} /* Sex */
-  .bn{background:var(--blue)} /* Body Note */
+  .cell .mark{position:absolute;left:6px;bottom:6px;font-size:11px;padding:3px 6px;border-radius:6px;color:#fff;font-weight:800;letter-spacing:.5px}
+  .m{background:var(--red)} .f{background:var(--green)} .o{background:var(--yellow);color:#2f3a33} .l{background:var(--orange)} .sx{background:var(--violet)} .bn{background:var(--blue)}
   .pred{outline:1px dashed rgba(0,0,0,.25)}
-  .warn{background:#fdeaea;border-left:4px solid var(--red);padding:10px;border-radius:10px}
-  .info{background:#fff6f0;border-left:4px solid var(--accent);padding:10px;border-radius:10px}
-  .ok{background:#f9f9f9;border-left:4px solid var(--green);padding:10px;border-radius:10px}
+  .legend{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}
+  .tag{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;border:1px solid var(--border);background:var(--card)}
+  .toast{position:fixed;left:50%;bottom: max(18px, calc(env(safe-area-inset-bottom) + 12px));transform:translateX(-50%);background:var(--card);border:1px solid var(--border);padding:12px 14px;border-radius:12px;box-shadow:var(--shadow);z-index:99;display:none}
+  .searchinput{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:#ffffff0d;color:var(--text)}
+  /* 大屏 iPhone 17 PM 更宽的左栏 */
+  @media (min-width:430px) and (max-width:820px){
+    .grid{grid-template-columns:1fr}
+  }
 </style>
 </head>
 <body>
   <div class="wrap">
-    <h1 style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;color:var(--accent)">
-      <span>月经 + 身体变化 + 关系记录（本地离线）</span>
-      <span class="tag">隐私：仅存浏览器本地</span>
-      <span class="tag" style="border-color:transparent;background:var(--violet);color:#fff">❤ 关系</span>
-      <span class="tag" style="border-color:transparent;background:var(--blue);color:#fff">ⓘ 身体变化</span>
-    </h1>
+    <div class="topbar">
+      <div class="brand"><span class="dot"></span>周期日历</div>
+      <div class="toolbar">
+        <label class="chip"><input type="checkbox" id="fltM" checked> <b>姨妈</b></label>
+        <label class="chip"><input type="checkbox" id="fltF" checked> 易孕</label>
+        <label class="chip"><input type="checkbox" id="fltO" checked> 排卵</label>
+        <label class="chip"><input type="checkbox" id="fltL" checked> 黄体</label>
+        <label class="chip"><input type="checkbox" id="fltBN" checked> ⓘ 变化</label>
+        <label class="chip"><input type="checkbox" id="fltSX" checked> ❤ 关系</label>
+      </div>
+    </div>
 
     <div class="grid">
-      <!-- 左侧：三个独立表单 + KPI + 导入导出 -->
+      <!-- 左侧：表单 + KPI -->
       <section class="card">
-        <div class="inner">
-          <h2>姨妈记录</h2>
+        <div class="section-head"><h2>记录中心</h2><div class="tabs">
+          <div class="tab active" data-tab="periodPanel">姨妈</div>
+          <div class="tab" data-tab="bodyPanel">身体变化</div>
+          <div class="tab" data-tab="sexPanel">关系</div>
+        </div></div>
+
+        <div class="inner" id="periodPanel">
+          <p class="muted">填上本次姨妈的开始和结束。别担心，长度我来算。</p>
           <div class="row">
             <div>
               <label>开始</label>
-              <input id="pStart" type="date" />
+              <input id="pStart" type="date" inputmode="none" />
             </div>
             <div>
               <label>结束</label>
-              <input id="pEnd" type="date" />
+              <input id="pEnd" type="date" inputmode="none" />
             </div>
           </div>
           <div class="row" style="margin-top:8px">
-            <button class="primary" id="btnAddPeriod">添加姨妈记录</button>
+            <button id="btnAddPeriod">添加姨妈记录</button>
+            <button class="ghost" id="btnQuickPeriod">只点今天</button>
           </div>
+        </div>
 
-          <hr style="border:none;border-top:1px solid rgba(0,0,0,.06);margin:12px 0"/>
-
-          <h2>身体变化</h2>
+        <div class="inner" id="bodyPanel" style="display:none">
+          <p class="muted">写下今天的感受或症状，给未来的自己一点线索。</p>
           <div class="row">
             <div>
               <label>日期</label>
-              <input id="bDate" type="date" />
+              <input id="bDate" type="date" inputmode="none" />
             </div>
           </div>
           <label>备注</label>
-          <textarea id="bNote" placeholder="如：头痛、情绪低落、乳房胀痛、睡眠差…"></textarea>
+          <textarea id="bNote" placeholder="例：头痛/困/情绪低落/皮肤出油…" enterkeyhint="done"></textarea>
           <div class="row" style="margin-top:8px">
-            <button class="primary" id="btnAddBody">添加身体变化</button>
+            <button id="btnAddBody">添加身体变化</button>
           </div>
+        </div>
 
-          <hr style="border:none;border-top:1px solid rgba(0,0,0,.06);margin:12px 0"/>
-
-          <h2>发生关系</h2>
+        <div class="inner" id="sexPanel" style="display:none">
+          <p class="muted">记录关系日期。需要就记，不需要就关掉那颗紫心的过滤。</p>
           <div class="row">
             <div>
               <label>日期</label>
-              <input id="sDate" type="date" />
+              <input id="sDate" type="date" inputmode="none" />
             </div>
           </div>
           <div class="row" style="margin-top:8px">
-            <button class="primary" id="btnAddSex">添加关系日期</button>
-            <button class="ghost" id="btnClearAll">清空全部数据</button>
+            <button id="btnAddSex">添加关系日期</button>
           </div>
+        </div>
 
-          <hr style="border:none;border-top:1px solid rgba(0,0,0,.06);margin:12px 0"/>
-
-          <h2>统计与预测</h2>
+        <div class="section-head"><h2>统计与数据</h2></div>
+        <div class="inner">
           <div class="kpi">
             <div class="item"><div class="muted">记录周期数</div><b id="kCycles">0</b></div>
             <div class="item"><div class="muted">平均周期（天）</div><b id="kAvg">—</b></div>
@@ -128,55 +164,55 @@
           </div>
 
           <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-            <button id="btnExport">导出全部</button>
+            <button class="ghost min" id="btnExport">导出</button>
             <input type="file" id="fileImport" accept="application/json" style="display:none"/>
-            <button id="btnImport">导入全部</button>
-            <button class="ghost" id="btnResetSamples">恢复示例数据</button>
-          </div>
-
-          <div style="margin-top:14px" class="info">
-            <b>提示</b>：预测基于平均周期与固定黄体期14天，仅供参考，勿作为避孕依据。如周期明显异常或伴随不适，请就医。
+            <button class="ghost min" id="btnImport">导入</button>
+            <button class="ghost min" id="btnResetSamples">恢复示例</button>
+            <button class="ghost min" id="btnClearAll">全部清空</button>
           </div>
         </div>
       </section>
 
-      <!-- 右侧：日历 + 三个表格 -->
+      <!-- 右侧：日历 + 历史 -->
       <section class="card cal">
-        <div class="cal-head">
-          <div style="font-weight:700" id="calTitle">—</div>
-          <div class="ctrls">
-            <button id="prevM">上个月</button>
-            <button id="todayM">今天</button>
-            <button id="nextM">下个月</button>
+        <div class="section-head">
+          <h2>日历</h2>
+          <div class="row" style="gap:6px">
+            <button class="ghost min" id="prevM">上个月</button>
+            <button class="ghost min" id="todayM">今天</button>
+            <button class="ghost min" id="nextM">下个月</button>
           </div>
         </div>
-        <div class="cal-grid" id="dow"></div>
-        <div class="cal-grid" id="cal"></div>
-        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap" class="muted">
-          <span class="tag" style="border-color:transparent;background:var(--red);color:#fff">月经期</span>
-          <span class="tag" style="border-color:transparent;background:var(--green);color:#fff">易孕期</span>
-          <span class="tag" style="border-color:transparent;background:var(--yellow);color:#2f3a33">排卵日</span>
-          <span class="tag" style="border-color:transparent;background:var(--orange);color:#fff">黄体期</span>
-          <span class="tag" style="border-color:transparent;background:var(--violet);color:#fff">❤ 关系</span>
-          <span class="tag" style="border-color:transparent;background:var(--blue);color:#fff">ⓘ 身体变化</span>
-          <span class="tag" style="color:var(--accent)">虚线：预测</span>
+        <div class="inner" style="padding-top:10px">
+          <div class="cal-grid" id="dow" style="margin-bottom:6px"></div>
+          <div class="cal-grid" id="cal"></div>
+          <div class="legend muted">
+            <span class="tag" style="background:var(--red);color:#fff">月经期</span>
+            <span class="tag" style="background:var(--green);color:#fff">易孕期</span>
+            <span class="tag" style="background:var(--yellow);color:#2f3a33">排卵日</span>
+            <span class="tag" style="background:var(--orange);color:#fff">黄体期</span>
+            <span class="tag" style="background:var(--violet);color:#fff">❤ 关系</span>
+            <span class="tag" style="background:var(--blue);color:#fff">ⓘ 身体变化</span>
+            <span class="tag" style="color:var(--accent)">虚线：预测</span>
+          </div>
         </div>
 
+        <div class="section-head"><h2>历史与编辑</h2></div>
         <div class="inner">
-          <h2>示例与历史</h2>
-          <h3 style="margin-bottom:8px">姨妈历史</h3>
+          <input id="search" class="searchinput" placeholder="搜索备注或日期（回车）" />
+          <h3 style="margin:14px 0 6px">姨妈历史</h3>
           <table id="tblPeriod">
             <thead><tr><th>开始</th><th>结束</th><th>经期</th><th>周期</th><th class="actions">操作</th></tr></thead>
             <tbody></tbody>
           </table>
 
-          <h3 style="margin:12px 0 8px">身体变化历史</h3>
+          <h3 style="margin:14px 0 6px">身体变化历史</h3>
           <table id="tblBody">
             <thead><tr><th>日期</th><th>备注</th><th class="actions">操作</th></tr></thead>
             <tbody></tbody>
           </table>
 
-          <h3 style="margin:12px 0 8px">关系历史</h3>
+          <h3 style="margin:14px 0 6px">关系历史</h3>
           <table id="tblSex">
             <thead><tr><th>日期</th><th class="actions">操作</th></tr></thead>
             <tbody></tbody>
@@ -186,28 +222,31 @@
     </div>
   </div>
 
+  <div id="toast" class="toast"></div>
+
 <script>
-// ========== 本地存储键名 ==========
+// ====== 本地键名 ======
 const KEY_PERIOD = 'periodData_v2';
 const KEY_BODY   = 'bodyNotes_v2';
 const KEY_SEX    = 'sexData_v2';
 
-// ========== 工具函数：全部基于本地时间，杜绝 toISOString 跨时区偏移 ==========
-const fmtLocal = d => {
-  const y = d.getFullYear();
-  const m = String(d.getMonth()+1).padStart(2,'0');
-  const da = String(d.getDate()).padStart(2,'0');
-  return `${y}-${m}-${da}`;
-};
-const parse = s => { // 安全解析 YYYY-MM-DD 为本地时间中午 12:00，避免夏令时边界问题
-  const [y,m,d] = s.split('-').map(Number);
-  return new Date(y, m-1, d, 12, 0, 0, 0);
-};
+// ====== 工具（本地时区） ======
+const fmtLocal = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const parse = s => { const [y,m,d]=s.split('-').map(Number); return new Date(y, m-1, d, 12, 0, 0, 0); };
 const addDays = (d,n)=>{ const x=new Date(d); x.setDate(x.getDate()+n); return x };
 const daysBetween = (a,b)=> Math.round((parse(b)-parse(a))/86400000);
 const safeHtml = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const showToast = (msg)=>{ const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block'; clearTimeout(t._h); t._h=setTimeout(()=>t.style.display='none',1800); };
 
-// ========== 初始示例数据 ==========
+// ====== 数据访问 ======
+function getPeriod(){ return JSON.parse(localStorage.getItem(KEY_PERIOD) || '[]'); }
+function setPeriod(v){ localStorage.setItem(KEY_PERIOD, JSON.stringify(v)); }
+function getBody(){ return JSON.parse(localStorage.getItem(KEY_BODY) || '[]'); }
+function setBody(v){ localStorage.setItem(KEY_BODY, JSON.stringify(v)); }
+function getSex(){ return JSON.parse(localStorage.getItem(KEY_SEX) || '[]'); }
+function setSex(v){ localStorage.setItem(KEY_SEX, JSON.stringify(v)); }
+
+// ====== 示例 ======
 const SAMPLE = {
   period: [
     { start: '2025-08-03', end: '2025-08-07', periodLen: 5 },
@@ -220,27 +259,14 @@ const SAMPLE = {
   ],
   sex: [ '2025-09-10', '2025-09-18' ]
 };
-
-function loadOrSeed(){
-  let p = JSON.parse(localStorage.getItem(KEY_PERIOD) || 'null');
-  let b = JSON.parse(localStorage.getItem(KEY_BODY)   || 'null');
-  let s = JSON.parse(localStorage.getItem(KEY_SEX)    || 'null');
-  if(!p && !b && !s){
-    localStorage.setItem(KEY_PERIOD, JSON.stringify(SAMPLE.period));
-    localStorage.setItem(KEY_BODY,   JSON.stringify(SAMPLE.body));
-    localStorage.setItem(KEY_SEX,    JSON.stringify(SAMPLE.sex));
+(function seed(){
+  const none = !localStorage.getItem(KEY_PERIOD) && !localStorage.getItem(KEY_BODY) && !localStorage.getItem(KEY_SEX);
+  if(none){
+    setPeriod(SAMPLE.period); setBody(SAMPLE.body); setSex(SAMPLE.sex);
   }
-}
-loadOrSeed();
+})();
 
-function getPeriod(){ return JSON.parse(localStorage.getItem(KEY_PERIOD) || '[]'); }
-function setPeriod(v){ localStorage.setItem(KEY_PERIOD, JSON.stringify(v)); }
-function getBody(){ return JSON.parse(localStorage.getItem(KEY_BODY) || '[]'); }
-function setBody(v){ localStorage.setItem(KEY_BODY, JSON.stringify(v)); }
-function getSex(){ return JSON.parse(localStorage.getItem(KEY_SEX) || '[]'); }
-function setSex(v){ localStorage.setItem(KEY_SEX, JSON.stringify(v)); }
-
-// ========== 统计与预测（基于姨妈记录） ==========
+// ====== 预测 ======
 function getCycleLengths(){
   const arr = [...getPeriod()].sort((a,b)=> a.start.localeCompare(b.start));
   const res=[]; for(let i=1;i<arr.length;i++){ res.push(daysBetween(arr[i-1].start, arr[i].start)); }
@@ -278,63 +304,69 @@ function getPredictions(){
   return { next: nextStart, ovulation, fertile, windows };
 }
 
-// ========== 渲染表格 ==========
-function renderTables(){
-  // 姨妈历史
+// ====== 渲染：表格 ======
+function renderTables(filter=''){
+  const f = filter.trim().toLowerCase();
+  // 姨妈
   const p = [...getPeriod()].sort((a,b)=> a.start.localeCompare(b.start));
   const pBody = document.querySelector('#tblPeriod tbody');
   pBody.innerHTML = '';
   for(let i=0;i<p.length;i++){
     const prev = p[i-1];
     const cyc = prev? daysBetween(prev.start, p[i].start) : '—';
+    if(f && !(p[i].start.includes(f) || p[i].end.includes(f))) continue;
     const tr = document.createElement('tr');
     tr.innerHTML = `<td>${p[i].start}</td>
                     <td>${p[i].end}</td>
                     <td>${p[i].periodLen||daysBetween(p[i].start,p[i].end)+1}天</td>
                     <td>${cyc}</td>
                     <td class="actions">
-                      <button class="btn-sm" data-act="del-period" data-start="${p[i].start}" data-end="${p[i].end}">删除</button>
+                      <button class="min" data-act="edit-period" data-start="${p[i].start}" data-end="${p[i].end}">编辑</button>
+                      <button class="min ghost" data-act="del-period" data-start="${p[i].start}" data-end="${p[i].end}">删除</button>
                     </td>`;
     pBody.appendChild(tr);
   }
-  if(!p.length){ pBody.innerHTML = '<tr><td colspan="5" class="muted">暂无记录</td></tr>'; }
+  if(!pBody.children.length){ pBody.innerHTML = '<tr><td colspan="5" class="muted">没有匹配记录</td></tr>'; }
 
-  // 身体变化历史
+  // 身体变化
   const b = [...getBody()].sort((a,b)=> a.date.localeCompare(b.date));
   const bBody = document.querySelector('#tblBody tbody');
   bBody.innerHTML = '';
   for(const it of b){
+    if(f && !(it.date.includes(f) || (it.note||'').toLowerCase().includes(f))) continue;
     const tr = document.createElement('tr');
     tr.innerHTML = `<td>${it.date}</td>
                     <td>${safeHtml(it.note)}</td>
                     <td class="actions">
-                      <button class="btn-sm" data-act="del-body" data-date="${it.date}" data-note="${encodeURIComponent(it.note)}">删除</button>
+                      <button class="min" data-act="edit-body" data-date="${it.date}" data-note="${encodeURIComponent(it.note)}">编辑</button>
+                      <button class="min ghost" data-act="del-body" data-date="${it.date}" data-note="${encodeURIComponent(it.note)}">删除</button>
                     </td>`;
     bBody.appendChild(tr);
   }
-  if(!b.length){ bBody.innerHTML = '<tr><td colspan="3" class="muted">暂无记录</td></tr>'; }
+  if(!bBody.children.length){ bBody.innerHTML = '<tr><td colspan="3" class="muted">没有匹配记录</td></tr>'; }
 
-  // 关系历史
+  // 关系
   const s = [...getSex()].sort();
   const sBody = document.querySelector('#tblSex tbody');
   sBody.innerHTML = '';
   for(const d of s){
+    if(f && !d.includes(f)) continue;
     const tr = document.createElement('tr');
     tr.innerHTML = `<td>${d}</td>
                     <td class="actions">
-                      <button class="btn-sm" data-act="del-sex" data-date="${d}">删除</button>
+                      <button class="min ghost" data-act="del-sex" data-date="${d}">删除</button>
                     </td>`;
     sBody.appendChild(tr);
   }
-  if(!s.length){ sBody.innerHTML = '<tr><td colspan="2" class="muted">暂无记录</td></tr>'; }
+  if(!sBody.children.length){ sBody.innerHTML = '<tr><td colspan="2" class="muted">没有匹配记录</td></tr>'; }
 }
 
-// ========== 日历渲染（全用本地时间） ==========
+// ====== 渲染：日历 ======
 function ensureDow(){
   const dowEl = document.getElementById('dow');
   if(dowEl.dataset.done) return;
   ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].forEach((d)=>{
-    const el=document.createElement('div'); el.className='dow'; el.textContent=d; dowEl.appendChild(el);
+    const el=document.createElement('div'); el.className='muted'; el.style.textAlign='center'; el.textContent=d; dowEl.appendChild(el);
   });
   dowEl.dataset.done = '1';
 }
@@ -346,7 +378,6 @@ function renderCalendar(){
   const view = window.__viewDate || new Date();
   const cur = new Date(view); cur.setDate(1); cur.setHours(12);
   const year=cur.getFullYear(), month=cur.getMonth();
-  document.getElementById('calTitle').textContent = `${year}年 ${month+1}月`;
 
   const startIdx = (cur.getDay()+6)%7; // 周一开头
   const daysInMonth = new Date(year, month+1, 0).getDate();
@@ -364,9 +395,11 @@ function renderCalendar(){
   const sDay = d => { const x=new Date(d); x.setHours(12); return x };
   function flagsForDate(d){
     const res=[];
-    for(const w of pWindows){ if(d>=sDay(w.from) && d<=sDay(w.to)){ res.push({type:w.type, pred:w.pred}); } }
+    const show = { m:flt('M'), f:flt('F'), o:flt('O'), l:flt('L') };
+    for(const w of pWindows){ if(d>=sDay(w.from) && d<=sDay(w.to)){ if(show[w.type]) res.push({type:w.type, pred:w.pred}); } }
     return res;
   }
+  function flt(code){ return document.getElementById('flt'+code).checked; }
 
   for(let i=0;i<startIdx;i++){ calEl.appendChild(document.createElement('div')); }
 
@@ -388,28 +421,54 @@ function renderCalendar(){
     });
 
     // 身体变化标记
-    if(bodyMap.has(dstr)){
+    if(document.getElementById('fltBN').checked && bodyMap.has(dstr)){
       const tag=document.createElement('div');
       tag.className='mark bn';
-      tag.style.transform='translateY(-24px)';
+      tag.style.transform='translateY(-26px)';
       tag.textContent='ⓘ 变化';
       cell.appendChild(tag);
     }
 
     // 关系标记
-    if(sexSet.has(dstr)){
+    if(document.getElementById('fltSX').checked && sexSet.has(dstr)){
       const tag=document.createElement('div');
       tag.className='mark sx';
-      tag.style.transform='translateY(-44px)';
+      tag.style.transform='translateY(-46px)';
       tag.textContent='❤ 关系';
       cell.appendChild(tag);
     }
 
+    // 快速添加：点击某个日期，弹菜单
+    cell.addEventListener('click', ()=> quickAddForDate(dstr), {passive:true});
+
     calEl.appendChild(cell);
+  }
+
+  document.getElementById('calTitle')?.remove(); // iOS: 避免重复 id
+  const hdr = document.querySelector('.cal .section-head h2');
+  hdr.textContent = `日历｜${year}年${month+1}月`;
+}
+
+// ====== 快速添加 ======
+function quickAddForDate(dateStr){
+  const choice = prompt(`对 ${dateStr} 做点什么？\n1：添加身体变化\n2：添加关系日期\n3：将这天设为姨妈开始（会要求输入结束日期）\n输入 1/2/3，其它键取消`);
+  if(choice==='1'){
+    const note = prompt('写点备注：');
+    if(note && note.trim()){
+      const arr = getBody(); arr.push({date:dateStr, note:note.trim()}); setBody(arr); showToast('已添加身体变化'); renderAll();
+    }
+  }else if(choice==='2'){
+    const set = new Set(getSex()); set.add(dateStr); setSex(Array.from(set).sort()); showToast('已添加关系日期'); renderAll();
+  }else if(choice==='3'){
+    const end = prompt('请输入结束日期（YYYY-MM-DD）：', dateStr);
+    if(end){
+      if(parse(end) < parse(dateStr)){ alert('结束不能早于开始'); return; }
+      const arr = getPeriod(); arr.push({ start: dateStr, end, periodLen: daysBetween(dateStr,end)+1 }); setPeriod(arr); showToast('已添加姨妈记录'); renderAll();
+    }
   }
 }
 
-// ========== KPI ==========
+// ====== KPI & 渲染聚合 ======
 function renderKPIs(){
   const cycles = getCycleLengths();
   const avgC = getAvgCycle();
@@ -420,79 +479,73 @@ function renderKPIs(){
   document.getElementById('kFertile').textContent = pred.fertile? `${fmtLocal(pred.fertile[0])} ~ ${fmtLocal(pred.fertile[1])}` : '—';
 }
 
-// ========== 事件：新增/清空/导入导出/删除 ==========
+function renderAll(filter=''){
+  renderKPIs();
+  renderCalendar();
+  renderTables(filter);
+}
+
+// ====== 事件绑定 ======
+window.__viewDate = new Date();
+['prevM','nextM','todayM'].forEach(id=>{
+  document.getElementById(id).onclick = ()=>{
+    if(id==='prevM') window.__viewDate.setMonth(window.__viewDate.getMonth()-1);
+    if(id==='nextM') window.__viewDate.setMonth(window.__viewDate.getMonth()+1);
+    if(id==='todayM') window.__viewDate = new Date();
+    renderCalendar();
+  };
+});
+
+// 过滤重绘
+['fltM','fltF','fltO','fltL','fltBN','fltSX'].forEach(id=>{
+  document.getElementById(id).onchange = ()=> renderCalendar();
+});
+
+// 标签页
+document.querySelectorAll('.tab').forEach(el=>{
+  el.onclick = ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.inner[id$="Panel"]').forEach(p=> p.style.display='none');
+    document.getElementById(el.dataset.tab).style.display='block';
+  };
+});
+
+// 搜索
+document.getElementById('search').addEventListener('keydown', (e)=>{
+  if(e.key==='Enter'){ renderTables(e.target.value); }
+});
+
+// 新增
 document.getElementById('btnAddPeriod').onclick = () => {
   const start = document.getElementById('pStart').value;
   const end = document.getElementById('pEnd').value;
   if(!start||!end) return alert('请填写开始与结束日期');
   if(parse(end) < parse(start)) return alert('结束日期不能早于开始日期');
-  const arr = getPeriod();
-  const len = daysBetween(start,end)+1;
-  arr.push({ start, end, periodLen: len });
-  arr.sort((a,b)=> a.start.localeCompare(b.start));
-  setPeriod(arr);
-  document.getElementById('pStart').value='';
-  document.getElementById('pEnd').value='';
-  renderAll();
+  const arr = getPeriod(); const len = daysBetween(start,end)+1;
+  arr.push({ start, end, periodLen: len }); arr.sort((a,b)=> a.start.localeCompare(b.start)); setPeriod(arr);
+  document.getElementById('pStart').value=''; document.getElementById('pEnd').value=''; showToast('姨妈记录已添加'); renderAll();
 };
-
+document.getElementById('btnQuickPeriod').onclick = () => {
+  const today = fmtLocal(new Date());
+  const arr = getPeriod(); arr.push({ start: today, end: today, periodLen: 1 }); setPeriod(arr); showToast('已添加：今天作为开始和结束'); renderAll();
+};
 document.getElementById('btnAddBody').onclick = () => {
   const date = document.getElementById('bDate').value;
   const note = document.getElementById('bNote').value.trim();
   if(!date) return alert('请填写日期');
   if(!note) return alert('请填写备注');
-  const arr = getBody();
-  arr.push({ date, note });
-  arr.sort((a,b)=> a.date.localeCompare(b.date));
-  setBody(arr);
-  document.getElementById('bDate').value='';
-  document.getElementById('bNote').value='';
-  renderAll();
+  const arr = getBody(); arr.push({ date, note }); arr.sort((a,b)=> a.date.localeCompare(b.date)); setBody(arr);
+  document.getElementById('bDate').value=''; document.getElementById('bNote').value=''; showToast('身体变化已添加'); renderAll();
 };
-
 document.getElementById('btnAddSex').onclick = () => {
   const date = document.getElementById('sDate').value;
   if(!date) return alert('请选择日期');
-  const set = new Set(getSex());
-  set.add(date);
-  setSex(Array.from(set).sort());
-  document.getElementById('sDate').value='';
-  renderAll();
+  const set = new Set(getSex()); set.add(date); setSex(Array.from(set).sort());
+  document.getElementById('sDate').value=''; showToast('关系日期已添加'); renderAll();
 };
 
-document.getElementById('btnClearAll').onclick = () => {
-  if(confirm('确定清空全部数据？（姨妈、身体变化、关系）')){
-    localStorage.removeItem(KEY_PERIOD);
-    localStorage.removeItem(KEY_BODY);
-    localStorage.removeItem(KEY_SEX);
-    renderAll();
-  }
-};
-
-// 表格内删除（事件委托）
-document.addEventListener('click', (e)=>{
-  const btn = e.target.closest('button[data-act]');
-  if(!btn) return;
-  const act = btn.dataset.act;
-  if(act === 'del-period'){
-    const start = btn.dataset.start, end = btn.dataset.end;
-    const arr = getPeriod().filter(it => !(it.start===start && it.end===end));
-    setPeriod(arr); renderAll();
-  }else if(act === 'del-body'){
-    const date = btn.dataset.date, note = decodeURIComponent(btn.dataset.note||'');
-    let removed = false;
-    const arr = getBody().filter(it => {
-      if(!removed && it.date===date && it.note===note){ removed = true; return false; }
-      return true;
-    });
-    setBody(arr); renderAll();
-  }else if(act === 'del-sex'){
-    const date = btn.dataset.date;
-    const arr = getSex().filter(d => d!==date);
-    setSex(arr); renderAll();
-  }
-});
-
+// 导入导出/示例/清空
 document.getElementById('btnImport').onclick = () => document.getElementById('fileImport').click();
 document.getElementById('fileImport').addEventListener('change', (e)=>{
   const f=e.target.files[0]; if(!f) return;
@@ -504,12 +557,10 @@ document.getElementById('fileImport').addEventListener('change', (e)=>{
       if(incoming.period && !Array.isArray(incoming.period)) throw new Error('period 须为数组');
       if(incoming.body && !Array.isArray(incoming.body)) throw new Error('body 须为数组');
       if(incoming.sex && !Array.isArray(incoming.sex)) throw new Error('sex 须为数组');
-
       if(incoming.period) setPeriod(incoming.period.map(it=>({ start: it.start, end: it.end, periodLen: it.periodLen || (daysBetween(it.start,it.end)+1) })));
       if(incoming.body)   setBody(incoming.body.map(it=>({ date: it.date, note: it.note || '' })));
       if(incoming.sex)    setSex(Array.from(new Set(incoming.sex)).sort());
-
-      renderAll();
+      showToast('导入成功'); renderAll();
     }catch(err){ alert('导入失败：'+err.message) }
   };
   r.readAsText(f);
@@ -519,31 +570,63 @@ document.getElementById('btnExport').onclick = () => {
   const obj = { period: getPeriod(), body: getBody(), sex: getSex() };
   const blob = new Blob([JSON.stringify(obj,null,2)], {type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='tracker-data.json'; a.click();
+  showToast('已导出 JSON');
 };
-
 document.getElementById('btnResetSamples').onclick = () => {
   if(confirm('将清空现有数据并恢复示例，继续？')){
-    localStorage.setItem(KEY_PERIOD, JSON.stringify(SAMPLE.period));
-    localStorage.setItem(KEY_BODY,   JSON.stringify(SAMPLE.body));
-    localStorage.setItem(KEY_SEX,    JSON.stringify(SAMPLE.sex));
-    renderAll();
+    setPeriod(SAMPLE.period); setBody(SAMPLE.body); setSex(SAMPLE.sex); showToast('已恢复示例'); renderAll();
+  }
+};
+document.getElementById('btnClearAll').onclick = () => {
+  if(confirm('确定清空全部数据？（姨妈、身体变化、关系）')){
+    localStorage.removeItem(KEY_PERIOD);
+    localStorage.removeItem(KEY_BODY);
+    localStorage.removeItem(KEY_SEX);
+    showToast('已清空'); renderAll();
   }
 };
 
-// 日历月份切换
-window.__viewDate = new Date();
-document.getElementById('prevM').onclick = ()=>{ window.__viewDate.setMonth(window.__viewDate.getMonth()-1); renderCalendar(); };
-document.getElementById('nextM').onclick = ()=>{ window.__viewDate.setMonth(window.__viewDate.getMonth()+1); renderCalendar(); };
-document.getElementById('todayM').onclick = ()=>{ window.__viewDate = new Date(); renderCalendar(); };
-
-// ========== 渲染聚合 ==========
-function renderAll(){
-  renderKPIs();
-  renderCalendar();
-  renderTables();
-}
+// 表格操作（编辑/删除）
+document.addEventListener('click', (e)=>{
+  const btn = e.target.closest('button[data-act]'); if(!btn) return;
+  const act = btn.dataset.act;
+  if(act==='del-period'){
+    if(!confirm('删除这条姨妈记录？')) return;
+    const start = btn.dataset.start, end = btn.dataset.end;
+    const arr = getPeriod().filter(it => !(it.start===start && it.end===end));
+    setPeriod(arr); showToast('已删除'); renderAll();
+  }else if(act==='edit-period'){
+    const start = btn.dataset.start, end = btn.dataset.end;
+    const ns = prompt('新的开始日期（YYYY-MM-DD）：', start); if(!ns) return;
+    const ne = prompt('新的结束日期（YYYY-MM-DD）：', end); if(!ne) return;
+    if(parse(ne) < parse(ns)) return alert('结束不能早于开始');
+    const arr = getPeriod().filter(it => !(it.start===start && it.end===end));
+    arr.push({ start: ns, end: ne, periodLen: daysBetween(ns,ne)+1 }); setPeriod(arr); showToast('已更新'); renderAll();
+  }else if(act==='del-body'){
+    if(!confirm('删除这条身体变化？')) return;
+    const date = btn.dataset.date, note = decodeURIComponent(btn.dataset.note||'');
+    let removed = false;
+    const arr = getBody().filter(it => {
+      if(!removed && it.date===date && it.note===note){ removed = true; return false; }
+      return true;
+    });
+    setBody(arr); showToast('已删除'); renderAll();
+  }else if(act==='edit-body'){
+    const date = btn.dataset.date, oldNote = decodeURIComponent(btn.dataset.note||'');
+    const nd = prompt('日期（YYYY-MM-DD）：', date); if(!nd) return;
+    const nn = prompt('备注：', oldNote); if(nn===null) return;
+    const arr = getBody().map(it => (it.date===date && it.note===oldNote) ? { date: nd, note: nn } : it);
+    setBody(arr); showToast('已更新'); renderAll();
+  }else if(act==='del-sex'){
+    if(!confirm('删除这个关系日期？')) return;
+    const date = btn.dataset.date;
+    const arr = getSex().filter(d => d!==date);
+    setSex(arr); showToast('已删除'); renderAll();
+  }
+}, {passive:true});
 
 // 初始渲染
+window.__viewDate = new Date();
 renderAll();
 </script>
 </body>
