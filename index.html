@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>月经记录 + 身体变化 + 关系记录（移动优化・分表管理）</title>
+<title>月经记录 + 身体变化 + 关系记录（移动优化・分表管理・修复偏移/支持删除）</title>
 <style>
   :root{
     --bg:#ffffff; --card:#ffffff; --muted:#7c847d; --text:#2f3a33; --accent:#d2a889;
@@ -25,7 +25,7 @@
   textarea{min-height:68px;resize:vertical}
   .row{display:flex;gap:10px}
   .row>*{flex:1}
-  button{cursor:pointer;padding:10px 14px;border-radius:12px;border:1px solid var(--accent);background:#fff;color:var(--accent)}
+  button{cursor:pointer;padding:8px 12px;border-radius:10px;border:1px solid var(--accent);background:#fff;color:var(--accent)}
   button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
   button.ghost{background:transparent;border-color:var(--accent);color:var(--accent)}
   .muted{color:var(--muted)}
@@ -34,8 +34,10 @@
   .kpi .item{padding:12px;border-radius:12px;background:#f9f9f9;border:1px solid rgba(0,0,0,.06)}
   .kpi .item b{font-size:18px;color:var(--accent)}
   table{width:100%;border-collapse:collapse}
-  th,td{padding:8px;border-bottom:1px solid rgba(0,0,0,.08);text-align:left}
+  th,td{padding:8px;border-bottom:1px solid rgba(0,0,0,.08);text-align:left;vertical-align:top}
   th{color:var(--muted);font-weight:600}
+  td.actions{width:84px}
+  .btn-sm{padding:4px 8px;border-radius:8px;font-size:12px}
   /* Calendar */
   .cal{padding:10px}
   .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;color:var(--accent);gap:8px}
@@ -164,19 +166,19 @@
           <h2>示例与历史</h2>
           <h3 style="margin-bottom:8px">姨妈历史</h3>
           <table id="tblPeriod">
-            <thead><tr><th>开始</th><th>结束</th><th>经期</th><th>周期</th></tr></thead>
+            <thead><tr><th>开始</th><th>结束</th><th>经期</th><th>周期</th><th class="actions">操作</th></tr></thead>
             <tbody></tbody>
           </table>
 
           <h3 style="margin:12px 0 8px">身体变化历史</h3>
           <table id="tblBody">
-            <thead><tr><th>日期</th><th>备注</th></tr></thead>
+            <thead><tr><th>日期</th><th>备注</th><th class="actions">操作</th></tr></thead>
             <tbody></tbody>
           </table>
 
           <h3 style="margin:12px 0 8px">关系历史</h3>
           <table id="tblSex">
-            <thead><tr><th>日期</th></tr></thead>
+            <thead><tr><th>日期</th><th class="actions">操作</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -190,14 +192,22 @@ const KEY_PERIOD = 'periodData_v2';
 const KEY_BODY   = 'bodyNotes_v2';
 const KEY_SEX    = 'sexData_v2';
 
-// ========== 工具函数 ==========
-const fmt = d => d.toISOString().slice(0,10);
-const parse = s => { const d = new Date(s); d.setHours(12); return d };
+// ========== 工具函数：全部基于本地时间，杜绝 toISOString 跨时区偏移 ==========
+const fmtLocal = d => {
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const da = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${da}`;
+};
+const parse = s => { // 安全解析 YYYY-MM-DD 为本地时间中午 12:00，避免夏令时边界问题
+  const [y,m,d] = s.split('-').map(Number);
+  return new Date(y, m-1, d, 12, 0, 0, 0);
+};
 const addDays = (d,n)=>{ const x=new Date(d); x.setDate(x.getDate()+n); return x };
 const daysBetween = (a,b)=> Math.round((parse(b)-parse(a))/86400000);
 const safeHtml = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-// ========== 初始示例数据（仅首次或点击“恢复示例数据”时注入） ==========
+// ========== 初始示例数据 ==========
 const SAMPLE = {
   period: [
     { start: '2025-08-03', end: '2025-08-07', periodLen: 5 },
@@ -254,7 +264,7 @@ function getPredictions(){
 
   const windows=[];
   const records = [...getPeriod().map(r=>({ start: parse(r.start), end: parse(r.end||r.start), pLen: r.periodLen||5, pred:false }))];
-  records.push({ start: parse(fmt(nextStart)), end: addDays(parse(fmt(nextStart)), pLen-1), pLen, pred:true });
+  records.push({ start: parse(fmtLocal(nextStart)), end: addDays(parse(fmtLocal(nextStart)), pLen-1), pLen, pred:true });
 
   for(let i=0;i<records.length;i++){
     const cur = records[i];
@@ -278,10 +288,16 @@ function renderTables(){
     const prev = p[i-1];
     const cyc = prev? daysBetween(prev.start, p[i].start) : '—';
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${p[i].start}</td><td>${p[i].end}</td><td>${p[i].periodLen||daysBetween(p[i].start,p[i].end)+1}天</td><td>${cyc}</td>`;
+    tr.innerHTML = `<td>${p[i].start}</td>
+                    <td>${p[i].end}</td>
+                    <td>${p[i].periodLen||daysBetween(p[i].start,p[i].end)+1}天</td>
+                    <td>${cyc}</td>
+                    <td class="actions">
+                      <button class="btn-sm" data-act="del-period" data-start="${p[i].start}" data-end="${p[i].end}">删除</button>
+                    </td>`;
     pBody.appendChild(tr);
   }
-  if(!p.length){ pBody.innerHTML = '<tr><td colspan="4" class="muted">暂无记录</td></tr>'; }
+  if(!p.length){ pBody.innerHTML = '<tr><td colspan="5" class="muted">暂无记录</td></tr>'; }
 
   // 身体变化历史
   const b = [...getBody()].sort((a,b)=> a.date.localeCompare(b.date));
@@ -289,10 +305,14 @@ function renderTables(){
   bBody.innerHTML = '';
   for(const it of b){
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${it.date}</td><td>${safeHtml(it.note)}</td>`;
+    tr.innerHTML = `<td>${it.date}</td>
+                    <td>${safeHtml(it.note)}</td>
+                    <td class="actions">
+                      <button class="btn-sm" data-act="del-body" data-date="${it.date}" data-note="${encodeURIComponent(it.note)}">删除</button>
+                    </td>`;
     bBody.appendChild(tr);
   }
-  if(!b.length){ bBody.innerHTML = '<tr><td colspan="2" class="muted">暂无记录</td></tr>'; }
+  if(!b.length){ bBody.innerHTML = '<tr><td colspan="3" class="muted">暂无记录</td></tr>'; }
 
   // 关系历史
   const s = [...getSex()].sort();
@@ -300,13 +320,16 @@ function renderTables(){
   sBody.innerHTML = '';
   for(const d of s){
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${d}</td>`;
+    tr.innerHTML = `<td>${d}</td>
+                    <td class="actions">
+                      <button class="btn-sm" data-act="del-sex" data-date="${d}">删除</button>
+                    </td>`;
     sBody.appendChild(tr);
   }
-  if(!s.length){ sBody.innerHTML = '<tr><td class="muted">暂无记录</td></tr>'; }
+  if(!s.length){ sBody.innerHTML = '<tr><td colspan="2" class="muted">暂无记录</td></tr>'; }
 }
 
-// ========== 日历渲染 ==========
+// ========== 日历渲染（全用本地时间） ==========
 function ensureDow(){
   const dowEl = document.getElementById('dow');
   if(dowEl.dataset.done) return;
@@ -349,9 +372,9 @@ function renderCalendar(){
 
   for(let d=1; d<=daysInMonth; d++){
     const cell=document.createElement('div'); cell.className='cell';
-    const dd = new Date(year, month, d); dd.setHours(12);
-    const dstr = fmt(dd);
-    if(fmt(today)===dstr) cell.classList.add('today');
+    const dd = new Date(year, month, d, 12);
+    const dstr = fmtLocal(dd);
+    if(fmtLocal(today)===dstr) cell.classList.add('today');
     const num=document.createElement('div'); num.className='d'; num.textContent=d; cell.appendChild(num);
 
     // 周期窗口标记
@@ -393,11 +416,11 @@ function renderKPIs(){
   const pred = getPredictions();
   document.getElementById('kCycles').textContent = cycles.length;
   document.getElementById('kAvg').textContent = avgC? avgC+' 天' : '—';
-  document.getElementById('kNext').textContent = pred.next? fmt(pred.next) : '—';
-  document.getElementById('kFertile').textContent = pred.fertile? `${fmt(pred.fertile[0])} ~ ${fmt(pred.fertile[1])}` : '—';
+  document.getElementById('kNext').textContent = pred.next? fmtLocal(pred.next) : '—';
+  document.getElementById('kFertile').textContent = pred.fertile? `${fmtLocal(pred.fertile[0])} ~ ${fmtLocal(pred.fertile[1])}` : '—';
 }
 
-// ========== 事件：新增/清空/导入导出 ==========
+// ========== 事件：新增/清空/导入导出/删除 ==========
 document.getElementById('btnAddPeriod').onclick = () => {
   const start = document.getElementById('pStart').value;
   const end = document.getElementById('pEnd').value;
@@ -445,6 +468,30 @@ document.getElementById('btnClearAll').onclick = () => {
     renderAll();
   }
 };
+
+// 表格内删除（事件委托）
+document.addEventListener('click', (e)=>{
+  const btn = e.target.closest('button[data-act]');
+  if(!btn) return;
+  const act = btn.dataset.act;
+  if(act === 'del-period'){
+    const start = btn.dataset.start, end = btn.dataset.end;
+    const arr = getPeriod().filter(it => !(it.start===start && it.end===end));
+    setPeriod(arr); renderAll();
+  }else if(act === 'del-body'){
+    const date = btn.dataset.date, note = decodeURIComponent(btn.dataset.note||'');
+    let removed = false;
+    const arr = getBody().filter(it => {
+      if(!removed && it.date===date && it.note===note){ removed = true; return false; }
+      return true;
+    });
+    setBody(arr); renderAll();
+  }else if(act === 'del-sex'){
+    const date = btn.dataset.date;
+    const arr = getSex().filter(d => d!==date);
+    setSex(arr); renderAll();
+  }
+});
 
 document.getElementById('btnImport').onclick = () => document.getElementById('fileImport').click();
 document.getElementById('fileImport').addEventListener('change', (e)=>{
