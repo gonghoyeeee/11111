@@ -22,42 +22,51 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;min-height:100svh;background:var(--bg);color:var(--text);
-  font:12px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  font:14px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
   padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 .wrap{max-width:1100px;margin:0 auto;padding:12px}
 .topbar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.brand{font-weight:800;color:var(--accent);font-size:14px}
+.brand{font-weight:800;color:var(--accent);font-size:16px}
 .grid{display:grid;gap:12px;grid-template-columns:380px 1fr}
-@media(max-width:980px){.grid{grid-template-columns:1fr}}
+@media(max-width:768px){.grid{grid-template-columns:1fr}}
 .card{background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
-.section-head{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px}
-.section-head h2{margin:0;font-size:13px;color:var(--accent)}
+.section-head{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px;flex-wrap:wrap}
+.section-head h2{margin:0;font-size:14px;color:var(--accent)}
 .inner{padding:12px}
 label{display:block;margin:6px 0 4px;font-size:12px;font-weight:600}
-input,textarea,select{width:100%;padding:8px;border:1px solid var(--border-soft);border-radius:8px;background:#0c1116;color:var(--text);font-size:12px}
+input,textarea,select{width:100%;padding:8px;border:1px solid var(--border-soft);border-radius:8px;background:#0c1116;color:var(--text);font-size:13px}
 textarea{resize:vertical;min-height:48px}
-button{cursor:pointer;padding:8px 12px;font-size:12px;border-radius:8px;font-weight:600}
+button{cursor:pointer;padding:8px 12px;font-size:13px;border-radius:8px;font-weight:600}
 button{border:1px solid var(--accent);background:linear-gradient(90deg,var(--accent),#8fd0ff);color:#00132b}
 button.ghost{background:transparent;color:var(--accent)}
-button.min{padding:4px 8px;font-size:11px}
+button.min{padding:4px 8px;font-size:12px}
 .muted{color:var(--muted)}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.cell{aspect-ratio:1/1;border:1px solid var(--border);border-radius:6px;padding:2px;position:relative;font-size:10px}
+.cell{aspect-ratio:1/1;border:1px solid var(--border);border-radius:6px;padding:2px;position:relative;font-size:11px}
 .cell.today{outline:2px solid var(--accent)}
 .cell .d{position:absolute;top:2px;right:4px;font-size:11px;color:var(--muted)}
 .badges{position:absolute;left:4px;bottom:4px;display:flex;gap:4px;font-size:12px}
 .badges span{font-size:12px}
 .legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;font-size:11px}
-.legend .tag{display:flex;align-items:center;gap:4px;padding:4px 6px;border-radius:999px;border:1px solid var(--border)}
+.legend .tag{display:flex;align-items:center;gap:4px;padding:4px 6px;border-radius:999px;border:1px solid var(--border);cursor:pointer}
 .kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .kpi .item{padding:8px;border:1px solid var(--border);border-radius:8px}
 .kpi .item b{color:var(--accent);font-size:13px}
-table{width:100%;border-collapse:collapse;font-size:11px}
+table{width:100%;border-collapse:collapse;font-size:12px}
 th,td{padding:6px 4px;border-bottom:1px solid var(--border)}
 th{color:var(--muted);font-weight:700;background:var(--card);position:sticky;top:0}
 td.actions{white-space:nowrap}
 .toast{position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--card);border:1px solid var(--border);padding:6px 8px;border-radius:8px;display:none;font-size:12px}
+
+/* === 针对 iPhone 优化 === */
+@media(max-width:768px){
+  body{font-size:14px;}
+  .cell{font-size:12px;aspect-ratio:auto;height:60px;}
+  .section-head h2{font-size:14px;}
+  .section-head div{display:flex;flex-wrap:wrap;gap:4px;}
+  .inner table{display:block;overflow-x:auto;white-space:nowrap;}
+}
 </style>
 </head>
 <body>
@@ -106,30 +115,25 @@ td.actions{white-space:nowrap}
       <div class="inner">
         <div class="cal-grid" id="dow"></div>
         <div class="cal-grid" id="cal"></div>
-     <div class="legend muted">
-  <span class="tag" style="background:#d8a7a7;color:#fff;">经</span>
-  <span class="tag" style="background:#c8d8b7;color:#333;">孕</span>
-  <span class="tag" style="background:#b7cdd8;color:#333;">排</span>
-  <span class="tag" style="background:#d7c2b7;color:#333;">黄</span>
-  <span class="tag" style="color:#b98ca0;">💗</span>
-  <span class="tag" style="color:#a8b9c7;">ℹ️</span>
-</div>
-
-        <div style="margin-top:6px">
-          <label><input type="checkbox" id="fltM" checked>姨妈</label>
-          <label><input type="checkbox" id="fltF" checked>易孕</label>
-          <label><input type="checkbox" id="fltO" checked>排卵</label>
-          <label><input type="checkbox" id="fltL" checked>黄体</label>
-          <label><input type="checkbox" id="fltSX" checked>关系</label>
-          <label><input type="checkbox" id="fltBN" checked>变化</label>
+        <!-- 图例开关 -->
+        <div class="legend muted" id="legendToggle">
+          <span class="tag" data-type="M" style="background:#d8a7a7;color:#fff;">经</span>
+          <span class="tag" data-type="F" style="background:#c8d8b7;color:#333;">孕</span>
+          <span class="tag" data-type="O" style="background:#b7cdd8;color:#333;">排</span>
+          <span class="tag" data-type="L" style="background:#d7c2b7;color:#333;">黄</span>
+          <span class="tag" data-type="SX" style="color:#b98ca0;">💗</span>
+          <span class="tag" data-type="BN" style="color:#a8b9c7;">ℹ️</span>
         </div>
       </div>
       <div class="section-head"><h2>历史与编辑</h2></div>
       <div class="inner">
         <input id="search" placeholder="搜索备注或日期">
-        <h3>姨妈历史</h3><table id="tblPeriod"><thead><tr><th>开始</th><th>结束</th><th>经期</th><th>周期</th><th class="actions">操作</th></tr></thead><tbody></tbody></table>
-        <h3>身体变化</h3><table id="tblBody"><thead><tr><th>日期</th><th>备注</th><th class="actions">操作</th></tr></thead><tbody></tbody></table>
-        <h3>关系历史</h3><table id="tblSex"><thead><tr><th>日期</th><th class="actions">操作</th></tr></thead><tbody></tbody></table>
+        <h3>姨妈历史</h3>
+        <table id="tblPeriod"><thead><tr><th>开始</th><th>结束</th><th>经期</th><th>周期</th><th class="actions">操作</th></tr></thead><tbody></tbody></table>
+        <h3>身体变化</h3>
+        <table id="tblBody"><thead><tr><th>日期</th><th>备注</th><th class="actions">操作</th></tr></thead><tbody></tbody></table>
+        <h3>关系历史</h3>
+        <table id="tblSex"><thead><tr><th>日期</th><th class="actions">操作</th></tr></thead><tbody></tbody></table>
       </div>
     </section>
   </div>
@@ -147,51 +151,123 @@ const parse=s=>{let [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d,12)
 const add=(d,n)=>{let x=new Date(d);x.setDate(x.getDate()+n);return x;}
 const daysBetween=(a,b)=>Math.round((parse(b)-parse(a))/86400000);
 const safe=s=>(s||"").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
 /* ===== KPI与预测 ===== */
 function getCycleLens(){let arr=[...periods].sort((a,b)=>a.start.localeCompare(b.start)),res=[];for(let i=1;i<arr.length;i++)res.push(daysBetween(arr[i-1].start,arr[i].start));return res;}
 function avg(a){return a.length?Math.round(a.reduce((x,y)=>x+y)/a.length):null;}
 function getAvgC(){return avg(getCycleLens())}
 function getPred(){let last=[...periods].sort((a,b)=>a.start.localeCompare(b.start)).at(-1);if(!last)return{windows:[]};let avgC=getAvgC()||28;let pLen=last.len||5;let next=add(parse(last.start),avgC);let ovu=add(next,-14);let wins=[{from:parse(last.start),to:parse(last.end),type:"经"}];wins.push({from:add(ovu,-5),to:add(ovu,1),type:"孕"});wins.push({from:ovu,to:ovu,type:"排"});wins.push({from:add(ovu,2),to:add(next,-1),type:"黄"});return{next,windows:wins};}
 function renderKPIs(){let cyc=getCycleLens();document.getElementById("kCycles").textContent=cyc.length;document.getElementById("kAvg").textContent=getAvgC()?getAvgC()+"天":"—";let pred=getPred();document.getElementById("kNext").textContent=pred.next?fmt(pred.next):"—";}
+
 /* ===== 日历渲染 ===== */
 function ensureDow(){let el=document.getElementById("dow");if(el.dataset.ok)return;["一","二","三","四","五","六","日"].forEach(d=>{let x=document.createElement("div");x.textContent=d;x.className="muted";x.style.textAlign="center";el.appendChild(x)});el.dataset.ok=1;}
-function renderCalendar(){ensureDow();let cal=document.getElementById("cal");cal.innerHTML="";let view=window.__viewDate||new Date(),cur=new Date(view);cur.setDate(1);let y=cur.getFullYear(),m=cur.getMonth();let start=(cur.getDay()+6)%7,days=new Date(y,m+1,0).getDate();let today=fmt(new Date());let pred=getPred().windows;let bodyMap=new Map();bodies.forEach(b=>bodyMap.set(b.date,(bodyMap.get(b.date)||0)+1));let sexSet=new Set(sexes.map(s=>s.date));
-for(let i=0;i<start;i++)cal.appendChild(document.createElement("div"));
-for(let d=1;d<=days;d++){let cell=document.createElement("div");cell.className="cell";let dd=new Date(y,m,d,12),ds=fmt(dd);if(ds===today)cell.classList.add("today");let num=document.createElement("div");num.className="d";num.textContent=d;cell.appendChild(num);
-let flags=pred.filter(w=>dd>=w.from&&dd<=w.to).map(w=>w.type);if(document.getElementById("fltM").checked && flags.includes("经"))
-  cell.innerHTML += "<div style='font-size:10px;background:#d8a7a7;color:#fff;padding:1px 3px;border-radius:4px;display:inline-block'>经</div>";
-if(document.getElementById("fltF").checked && flags.includes("孕"))
-  cell.innerHTML += "<div style='font-size:10px;background:#c8d8b7;color:#333;padding:1px 3px;border-radius:4px;display:inline-block'>孕</div>";
-if(document.getElementById("fltO").checked && flags.includes("排"))
-  cell.innerHTML += "<div style='font-size:10px;background:#b7cdd8;color:#333;padding:1px 3px;border-radius:4px;display:inline-block'>排</div>";
-if(document.getElementById("fltL").checked && flags.includes("黄"))
-  cell.innerHTML += "<div style='font-size:10px;background:#d7c2b7;color:#333;padding:1px 3px;border-radius:4px;display:inline-block'>黄</div>";
-let badges=document.createElement("div");badges.className="badges";if(document.getElementById("fltSX").checked&&sexSet.has(ds))badges.innerHTML+="<span style='color:#b98ca0'>💗</span>";if(document.getElementById("fltBN").checked&&bodyMap.has(ds))badges.innerHTML+="<span style='color:#a8b9c7'>ℹ️</span>";if(badges.innerHTML)cell.appendChild(badges);cal.appendChild(cell);}}
+
+/* 控制可见性 */
+let visibleFlags = {M:true, F:true, O:true, L:true, SX:true, BN:true};
+
+function renderCalendar(){
+  ensureDow();
+  let cal=document.getElementById("cal");cal.innerHTML="";
+  let view=window.__viewDate||new Date(),cur=new Date(view);cur.setDate(1);
+  let y=cur.getFullYear(),m=cur.getMonth();
+  let start=(cur.getDay()+6)%7,days=new Date(y,m+1,0).getDate();
+  let today=fmt(new Date());
+  let pred=getPred().windows;
+  let bodyMap=new Map();bodies.forEach(b=>bodyMap.set(b.date,(bodyMap.get(b.date)||0)+1));
+  let sexSet=new Set(sexes.map(s=>s.date));
+
+  for(let i=0;i<start;i++)cal.appendChild(document.createElement("div"));
+  for(let d=1;d<=days;d++){
+    let cell=document.createElement("div");cell.className="cell";
+    let dd=new Date(y,m,d,12),ds=fmt(dd);
+    if(ds===today)cell.classList.add("today");
+    let num=document.createElement("div");num.className="d";num.textContent=d;cell.appendChild(num);
+
+    let flags=pred.filter(w=>dd>=w.from&&dd<=w.to).map(w=>w.type);
+    if(visibleFlags.M && flags.includes("经"))
+      cell.innerHTML += "<div style='font-size:10px;background:#d8a7a7;color:#fff;padding:1px 3px;border-radius:4px;display:inline-block'>经</div>";
+    if(visibleFlags.F && flags.includes("孕"))
+      cell.innerHTML += "<div style='font-size:10px;background:#c8d8b7;color:#333;padding:1px 3px;border-radius:4px;display:inline-block'>孕</div>";
+    if(visibleFlags.O && flags.includes("排"))
+      cell.innerHTML += "<div style='font-size:10px;background:#b7cdd8;color:#333;padding:1px 3px;border-radius:4px;display:inline-block'>排</div>";
+    if(visibleFlags.L && flags.includes("黄"))
+      cell.innerHTML += "<div style='font-size:10px;background:#d7c2b7;color:#333;padding:1px 3px;border-radius:4px;display:inline-block'>黄</div>";
+
+    let badges=document.createElement("div");badges.className="badges";
+    if(visibleFlags.SX && sexSet.has(ds))badges.innerHTML+="<span style='color:#b98ca0'>💗</span>";
+    if(visibleFlags.BN && bodyMap.has(ds))badges.innerHTML+="<span style='color:#a8b9c7'>ℹ️</span>";
+    if(badges.innerHTML)cell.appendChild(badges);
+    cal.appendChild(cell);
+  }
+}
+
 /* ===== 历史表格 ===== */
-function renderTables(f=''){f=f.trim().toLowerCase();let pBody=document.querySelector("#tblPeriod tbody");pBody.innerHTML="";periods.forEach((p,i)=>{if(f && !(p.start.includes(f)||p.end.includes(f)))return;let cyc=i>0?daysBetween(periods[i-1].start,p.start):"—";pBody.innerHTML+=`<tr><td>${p.start}</td><td>${p.end}</td><td>${p.len}天</td><td>${cyc}</td><td class="actions"><button data-act="editP" data-i="${i}">编辑</button><button data-act="delP" data-i="${i}" class="ghost">删除</button></td></tr>`;});if(!pBody.innerHTML)pBody.innerHTML='<tr><td colspan=5 class=muted>无</td></tr>';
-let bBody=document.querySelector("#tblBody tbody");bBody.innerHTML="";bodies.forEach((b,i)=>{if(f && !(b.date.includes(f)||(b.note||'').toLowerCase().includes(f)))return;bBody.innerHTML+=`<tr><td>${b.date}</td><td>${safe(b.note)}</td><td class="actions"><button data-act="editB" data-i="${i}">编辑</button><button data-act="delB" data-i="${i}" class="ghost">删除</button></td></tr>`;});if(!bBody.innerHTML)bBody.innerHTML='<tr><td colspan=3 class=muted>无</td></tr>';
-let sBody=document.querySelector("#tblSex tbody");sBody.innerHTML="";sexes.forEach((s,i)=>{if(f&&!s.date.includes(f))return;sBody.innerHTML+=`<tr><td>${s.date}</td><td class="actions"><button data-act="delS" data-i="${i}" class="ghost">删除</button></td></tr>`;});if(!sBody.innerHTML)sBody.innerHTML='<tr><td colspan=2 class=muted>无</td></tr>';}
-document.addEventListener("click",(e)=>{let btn=e.target.closest("button[data-act]");if(!btn)return;let act=btn.dataset.act,i=+btn.dataset.i;if(act==="delP"){if(confirm("删除姨妈？")){periods.splice(i,1);saveData();renderAll();}}if(act==="editP"){let ns=prompt("新开始",periods[i].start);if(!ns)return;let ne=prompt("新结束",periods[i].end);if(!ne)return;periods[i]={start:ns,end:ne,len:daysBetween(ns,ne)+1};saveData();renderAll();}if(act==="delB"){if(confirm("删除变化？")){bodies.splice(i,1);saveData();renderAll();}}if(act==="editB"){let nd=prompt("日期",bodies[i].date);if(!nd)return;let nn=prompt("备注",bodies[i].note);if(nn===null)return;bodies[i]={date:nd,note:nn};saveData();renderAll();}if(act==="delS"){if(confirm("删除关系？")){sexes.splice(i,1);saveData();renderAll();}}},{passive:true});
+function renderTables(f=''){f=f.trim().toLowerCase();
+  let pBody=document.querySelector("#tblPeriod tbody");pBody.innerHTML="";
+  periods.forEach((p,i)=>{if(f && !(p.start.includes(f)||p.end.includes(f)))return;
+    let cyc=i>0?daysBetween(periods[i-1].start,p.start):"—";
+    pBody.innerHTML+=`<tr><td>${p.start}</td><td>${p.end}</td><td>${p.len}天</td><td>${cyc}</td><td class="actions"><button data-act="editP" data-i="${i}">编辑</button><button data-act="delP" data-i="${i}" class="ghost">删除</button></td></tr>`;
+  });
+  if(!pBody.innerHTML)pBody.innerHTML='<tr><td colspan=5 class=muted>无</td></tr>';
+
+  let bBody=document.querySelector("#tblBody tbody");bBody.innerHTML="";
+  bodies.forEach((b,i)=>{if(f && !(b.date.includes(f)||(b.note||'').toLowerCase().includes(f)))return;
+    bBody.innerHTML+=`<tr><td>${b.date}</td><td>${safe(b.note)}</td><td class="actions"><button data-act="editB" data-i="${i}">编辑</button><button data-act="delB" data-i="${i}" class="ghost">删除</button></td></tr>`;
+  });
+  if(!bBody.innerHTML)bBody.innerHTML='<tr><td colspan=3 class=muted>无</td></tr>';
+
+  let sBody=document.querySelector("#tblSex tbody");sBody.innerHTML="";
+  sexes.forEach((s,i)=>{if(f&&!s.date.includes(f))return;
+    sBody.innerHTML+=`<tr><td>${s.date}</td><td class="actions"><button data-act="delS" data-i="${i}" class="ghost">删除</button></td></tr>`;
+  });
+  if(!sBody.innerHTML)sBody.innerHTML='<tr><td colspan=2 class=muted>无</td></tr>';
+}
+
+document.addEventListener("click",(e)=>{
+  let btn=e.target.closest("button[data-act]");if(!btn)return;
+  let act=btn.dataset.act,i=+btn.dataset.i;
+  if(act==="delP"){if(confirm("删除姨妈？")){periods.splice(i,1);saveData();renderAll();}}
+  if(act==="editP"){let ns=prompt("新开始",periods[i].start);if(!ns)return;let ne=prompt("新结束",periods[i].end);if(!ne)return;periods[i]={start:ns,end:ne,len:daysBetween(ns,ne)+1};saveData();renderAll();}
+  if(act==="delB"){if(confirm("删除变化？")){bodies.splice(i,1);saveData();renderAll();}}
+  if(act==="editB"){let nd=prompt("日期",bodies[i].date);if(!nd)return;let nn=prompt("备注",bodies[i].note);if(nn===null)return;bodies[i]={date:nd,note:nn};saveData();renderAll();}
+  if(act==="delS"){if(confirm("删除关系？")){sexes.splice(i,1);saveData();renderAll();}}
+},{passive:true});
+
 /* ===== 添加功能 ===== */
 document.getElementById("btnAddPeriod").onclick=()=>{let s=document.getElementById("pStart").value,e=document.getElementById("pEnd").value;if(!s||!e)return alert("请填写");if(parse(e)<parse(s))return alert("结束不能早于开始");periods.push({start:s,end:e,len:daysBetween(s,e)+1});saveData();renderAll();};
 document.getElementById("btnQuickPeriod").onclick=()=>{let t=fmt(new Date());periods.push({start:t,end:t,len:1});saveData();renderAll();};
 document.getElementById("btnAddBody").onclick=()=>{let d=document.getElementById("bDate").value,n=document.getElementById("bNote").value;if(!d||!n)return alert("请完整");bodies.push({date:d,note:n});saveData();renderAll();};
 document.getElementById("btnAddSex").onclick=()=>{let d=document.getElementById("sDate").value;if(!d)return alert("请选择");sexes.push({date:d});saveData();renderAll();};
+
 /* ===== 导入导出清空 ===== */
 document.getElementById("btnImport").onclick=()=>document.getElementById("fileImport").click();
 document.getElementById("fileImport").addEventListener("change",(e)=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let obj=JSON.parse(r.result);if(obj.period)periods=obj.period;if(obj.body)bodies=obj.body;if(obj.sex)sexes=obj.sex;saveData();renderAll();toast("导入成功");}catch(err){alert("导入失败");}};r.readAsText(f);});
 document.getElementById("btnExport").onclick=()=>{let blob=new Blob([JSON.stringify({period:periods,body:bodies,sex:sexes},null,2)],{type:"application/json"});let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="tracker.json";a.click();toast("已导出");};
 document.getElementById("btnResetSamples").onclick=()=>{periods=[{start:"2025-08-03",end:"2025-08-07",len:5},{start:"2025-09-01",end:"2025-09-05",len:5}];bodies=[{date:"2025-09-03",note:"情绪低落"},{date:"2025-09-10",note:"皮肤出油"},{date:"2025-09-18",note:"乳房胀痛"}];sexes=[{date:"2025-09-10"},{date:"2025-09-18"}];saveData();renderAll();};
 document.getElementById("btnClearAll").onclick=()=>{if(confirm("清空所有数据？")){periods=[];bodies=[];sexes=[];saveData();renderAll();}};
+
 /* ===== 搜索过滤 ===== */
 document.getElementById("search").addEventListener("keydown",(e)=>{if(e.key==="Enter")renderTables(e.target.value);});
+
 /* ===== 月份切换 ===== */
 window.__viewDate=new Date();
 ["prevM","nextM","todayM"].forEach(id=>{document.getElementById(id).onclick=()=>{if(id==="prevM")window.__viewDate.setMonth(window.__viewDate.getMonth()-1);if(id==="nextM")window.__viewDate.setMonth(window.__viewDate.getMonth()+1);if(id==="todayM")window.__viewDate=new Date();renderCalendar();}});
-["fltM","fltF","fltO","fltL","fltSX","fltBN"].forEach(id=>document.getElementById(id).onchange=()=>renderCalendar());
+
+/* ===== 图例点击切换 ===== */
+document.getElementById("legendToggle").addEventListener("click", (e)=>{
+  let tag = e.target.closest(".tag");
+  if(!tag) return;
+  let type = tag.dataset.type;
+  if(!type) return;
+  visibleFlags[type] = !visibleFlags[type];
+  tag.style.opacity = visibleFlags[type] ? "1" : "0.3"; // 透明表示隐藏
+  renderCalendar();
+});
+
 /* ===== 渲染聚合 ===== */
 function renderAll(f=''){renderKPIs();renderCalendar();renderTables(f);}
 renderAll();
 </script>
+
 </body>
 </html>
