@@ -1,155 +1,196 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>周期日历｜莫兰迪版</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="format-detection" content="telephone=no, email=no, address=no"/>
+<title>周期日历</title>
 <style>
+:root{
+  --bg:#0b0d10;--card:#11151a;--muted:#8ea0b4;--text:#e9eef5;
+  --accent:#6ea8fe;--accent2:#ff99c8;--danger:#ff6b6b;--ok:#21c98a;
+  --border:#1b222b;--border-soft:#1f2a37;--shadow:0 10px 24px rgba(0,0,0,.3);
+}
+@media(prefers-color-scheme:light){
   :root{
-    --bg:#f5f6f7; --card:#fff; --muted:#6b7a8a; --text:#222;
-    --accent:#8ea7c2; --accent2:#b0c7a8;
-    --danger:#d88c8c; --ok:#21c98a;
-    --border:#e0e0e0; --shadow:0 6px 20px rgba(0,0,0,.08);
+    --bg:#f5f7fa;--card:#fff;--muted:#6b7a8a;--text:#10131a;
+    --accent:#4c83ff;--accent2:#ff7fb5;--danger:#ff5f74;--ok:#1fb47c;
+    --border:#e6eaf0;--border-soft:#e9eef5;--shadow:0 8px 20px rgba(0,0,0,.06);
   }
-  body{margin:0;background:var(--bg);color:var(--text);
-       font:14px/1.4 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;}
-  .wrap{max-width:1100px;margin:0 auto;padding:16px}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);margin-bottom:16px}
-  .section-head{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;font-weight:700;border-bottom:1px solid var(--border)}
-  .inner{padding:14px}
-  .row{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
-  label{font-size:13px;font-weight:600}
-  input,textarea{width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font-size:13px}
-  button{cursor:pointer;padding:8px 12px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;font-weight:600;font-size:13px}
-  button.ghost{background:transparent;color:var(--accent)}
-
-  /* 日历 */
-  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:8px}
-  .cell{border:1px solid var(--border);border-radius:8px;aspect-ratio:1/1;padding:4px;font-size:11px;position:relative;overflow:hidden;display:flex;flex-direction:column}
-  .cell.today{border:2px solid var(--accent)}
-  .cell .d{font-weight:700;margin-bottom:2px}
-  .tags{display:flex;flex-direction:column;gap:2px;font-size:10px;line-height:1.2}
-  .tag{border-radius:4px;padding:0 2px;white-space:nowrap}
-
-  /* 状态颜色（莫兰迪风） */
-  .tag.m {background:#d88c8c20;color:#d88c8c}
-  .tag.f {background:#b0c7a820;color:#556b2f}
-  .tag.o {background:#e6cfa820;color:#a67c00}
-  .tag.l {background:#c3a6b120;color:#734d5c}
-  .tag.sx{color:#b98ca0;font-size:12px}
-  .tag.bn{color:#a8b9c7;font-size:12px;cursor:pointer;text-decoration:underline}
-
-  /* 弹窗 */
-  .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);justify-content:center;align-items:center;z-index:999}
-  .modal-content{background:#fff;padding:20px;border-radius:12px;max-width:300px;font-size:13px;line-height:1.5}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100svh;background:var(--bg);color:var(--text);
+  font:12px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+.wrap{max-width:1100px;margin:0 auto;padding:12px}
+.topbar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.brand{font-weight:800;color:var(--accent);font-size:14px}
+.grid{display:grid;gap:12px;grid-template-columns:380px 1fr}
+@media(max-width:980px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.section-head{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px}
+.section-head h2{margin:0;font-size:13px;color:var(--accent)}
+.inner{padding:12px}
+label{display:block;margin:6px 0 4px;font-size:12px;font-weight:600}
+input,textarea,select{width:100%;padding:8px;border:1px solid var(--border-soft);border-radius:8px;background:#0c1116;color:var(--text);font-size:12px}
+textarea{resize:vertical;min-height:48px}
+button{cursor:pointer;padding:8px 12px;font-size:12px;border-radius:8px;font-weight:600}
+button{border:1px solid var(--accent);background:linear-gradient(90deg,var(--accent),#8fd0ff);color:#00132b}
+button.ghost{background:transparent;color:var(--accent)}
+button.min{padding:4px 8px;font-size:11px}
+.muted{color:var(--muted)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cell{aspect-ratio:1/1;border:1px solid var(--border);border-radius:6px;padding:2px;position:relative;font-size:10px}
+.cell.today{outline:2px solid var(--accent)}
+.cell .d{position:absolute;top:2px;right:4px;font-size:11px;color:var(--muted)}
+.badges{position:absolute;left:4px;bottom:4px;display:flex;gap:4px;font-size:12px}
+.badges span{font-size:12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;font-size:11px}
+.legend .tag{display:flex;align-items:center;gap:4px;padding:4px 6px;border-radius:999px;border:1px solid var(--border)}
+.kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.kpi .item{padding:8px;border:1px solid var(--border);border-radius:8px}
+.kpi .item b{color:var(--accent);font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th,td{padding:6px 4px;border-bottom:1px solid var(--border)}
+th{color:var(--muted);font-weight:700;background:var(--card);position:sticky;top:0}
+td.actions{white-space:nowrap}
+.toast{position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--card);border:1px solid var(--border);padding:6px 8px;border-radius:8px;display:none;font-size:12px}
 </style>
 </head>
 <body>
 <div class="wrap">
-
-  <!-- 记录中心 -->
-  <section class="card">
-    <div class="section-head">记录中心</div>
-    <div class="inner">
-      <div class="row">
-        <div><label>开始</label><input id="pStart" type="date"></div>
-        <div><label>结束</label><input id="pEnd" type="date"></div>
+  <div class="topbar">
+    <div class="brand">周期日历</div>
+  </div>
+  <div class="grid">
+    <!-- 左侧：表单 -->
+    <section class="card">
+      <div class="section-head"><h2>记录中心</h2></div>
+      <div class="inner">
+        <label>姨妈</label>
+        <input id="pStart" type="date"><input id="pEnd" type="date" style="margin-top:4px">
+        <button id="btnAddPeriod" style="margin-top:6px">添加姨妈</button>
+        <button id="btnQuickPeriod" class="ghost min">今天</button>
+        <label style="margin-top:6px">身体变化</label>
+        <input id="bDate" type="date"><textarea id="bNote"></textarea>
+        <button id="btnAddBody" style="margin-top:6px">添加变化</button>
+        <label style="margin-top:6px">关系</label>
+        <input id="sDate" type="date">
+        <button id="btnAddSex" style="margin-top:6px">添加关系</button>
       </div>
-      <div class="row">
-        <button id="btnAddPeriod">添加姨妈记录</button>
-        <button class="ghost" id="btnQuickPeriod">只点今天</button>
+      <div class="section-head"><h2>统计与数据</h2></div>
+      <div class="inner">
+        <div class="kpi">
+          <div class="item"><div class="muted">记录周期数</div><b id="kCycles">0</b></div>
+          <div class="item"><div class="muted">平均周期</div><b id="kAvg">—</b></div>
+          <div class="item"><div class="muted">下次月经</div><b id="kNext">—</b></div>
+          <div class="item"><div class="muted">易孕期</div><b id="kFertile">—</b></div>
+        </div>
+        <div style="margin-top:6px">
+          <button id="btnExport" class="ghost min">导出</button>
+          <input type="file" id="fileImport" accept="application/json" style="display:none"/>
+          <button id="btnImport" class="ghost min">导入</button>
+          <button id="btnResetSamples" class="ghost min">恢复示例</button>
+          <button id="btnClearAll" class="ghost min">清空</button>
+        </div>
       </div>
-      <div class="row">
-        <div><label>日期</label><input id="bDate" type="date"></div>
-        <textarea id="bNote" placeholder="身体变化备注"></textarea>
-        <button id="btnAddBody">添加身体变化</button>
+    </section>
+    <!-- 右侧：日历 + 历史 -->
+    <section class="card cal">
+      <div class="section-head"><h2 id="calTitle">日历</h2>
+        <div><button id="prevM" class="ghost min">上月</button><button id="todayM" class="ghost min">今天</button><button id="nextM" class="ghost min">下月</button></div>
       </div>
-      <div class="row">
-        <div><label>日期</label><input id="sDate" type="date"></div>
-        <button id="btnAddSex">添加关系日期</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- 统计 -->
-  <section class="card">
-    <div class="section-head">统计与数据</div>
-    <div class="inner">
-      <div>记录周期数：<b id="kCycles">0</b></div>
-      <div>平均周期：<b id="kAvg">—</b></div>
-      <div>下次月经预计：<b id="kNext">—</b></div>
-      <div>易孕窗口：<b id="kFertile">—</b></div>
-      <div class="row">
-        <button class="ghost" id="btnExport">导出</button>
-        <button class="ghost" id="btnImport">导入</button>
-        <button class="ghost" id="btnResetSamples">恢复示例</button>
-        <button class="ghost" id="btnClearAll">清空</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- 日历 -->
-  <section class="card">
-    <div class="section-head">日历</div>
-    <div class="inner">
-      <div class="cal-grid" id="dow"></div>
-      <div class="cal-grid" id="cal"></div>
-    </div>
-  </section>
+      <div class="inner">
+        <div class="cal-grid" id="dow"></div>
+        <div class="cal-grid" id="cal"></div>
+     <div class="legend muted">
+  <span class="tag" style="background:#d8a7a7;color:#fff;">经</span>
+  <span class="tag" style="background:#c8d8b7;color:#333;">孕</span>
+  <span class="tag" style="background:#b7cdd8;color:#333;">排</span>
+  <span class="tag" style="background:#d7c2b7;color:#333;">黄</span>
+  <span class="tag" style="color:#b98ca0;">💗</span>
+  <span class="tag" style="color:#a8b9c7;">ℹ️</span>
 </div>
 
-<!-- 弹窗 -->
-<div id="modal" class="modal"><div class="modal-content" id="modalContent"></div></div>
-
+        <div style="margin-top:6px">
+          <label><input type="checkbox" id="fltM" checked>姨妈</label>
+          <label><input type="checkbox" id="fltF" checked>易孕</label>
+          <label><input type="checkbox" id="fltO" checked>排卵</label>
+          <label><input type="checkbox" id="fltL" checked>黄体</label>
+          <label><input type="checkbox" id="fltSX" checked>关系</label>
+          <label><input type="checkbox" id="fltBN" checked>变化</label>
+        </div>
+      </div>
+      <div class="section-head"><h2>历史与编辑</h2></div>
+      <div class="inner">
+        <input id="search" placeholder="搜索备注或日期">
+        <h3>姨妈历史</h3><table id="tblPeriod"><thead><tr><th>开始</th><th>结束</th><th>经期</th><th>周期</th><th class="actions">操作</th></tr></thead><tbody></tbody></table>
+        <h3>身体变化</h3><table id="tblBody"><thead><tr><th>日期</th><th>备注</th><th class="actions">操作</th></tr></thead><tbody></tbody></table>
+        <h3>关系历史</h3><table id="tblSex"><thead><tr><th>日期</th><th class="actions">操作</th></tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
 <script>
-const KEY_PERIOD='periodData_v2',KEY_BODY='bodyNotes_v2',KEY_SEX='sexData_v2';
-const fmtLocal=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-const parse=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d,12,0,0,0)};
-const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+/* ===== 数据存储 ===== */
+let periods=JSON.parse(localStorage.getItem("period")||"[]");
+let bodies=JSON.parse(localStorage.getItem("body")||"[]");
+let sexes=JSON.parse(localStorage.getItem("sex")||"[]");
+function saveData(){localStorage.setItem("period",JSON.stringify(periods));localStorage.setItem("body",JSON.stringify(bodies));localStorage.setItem("sex",JSON.stringify(sexes));}
+function toast(m){let t=document.getElementById("toast");t.textContent=m;t.style.display="block";clearTimeout(t._h);t._h=setTimeout(()=>t.style.display="none",1500);}
+const fmt=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const parse=s=>{let [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d,12);};
+const add=(d,n)=>{let x=new Date(d);x.setDate(x.getDate()+n);return x;}
 const daysBetween=(a,b)=>Math.round((parse(b)-parse(a))/86400000);
-
-function getPeriod(){return JSON.parse(localStorage.getItem(KEY_PERIOD)||'[]')}
-function setPeriod(v){localStorage.setItem(KEY_PERIOD,JSON.stringify(v))}
-function getBody(){return JSON.parse(localStorage.getItem(KEY_BODY)||'[]')}
-function setBody(v){localStorage.setItem(KEY_BODY,JSON.stringify(v))}
-function getSex(){return JSON.parse(localStorage.getItem(KEY_SEX)||'[]')}
-function setSex(v){localStorage.setItem(KEY_SEX,JSON.stringify(v))}
-
-// 示例数据
-const SAMPLE={period:[{start:'2025-08-03',end:'2025-08-07',periodLen:5},{start:'2025-09-01',end:'2025-09-05',periodLen:5}],body:[{date:'2025-09-03',note:'轻微腹痛，情绪低落'},{date:'2025-09-10',note:'皮肤出油，长痘'}],sex:['2025-09-10']};
-if(!localStorage.getItem(KEY_PERIOD)&&!localStorage.getItem(KEY_BODY)){setPeriod(SAMPLE.period);setBody(SAMPLE.body);setSex(SAMPLE.sex)}
-
-function getCycleLengths(){const arr=[...getPeriod()].sort((a,b)=>a.start.localeCompare(b.start));const res=[];for(let i=1;i<arr.length;i++){res.push(daysBetween(arr[i-1].start,arr[i].start))}return res}
-function avg(arr){return arr.length?Math.round(arr.reduce((a,b)=>a+b,0)/arr.length):null}
-function getAvgCycle(){return avg(getCycleLengths())}
-function getLastPeriod(){const arr=[...getPeriod()].sort((a,b)=>a.start.localeCompare(b.start));return arr.length?arr[arr.length-1]:null}
-function getPredictions(){const last=getLastPeriod();if(!last)return{next:null,fertile:null,windows:[]};const avgC=getAvgCycle()||28;const pLen=last.periodLen||daysBetween(last.start,last.end)+1||5;const nextStart=addDays(parse(last.start),avgC);const ovu=addDays(nextStart,-14);const fertile=[addDays(ovu,-5),addDays(ovu,1)];const windows=[];const records=[...getPeriod().map(r=>({start:parse(r.start),end:parse(r.end),pLen:r.periodLen||5}))];records.push({start:parse(fmtLocal(nextStart)),end:addDays(parse(fmtLocal(nextStart)),pLen-1),pLen});for(let cur of records){windows.push({from:cur.start,to:cur.end,type:'m'});windows.push({from:addDays(cur.start,avgC-14-5),to:addDays(cur.start,avgC-14+1),type:'f'});windows.push({from:addDays(cur.start,avgC-14),to:addDays(cur.start,avgC-14),type:'o'});windows.push({from:addDays(cur.start,avgC-14+2),to:addDays(cur.start,avgC-1),type:'l'})}return{next:nextStart,fertile,windows}}
-
-function renderCalendar(){const cal=document.getElementById('cal');cal.innerHTML='';const view=new Date();const cur=new Date(view.getFullYear(),view.getMonth(),1,12);const year=cur.getFullYear(),month=cur.getMonth();const startIdx=(cur.getDay()+6)%7;const daysInMonth=new Date(year,month+1,0).getDate();const today=fmtLocal(new Date());const {windows}=getPredictions();const bodyMap=new Map();getBody().forEach(it=>{bodyMap.set(it.date,(bodyMap.get(it.date)||[]).concat(it.note))});const sexSet=new Set(getSex());
-for(let i=0;i<startIdx;i++){cal.appendChild(document.createElement('div'))}
-for(let d=1;d<=daysInMonth;d++){const cell=document.createElement('div');cell.className='cell';const dd=new Date(year,month,d,12);const dstr=fmtLocal(dd);if(dstr===today)cell.classList.add('today');const num=document.createElement('div');num.className='d';num.textContent=d;cell.appendChild(num);const tags=document.createElement('div');tags.className='tags';for(const w of windows){if(dd>=w.from&&dd<=w.to){let name='';let cls='';if(w.type==='m'){name='月经期';cls='m'}if(w.type==='f'){name='易孕期';cls='f'}if(w.type==='o'){name='排卵日';cls='o'}if(w.type==='l'){name='黄体期';cls='l'}const span=document.createElement('span');span.className='tag '+cls;span.textContent=name;tags.appendChild(span)}}if(sexSet.has(dstr)){const span=document.createElement('span');span.className='tag sx';span.textContent='💗';tags.appendChild(span)}if(bodyMap.has(dstr)){const span=document.createElement('span');span.className='tag bn';span.textContent='ℹ️';span.onclick=()=>showModal(dstr,bodyMap.get(dstr));tags.appendChild(span)}cell.appendChild(tags);cal.appendChild(cell)}}
-
-function renderKPIs(){document.getElementById('kCycles').textContent=getCycleLengths().length;document.getElementById('kAvg').textContent=getAvgCycle()?(getAvgCycle()+'天'):'—';const p=getPredictions();document.getElementById('kNext').textContent=p.next?fmtLocal(p.next):'—';document.getElementById('kFertile').textContent=p.fertile?`${fmtLocal(p.fertile[0])} ~ ${fmtLocal(p.fertile[1])}`:'—'}
-
-function renderAll(){renderCalendar();renderKPIs()}
-
-// 弹窗
-function showModal(date,notes){const m=document.getElementById('modal');const mc=document.getElementById('modalContent');mc.innerHTML=`<b>${date}</b><ul>`+notes.map(n=>`<li>${n}</li>`).join('')+`</ul>`;m.style.display='flex'}
-document.getElementById('modal').onclick=()=>{document.getElementById('modal').style.display='none'}
-
-// 添加数据
-document.getElementById('btnAddPeriod').onclick=()=>{const s=document.getElementById('pStart').value,e=document.getElementById('pEnd').value;if(!s||!e)return alert('请填写');if(parse(e)<parse(s))return alert('结束不能早于开始');const arr=getPeriod();arr.push({start:s,end:e,periodLen:daysBetween(s,e)+1});setPeriod(arr);renderAll()};
-document.getElementById('btnQuickPeriod').onclick=()=>{const t=fmtLocal(new Date());const arr=getPeriod();arr.push({start:t,end:t,periodLen:1});setPeriod(arr);renderAll()};
-document.getElementById('btnAddBody').onclick=()=>{const d=document.getElementById('bDate').value,n=document.getElementById('bNote').value.trim();if(!d||!n)return alert('请填写');const arr=getBody();arr.push({date:d,note:n});setBody(arr);renderAll()};
-document.getElementById('btnAddSex').onclick=()=>{const d=document.getElementById('sDate').value;if(!d)return alert('请选择日期');const s=new Set(getSex());s.add(d);setSex([...s]);renderAll()};
-
-// 导入导出
-document.getElementById('btnExport').onclick=()=>{const obj={period:getPeriod(),body:getBody(),sex:getSex()};const blob=new Blob([JSON.stringify(obj)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tracker.json';a.click()};
-document.getElementById('btnImport').onclick=()=>{const i=document.createElement('input');i.type='file';i.accept='application/json';i.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const data=JSON.parse(r.result);if(data.period)setPeriod(data.period);if(data.body)setBody(data.body);if(data.sex)setSex(data.sex);renderAll()}catch(err){alert('导入失败')}};r.readAsText(f)};i.click()};
-document.getElementById('btnResetSamples').onclick=()=>{setPeriod(SAMPLE.period);setBody(SAMPLE.body);setSex(SAMPLE.sex);renderAll()};
-document.getElementById('btnClearAll').onclick=()=>{if(confirm('清空全部?')){localStorage.clear();renderAll()}};
-
-// 渲染
+const safe=s=>(s||"").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+/* ===== KPI与预测 ===== */
+function getCycleLens(){let arr=[...periods].sort((a,b)=>a.start.localeCompare(b.start)),res=[];for(let i=1;i<arr.length;i++)res.push(daysBetween(arr[i-1].start,arr[i].start));return res;}
+function avg(a){return a.length?Math.round(a.reduce((x,y)=>x+y)/a.length):null;}
+function getAvgC(){return avg(getCycleLens())}
+function getPred(){let last=[...periods].sort((a,b)=>a.start.localeCompare(b.start)).at(-1);if(!last)return{windows:[]};let avgC=getAvgC()||28;let pLen=last.len||5;let next=add(parse(last.start),avgC);let ovu=add(next,-14);let wins=[{from:parse(last.start),to:parse(last.end),type:"经"}];wins.push({from:add(ovu,-5),to:add(ovu,1),type:"孕"});wins.push({from:ovu,to:ovu,type:"排"});wins.push({from:add(ovu,2),to:add(next,-1),type:"黄"});return{next,windows:wins};}
+function renderKPIs(){let cyc=getCycleLens();document.getElementById("kCycles").textContent=cyc.length;document.getElementById("kAvg").textContent=getAvgC()?getAvgC()+"天":"—";let pred=getPred();document.getElementById("kNext").textContent=pred.next?fmt(pred.next):"—";}
+/* ===== 日历渲染 ===== */
+function ensureDow(){let el=document.getElementById("dow");if(el.dataset.ok)return;["一","二","三","四","五","六","日"].forEach(d=>{let x=document.createElement("div");x.textContent=d;x.className="muted";x.style.textAlign="center";el.appendChild(x)});el.dataset.ok=1;}
+function renderCalendar(){ensureDow();let cal=document.getElementById("cal");cal.innerHTML="";let view=window.__viewDate||new Date(),cur=new Date(view);cur.setDate(1);let y=cur.getFullYear(),m=cur.getMonth();let start=(cur.getDay()+6)%7,days=new Date(y,m+1,0).getDate();let today=fmt(new Date());let pred=getPred().windows;let bodyMap=new Map();bodies.forEach(b=>bodyMap.set(b.date,(bodyMap.get(b.date)||0)+1));let sexSet=new Set(sexes.map(s=>s.date));
+for(let i=0;i<start;i++)cal.appendChild(document.createElement("div"));
+for(let d=1;d<=days;d++){let cell=document.createElement("div");cell.className="cell";let dd=new Date(y,m,d,12),ds=fmt(dd);if(ds===today)cell.classList.add("today");let num=document.createElement("div");num.className="d";num.textContent=d;cell.appendChild(num);
+let flags=pred.filter(w=>dd>=w.from&&dd<=w.to).map(w=>w.type);if(document.getElementById("fltM").checked && flags.includes("经"))
+  cell.innerHTML += "<div style='font-size:10px;background:#d8a7a7;color:#fff;padding:1px 3px;border-radius:4px;display:inline-block'>经</div>";
+if(document.getElementById("fltF").checked && flags.includes("孕"))
+  cell.innerHTML += "<div style='font-size:10px;background:#c8d8b7;color:#333;padding:1px 3px;border-radius:4px;display:inline-block'>孕</div>";
+if(document.getElementById("fltO").checked && flags.includes("排"))
+  cell.innerHTML += "<div style='font-size:10px;background:#b7cdd8;color:#333;padding:1px 3px;border-radius:4px;display:inline-block'>排</div>";
+if(document.getElementById("fltL").checked && flags.includes("黄"))
+  cell.innerHTML += "<div style='font-size:10px;background:#d7c2b7;color:#333;padding:1px 3px;border-radius:4px;display:inline-block'>黄</div>";
+let badges=document.createElement("div");badges.className="badges";if(document.getElementById("fltSX").checked&&sexSet.has(ds))badges.innerHTML+="<span style='color:#b98ca0'>💗</span>";if(document.getElementById("fltBN").checked&&bodyMap.has(ds))badges.innerHTML+="<span style='color:#a8b9c7'>ℹ️</span>";if(badges.innerHTML)cell.appendChild(badges);cal.appendChild(cell);}}
+/* ===== 历史表格 ===== */
+function renderTables(f=''){f=f.trim().toLowerCase();let pBody=document.querySelector("#tblPeriod tbody");pBody.innerHTML="";periods.forEach((p,i)=>{if(f && !(p.start.includes(f)||p.end.includes(f)))return;let cyc=i>0?daysBetween(periods[i-1].start,p.start):"—";pBody.innerHTML+=`<tr><td>${p.start}</td><td>${p.end}</td><td>${p.len}天</td><td>${cyc}</td><td class="actions"><button data-act="editP" data-i="${i}">编辑</button><button data-act="delP" data-i="${i}" class="ghost">删除</button></td></tr>`;});if(!pBody.innerHTML)pBody.innerHTML='<tr><td colspan=5 class=muted>无</td></tr>';
+let bBody=document.querySelector("#tblBody tbody");bBody.innerHTML="";bodies.forEach((b,i)=>{if(f && !(b.date.includes(f)||(b.note||'').toLowerCase().includes(f)))return;bBody.innerHTML+=`<tr><td>${b.date}</td><td>${safe(b.note)}</td><td class="actions"><button data-act="editB" data-i="${i}">编辑</button><button data-act="delB" data-i="${i}" class="ghost">删除</button></td></tr>`;});if(!bBody.innerHTML)bBody.innerHTML='<tr><td colspan=3 class=muted>无</td></tr>';
+let sBody=document.querySelector("#tblSex tbody");sBody.innerHTML="";sexes.forEach((s,i)=>{if(f&&!s.date.includes(f))return;sBody.innerHTML+=`<tr><td>${s.date}</td><td class="actions"><button data-act="delS" data-i="${i}" class="ghost">删除</button></td></tr>`;});if(!sBody.innerHTML)sBody.innerHTML='<tr><td colspan=2 class=muted>无</td></tr>';}
+document.addEventListener("click",(e)=>{let btn=e.target.closest("button[data-act]");if(!btn)return;let act=btn.dataset.act,i=+btn.dataset.i;if(act==="delP"){if(confirm("删除姨妈？")){periods.splice(i,1);saveData();renderAll();}}if(act==="editP"){let ns=prompt("新开始",periods[i].start);if(!ns)return;let ne=prompt("新结束",periods[i].end);if(!ne)return;periods[i]={start:ns,end:ne,len:daysBetween(ns,ne)+1};saveData();renderAll();}if(act==="delB"){if(confirm("删除变化？")){bodies.splice(i,1);saveData();renderAll();}}if(act==="editB"){let nd=prompt("日期",bodies[i].date);if(!nd)return;let nn=prompt("备注",bodies[i].note);if(nn===null)return;bodies[i]={date:nd,note:nn};saveData();renderAll();}if(act==="delS"){if(confirm("删除关系？")){sexes.splice(i,1);saveData();renderAll();}}},{passive:true});
+/* ===== 添加功能 ===== */
+document.getElementById("btnAddPeriod").onclick=()=>{let s=document.getElementById("pStart").value,e=document.getElementById("pEnd").value;if(!s||!e)return alert("请填写");if(parse(e)<parse(s))return alert("结束不能早于开始");periods.push({start:s,end:e,len:daysBetween(s,e)+1});saveData();renderAll();};
+document.getElementById("btnQuickPeriod").onclick=()=>{let t=fmt(new Date());periods.push({start:t,end:t,len:1});saveData();renderAll();};
+document.getElementById("btnAddBody").onclick=()=>{let d=document.getElementById("bDate").value,n=document.getElementById("bNote").value;if(!d||!n)return alert("请完整");bodies.push({date:d,note:n});saveData();renderAll();};
+document.getElementById("btnAddSex").onclick=()=>{let d=document.getElementById("sDate").value;if(!d)return alert("请选择");sexes.push({date:d});saveData();renderAll();};
+/* ===== 导入导出清空 ===== */
+document.getElementById("btnImport").onclick=()=>document.getElementById("fileImport").click();
+document.getElementById("fileImport").addEventListener("change",(e)=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let obj=JSON.parse(r.result);if(obj.period)periods=obj.period;if(obj.body)bodies=obj.body;if(obj.sex)sexes=obj.sex;saveData();renderAll();toast("导入成功");}catch(err){alert("导入失败");}};r.readAsText(f);});
+document.getElementById("btnExport").onclick=()=>{let blob=new Blob([JSON.stringify({period:periods,body:bodies,sex:sexes},null,2)],{type:"application/json"});let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="tracker.json";a.click();toast("已导出");};
+document.getElementById("btnResetSamples").onclick=()=>{periods=[{start:"2025-08-03",end:"2025-08-07",len:5},{start:"2025-09-01",end:"2025-09-05",len:5}];bodies=[{date:"2025-09-03",note:"情绪低落"},{date:"2025-09-10",note:"皮肤出油"},{date:"2025-09-18",note:"乳房胀痛"}];sexes=[{date:"2025-09-10"},{date:"2025-09-18"}];saveData();renderAll();};
+document.getElementById("btnClearAll").onclick=()=>{if(confirm("清空所有数据？")){periods=[];bodies=[];sexes=[];saveData();renderAll();}};
+/* ===== 搜索过滤 ===== */
+document.getElementById("search").addEventListener("keydown",(e)=>{if(e.key==="Enter")renderTables(e.target.value);});
+/* ===== 月份切换 ===== */
+window.__viewDate=new Date();
+["prevM","nextM","todayM"].forEach(id=>{document.getElementById(id).onclick=()=>{if(id==="prevM")window.__viewDate.setMonth(window.__viewDate.getMonth()-1);if(id==="nextM")window.__viewDate.setMonth(window.__viewDate.getMonth()+1);if(id==="todayM")window.__viewDate=new Date();renderCalendar();}});
+["fltM","fltF","fltO","fltL","fltSX","fltBN"].forEach(id=>document.getElementById(id).onchange=()=>renderCalendar());
+/* ===== 渲染聚合 ===== */
+function renderAll(f=''){renderKPIs();renderCalendar();renderTables(f);}
 renderAll();
 </script>
 </body>
