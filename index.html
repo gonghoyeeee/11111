@@ -1,267 +1,772 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
-<meta name="format-detection" content="telephone=no, email=no, address=no"/>
-<title>周期日历</title>
-<style>
-:root{
-  --bg:#0b0d10;--card:#11151a;--muted:#8ea0b4;--text:#e9eef5;
-  --accent:#6ea8fe;--accent2:#ff99c8;--danger:#ff6b6b;--ok:#21c98a;
-  --border:#1b222b;--border-soft:#1f2a37;--shadow:0 8px 20px rgba(0,0,0,.2);
-}
-@media(prefers-color-scheme:light){
-  :root{
-    --bg:#f5f7fa;--card:#fff;--muted:#6b7a8a;--text:#10131a;
-    --accent:#4c83ff;--accent2:#ff7fb5;--danger:#ff5f74;--ok:#1fb47c;
-    --border:#e6eaf0;--border-soft:#e9eef5;--shadow:0 6px 16px rgba(0,0,0,.08);
-  }
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;min-height:100svh;background:var(--bg);color:var(--text);
-  font:14px/1.5 -apple-system,system-ui,Segoe UI,Roboto,Helvetica,Arial;
-  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-}
-.wrap{max-width:1100px;margin:0 auto;padding:12px}
-.topbar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.brand{font-weight:800;color:var(--accent);font-size:16px}
-.grid{display:grid;gap:12px;grid-template-columns:380px 1fr}
-@media(max-width:768px){.grid{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
-.section-head{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px;flex-wrap:wrap}
-.section-head h2{margin:0;font-size:14px;color:var(--accent)}
-.inner{padding:12px}
-label{display:block;margin:6px 0 4px;font-size:12px;font-weight:600}
-input,textarea,select{width:100%;padding:8px;border:1px solid var(--border-soft);border-radius:8px;background:#0c1116;color:var(--text);font-size:13px}
-textarea{resize:vertical;min-height:48px}
-button{cursor:pointer;padding:8px 12px;font-size:13px;border-radius:8px;font-weight:600}
-button{border:1px solid var(--accent);background:linear-gradient(90deg,var(--accent),#8fd0ff);color:#00132b}
-button.ghost{background:transparent;color:var(--accent)}
-button.min{padding:4px 8px;font-size:12px}
-.muted{color:var(--muted)}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.cell{aspect-ratio:1/1;border:1px solid var(--border);border-radius:6px;padding:2px;position:relative;font-size:11px}
-.cell.today{outline:2px solid var(--accent)}
-.cell .d{position:absolute;top:2px;right:4px;font-size:11px;color:var(--muted)}
-.badges{position:absolute;left:4px;bottom:4px;display:flex;gap:4px;font-size:12px}
-.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;font-size:11px}
-.legend .tag{display:flex;align-items:center;gap:4px;padding:4px 6px;border-radius:999px;border:1px solid var(--border);cursor:pointer}
-.kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.kpi .item{padding:8px;border:1px solid var(--border);border-radius:8px}
-.kpi .item b{color:var(--accent);font-size:13px}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th,td{padding:6px 4px;border-bottom:1px solid var(--border)}
-th{color:var(--muted);font-weight:700;background:var(--card);position:sticky;top:0}
-td.actions{white-space:nowrap}
-.toast{position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--card);border:1px solid var(--border);padding:6px 8px;border-radius:8px;display:none;font-size:12px}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KYC / KYB Verification Prototype</title>
+  <style>
+    :root {
+      --bg: #f6f8fc;
+      --card: #ffffff;
+      --text: #132238;
+      --muted: #5f708a;
+      --line: #dbe3ef;
+      --primary: #1f5eff;
+      --primary-strong: #174de0;
+      --ok: #1d9f5a;
+      --warn: #b45309;
+      --danger: #dc2626;
+      --shadow: 0 8px 24px rgba(15, 30, 60, 0.08);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .page {
+      max-width: 980px;
+      margin: 36px auto;
+      padding: 0 20px;
+    }
+
+    .progress {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .progress-step {
+      background: #eaf0ff;
+      color: #4e5f77;
+      border-radius: 999px;
+      border: 1px solid #d6e1ff;
+      text-align: center;
+      padding: 8px 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .progress-step.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid #ecf1f8;
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 22px 28px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .card-header h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .card-header p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .card-body {
+      padding: 22px 28px 18px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .field,
+    .full {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #21334e;
+    }
+
+    .required::after {
+      content: " *";
+      color: var(--danger);
+    }
+
+    input,
+    select,
+    textarea {
+      border: 1px solid #ced8e7;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+      width: 100%;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(31, 94, 255, 0.12);
+    }
+
+    .error {
+      font-size: 12px;
+      color: var(--danger);
+      display: none;
+    }
+
+    .field.invalid .error,
+    .full.invalid .error {
+      display: block;
+    }
+
+    .field.invalid input,
+    .field.invalid select,
+    .full.invalid input,
+    .full.invalid textarea,
+    .full.invalid select {
+      border-color: var(--danger);
+    }
+
+    .account-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .option-card {
+      border: 1px solid #cfdaec;
+      border-radius: 12px;
+      padding: 18px;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+
+    .option-card:hover { border-color: #9eb7ff; }
+
+    .option-card.selected {
+      border-color: var(--primary);
+      background: #f1f5ff;
+      box-shadow: inset 0 0 0 1px var(--primary);
+    }
+
+    .option-card h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+    }
+
+    .option-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .section-title {
+      margin: 16px 0 10px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .mini-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      background: #fcfdff;
+    }
+
+    .status-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .status-item {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ok { color: var(--ok); font-weight: 700; }
+    .pending { color: #0f4db6; font-weight: 700; }
+    .high-risk {
+      margin-top: 14px;
+      padding: 12px;
+      border: 1px solid #ffd8b4;
+      border-radius: 10px;
+      background: #fff7ed;
+      color: var(--warn);
+      display: none;
+      font-weight: 600;
+    }
+
+    .checkbox-wrap {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: #26374d;
+    }
+
+    .checkbox-wrap input {
+      margin-top: 3px;
+      width: 16px;
+      height: 16px;
+    }
+
+    .actions {
+      padding: 16px 28px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--line);
+    }
+
+    .btn-group {
+      margin-left: auto;
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: #253853;
+      border-color: #cdd8ea;
+    }
+
+    .btn-secondary:hover { background: #f8fbff; }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: var(--primary-strong); }
+
+    .btn-inline {
+      background: #eaf0ff;
+      color: #1a4cd7;
+      border: 1px solid #c7d8ff;
+      padding: 8px 12px;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    .summary-box {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fbfdff;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .summary-box h4 {
+      margin: 0 0 8px;
+      font-size: 15px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 6px 12px;
+      font-size: 14px;
+    }
+
+    .summary-grid b { color: #2a3e5f; }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 860px) {
+      .progress { grid-template-columns: 1fr; }
+      .grid-2, .account-options { grid-template-columns: 1fr; }
+      .actions { flex-wrap: wrap; gap: 10px; }
+      .btn-group { margin-left: 0; width: 100%; justify-content: flex-end; }
+      .summary-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="topbar">
-    <div class="brand">周期日历</div>
-  </div>
-  <div class="grid">
-    <!-- 左侧：表单 -->
-    <section class="card">
-      <div class="section-head"><h2>记录中心</h2></div>
-      <div class="inner">
-        <label>姨妈</label>
-        <input id="pStart" type="date"><input id="pEnd" type="date" style="margin-top:4px">
-        <button id="btnAddPeriod" style="margin-top:6px">添加姨妈</button>
-        <button id="btnQuickPeriod" class="ghost min">今天</button>
-        <label style="margin-top:6px">身体变化</label>
-        <input id="bDate" type="date"><textarea id="bNote"></textarea>
-        <button id="btnAddBody" style="margin-top:6px">添加变化</button>
-        <label style="margin-top:6px">关系</label>
-        <input id="sDate" type="date">
-        <button id="btnAddSex" style="margin-top:6px">添加关系</button>
-      </div>
-      <div class="section-head"><h2>统计与数据</h2></div>
-      <div class="inner">
-        <div class="kpi">
-          <div class="item"><div class="muted">记录周期数</div><b id="kCycles">0</b></div>
-          <div class="item"><div class="muted">平均周期</div><b id="kAvg">—</b></div>
-          <div class="item"><div class="muted">下次月经</div><b id="kNext">—</b></div>
-          <div class="item"><div class="muted">易孕期</div><b id="kFertile">—</b></div>
-        </div>
-        <div style="margin-top:6px">
-          <button id="btnExport" class="ghost min">导出</button>
-          <input type="file" id="fileImport" accept="application/json" style="display:none"/>
-          <button id="btnImport" class="ghost min">导入</button>
-          <button id="btnResetSamples" class="ghost min">恢复示例</button>
-          <button id="btnClearAll" class="ghost min">清空</button>
-        </div>
-      </div>
-    </section>
-    <!-- 右侧：日历 + 历史 -->
-    <section class="card cal">
-      <div class="section-head"><h2 id="calTitle">日历</h2>
-        <div><button id="prevM" class="ghost min">上月</button><button id="todayM" class="ghost min">今天</button><button id="nextM" class="ghost min">下月</button></div>
-      </div>
-      <div class="inner">
-        <div class="cal-grid" id="dow"></div>
-        <div class="cal-grid" id="cal"></div>
-        <div class="legend muted" id="legendToggle">
-          <span class="tag" data-type="M" style="background:#f28b82;color:#fff;">经</span>
-          <span class="tag" data-type="F" style="background:#81c995;color:#fff;">孕</span>
-          <span class="tag" data-type="O" style="background:#a1cfff;color:#fff;">排</span>
-          <span class="tag" data-type="L" style="background:#fbc34a;color:#fff;">黄</span>
-          <span class="tag" data-type="SX">💗</span>
-          <span class="tag" data-type="BN">ℹ️</span>
-        </div>
-      </div>
-      <div class="section-head"><h2>历史与编辑</h2></div>
-      <div class="inner">
-        <input id="search" placeholder="搜索备注或日期">
-        <h3>姨妈历史</h3>
-        <table id="tblPeriod"><thead><tr><th>开始</th><th>结束</th><th>经期</th><th>周期</th><th class="actions">操作</th></tr></thead><tbody></tbody></table>
-        <button id="togglePeriod" class="ghost min">展开更多</button>
-        <h3>身体变化</h3>
-        <table id="tblBody"><thead><tr><th>日期</th><th>备注</th><th class="actions">操作</th></tr></thead><tbody></tbody></table>
-        <button id="toggleBody" class="ghost min">展开更多</button>
-        <h3>关系历史</h3>
-        <table id="tblSex"><thead><tr><th>日期</th><th class="actions">操作</th></tr></thead><tbody></tbody></table>
-        <button id="toggleSex" class="ghost min">展开更多</button>
-      </div>
-    </section>
-  </div>
-</div>
-<div id="toast" class="toast"></div>
-<script>
-/* ===== 数据存储 ===== */
-let periods=JSON.parse(localStorage.getItem("period")||"[]");
-let bodies=JSON.parse(localStorage.getItem("body")||"[]");
-let sexes=JSON.parse(localStorage.getItem("sex")||"[]");
-function saveData(){localStorage.setItem("period",JSON.stringify(periods));localStorage.setItem("body",JSON.stringify(bodies));localStorage.setItem("sex",JSON.stringify(sexes));}
-function toast(m){let t=document.getElementById("toast");t.textContent=m;t.style.display="block";clearTimeout(t._h);t._h=setTimeout(()=>t.style.display="none",1500);}
-const fmt=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-const parse=s=>{let [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d,12);};
-const add=(d,n)=>{let x=new Date(d);x.setDate(x.getDate()+n);return x;}
-const daysBetween=(a,b)=>Math.round((parse(b)-parse(a))/86400000);
-const safe=s=>(s||"").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  <div class="page">
+    <div class="progress" id="progressBar"></div>
 
-/* ===== KPI与预测 ===== */
-function getCycleLens(){let arr=[...periods].sort((a,b)=>a.start.localeCompare(b.start)),res=[];for(let i=1;i<arr.length;i++)res.push(daysBetween(arr[i-1].start,arr[i].start));return res;}
-function avg(a){return a.length?Math.round(a.reduce((x,y)=>x+y)/a.length):null;}
-function getAvgC(){return avg(getCycleLens())}
-function getPred(){let last=[...periods].sort((a,b)=>a.start.localeCompare(b.start)).at(-1);if(!last)return{windows:[]};let avgC=getAvgC()||28;let pLen=last.len||5;let next=add(parse(last.start),avgC);let ovu=add(next,-14);let wins=[{from:parse(last.start),to:parse(last.end),type:"经"}];wins.push({from:add(ovu,-5),to:add(ovu,1),type:"孕"});wins.push({from:ovu,to:ovu,type:"排"});wins.push({from:add(ovu,2),to:add(next,-1),type:"黄"});return{next,windows:wins};}
-function renderKPIs(){let cyc=getCycleLens();document.getElementById("kCycles").textContent=cyc.length;document.getElementById("kAvg").textContent=getAvgC()?getAvgC()+"天":"—";let pred=getPred();document.getElementById("kNext").textContent=pred.next?fmt(pred.next):"—";}
+    <div class="card">
+      <div class="card-header">
+        <h1 id="stepTitle">Step 1 - Select Account Type</h1>
+        <p id="stepDesc">Choose your onboarding flow: KYC for individuals or KYB for businesses.</p>
+      </div>
 
-/* ===== 日历渲染 ===== */
-let visibleFlags={M:true,F:true,O:true,L:true,SX:true,BN:true};
-function ensureDow(){let el=document.getElementById("dow");if(el.dataset.ok)return;["一","二","三","四","五","六","日"].forEach(d=>{let x=document.createElement("div");x.textContent=d;x.className="muted";x.style.textAlign="center";el.appendChild(x)});el.dataset.ok=1;}
-function renderCalendar(){
-  ensureDow();
-  let cal=document.getElementById("cal");cal.innerHTML="";
-  let view=window.__viewDate||new Date(),cur=new Date(view);cur.setDate(1);
-  let y=cur.getFullYear(),m=cur.getMonth();
-  document.getElementById("calTitle").textContent=y+"年"+(m+1)+"月";
-  let start=(cur.getDay()+6)%7,days=new Date(y,m+1,0).getDate();
-  let today=fmt(new Date());
-  let pred=getPred().windows;
-  let bodyMap=new Map();bodies.forEach(b=>bodyMap.set(b.date,(bodyMap.get(b.date)||0)+1));
-  let sexSet=new Set(sexes.map(s=>s.date));
-  for(let i=0;i<start;i++)cal.appendChild(document.createElement("div"));
-  for(let d=1;d<=days;d++){
-    let cell=document.createElement("div");cell.className="cell";
-    let dd=new Date(y,m,d,12),ds=fmt(dd);
-    if(ds===today)cell.classList.add("today");
-    let num=document.createElement("div");num.className="d";num.textContent=d;cell.appendChild(num);
-    // 历史周期
-    periods.forEach(p=>{
-      if(parse(ds)>=parse(p.start)&&parse(ds)<=parse(p.end)){
-        if(visibleFlags.M)cell.innerHTML+="<div style='font-size:10px;background:#f28b82;color:#fff;padding:1px 3px;border-radius:4px;display:inline-block'>经</div>";
+      <div class="card-body">
+        <section id="step1" class="step-view">
+          <div class="account-options">
+            <div class="option-card" data-account="individual">
+              <h3>Individual</h3>
+              <p>Personal KYC verification including identity document and compliance declaration.</p>
+            </div>
+            <div class="option-card" data-account="business">
+              <h3>Business</h3>
+              <p>Corporate KYB verification including ABN/ASIC checks, directors and beneficial owners.</p>
+            </div>
+          </div>
+          <p class="error" id="accountError" style="margin-top: 10px;">Please select an account type.</p>
+        </section>
+
+        <section id="step2-individual" class="step-view hidden">
+          <div class="grid-2" id="kycStep2Form">
+            <div class="field" data-required="true"><label class="required">Full Name</label><input name="fullName" /><span class="error">Required field</span></div>
+            <div class="field" data-required="true"><label class="required">Date of Birth</label><input type="date" name="dob" /><span class="error">Required field</span></div>
+            <div class="field" data-required="true"><label class="required">Nationality</label><input name="nationality" /><span class="error">Required field</span></div>
+            <div class="field" data-required="true"><label class="required">Email</label><input type="email" name="email" /><span class="error">Required field</span></div>
+            <div class="field" data-required="true"><label class="required">Residential Address</label><input name="address" /><span class="error">Required field</span></div>
+            <div class="field" data-required="true"><label class="required">Phone Number</label><input name="phone" /><span class="error">Required field</span></div>
+          </div>
+        </section>
+
+        <section id="step3-individual" class="step-view hidden">
+          <div class="grid-2" id="kycStep3Form">
+            <div class="field" data-required="true">
+              <label class="required">ID Type</label>
+              <select name="idType">
+                <option value="">Select ID Type</option>
+                <option>Passport</option>
+                <option>Driver Licence</option>
+              </select>
+              <span class="error">Required field</span>
+            </div>
+            <div class="field" data-required="true"><label class="required">ID Number</label><input name="idNumber" /><span class="error">Required field</span></div>
+            <div class="field" data-required="true"><label class="required">Country of Issue</label><input name="issueCountry" /><span class="error">Required field</span></div>
+            <div class="field" data-required="true"><label class="required">Upload ID Document</label><input type="file" name="idDoc" /><span class="error">Please upload a document</span></div>
+          </div>
+          <p style="margin-top: 12px; color: #42566f;">平台将进行电子身份验证（100-point ID check）。</p>
+        </section>
+
+        <section id="step4-individual" class="step-view hidden">
+          <label class="checkbox-wrap"><input type="checkbox" id="kycConfirm1" />I confirm that I am not acting on behalf of another person</label>
+          <label class="checkbox-wrap"><input type="checkbox" id="kycConfirm2" />I confirm the information provided is true and correct</label>
+          <p class="error" id="kycCheckError">Please complete both confirmations.</p>
+
+          <div class="status-list">
+            <div class="status-item"><span>Sanction List Check</span><span class="pending">✔ Pending Verification</span></div>
+            <div class="status-item"><span>PEP Check</span><span class="pending">✔ Pending Verification</span></div>
+          </div>
+        </section>
+
+        <section id="step5-individual" class="step-view hidden">
+          <div class="summary-box">
+            <h4>Personal Details</h4>
+            <div class="summary-grid" id="kycPersonalSummary"></div>
+          </div>
+          <div class="summary-box">
+            <h4>Identity Information</h4>
+            <div class="summary-grid" id="kycIdentitySummary"></div>
+          </div>
+        </section>
+
+        <section id="step2-business" class="step-view hidden">
+          <div class="grid-2" id="kybStep2Form">
+            <div class="field" data-required="true"><label class="required">Company Legal Name</label><input name="companyName" /><span class="error">Required field</span></div>
+            <div class="field" data-required="true"><label class="required">ABN</label><input name="abn" /><span class="error">Required field</span></div>
+            <div class="field" data-required="true"><label class="required">ACN / ARBN</label><input name="acn" /><span class="error">Required field</span></div>
+            <div class="field" data-required="true"><label class="required">Industry Type</label>
+              <select name="industry">
+                <option value="">Select Industry</option>
+                <option>Construction</option>
+                <option>Manufacturing</option>
+                <option>Import / Export</option>
+                <option>Retail</option>
+                <option>Medical</option>
+                <option>Chemicals</option>
+                <option>Other</option>
+              </select>
+              <span class="error">Required field</span>
+            </div>
+            <div class="field" data-required="true"><label class="required">Registered Address</label><input name="registeredAddress" /><span class="error">Required field</span></div>
+            <div class="field" data-required="true"><label class="required">Business Address</label><input name="businessAddress" /><span class="error">Required field</span></div>
+            <div class="field full"><label>Website (Optional)</label><input name="website" placeholder="https://" /></div>
+          </div>
+        </section>
+
+        <section id="step3-business" class="step-view hidden">
+          <div class="mini-card">
+            <h3 class="section-title" style="margin-top:0;">Director Information</h3>
+            <div id="directorsContainer"></div>
+            <button type="button" class="btn-inline" id="addDirectorBtn">Add Another Director</button>
+          </div>
+
+          <div class="mini-card">
+            <h3 class="section-title" style="margin-top:0;">Beneficial Owners (≥25%)</h3>
+            <div id="ownersContainer"></div>
+            <button type="button" class="btn-inline" id="addOwnerBtn">Add Owner</button>
+          </div>
+        </section>
+
+        <section id="step4-business" class="step-view hidden">
+          <div class="status-list">
+            <div class="status-item"><span>ABR Registry Check</span><span class="ok">✔ Verified</span></div>
+            <div class="status-item"><span>GST Status Check</span><span class="ok">✔ Verified</span></div>
+            <div class="status-item"><span>ASIC Registry Lookup</span><span class="ok">✔ Verified</span></div>
+            <div class="status-item"><span>Sanction Screening</span><span class="pending">✔ Pending Verification</span></div>
+            <div class="status-item"><span>PEP Screening</span><span class="pending">✔ Pending Verification</span></div>
+          </div>
+          <div class="high-risk" id="highRiskBanner">
+            High Risk Industry — Enhanced Due Diligence Required
+          </div>
+        </section>
+
+        <section id="step5-business" class="step-view hidden">
+          <div class="summary-box">
+            <h4>Company Details</h4>
+            <div class="summary-grid" id="kybCompanySummary"></div>
+          </div>
+          <div class="summary-box">
+            <h4>Directors</h4>
+            <div id="kybDirectorsSummary"></div>
+          </div>
+          <div class="summary-box">
+            <h4>Beneficial Owners</h4>
+            <div id="kybOwnersSummary"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="actions">
+        <span id="actionHint" style="color: var(--muted); font-size: 13px;">Please complete each step to continue.</span>
+        <div class="btn-group">
+          <button type="button" id="backBtn" class="btn-secondary">Back</button>
+          <button type="button" id="nextBtn" class="btn-primary">Continue</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      accountType: "",
+      step: 1,
+      individual: {
+        fullName: "", dob: "", nationality: "", address: "", email: "", phone: "",
+        idType: "", idNumber: "", issueCountry: "", idDocName: "",
+        confirm1: false, confirm2: false
+      },
+      business: {
+        companyName: "", abn: "", acn: "", registeredAddress: "", businessAddress: "", industry: "", website: "",
+        directors: [{ name: "", dob: "", address: "" }],
+        owners: [{ name: "", ownership: "", dob: "", country: "" }]
       }
+    };
+
+    const stepsMeta = {
+      1: ["Step 1 - Select Account Type", "Choose your onboarding flow: KYC for individuals or KYB for businesses."],
+      2: ["Step 2 - Details", "Provide required personal or company information."],
+      3: ["Step 3 - Verification Data", "Add identity details or company controllers."],
+      4: ["Step 4 - Compliance Check", "Review compliance status and declarations."],
+      5: ["Step 5 - Review & Submit", "Check all details before final submission."]
+    };
+
+    const progressBar = document.getElementById("progressBar");
+    const stepTitle = document.getElementById("stepTitle");
+    const stepDesc = document.getElementById("stepDesc");
+    const backBtn = document.getElementById("backBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const accountCards = [...document.querySelectorAll(".option-card")];
+
+    function renderProgress() {
+      progressBar.innerHTML = "";
+      for (let i = 1; i <= 5; i++) {
+        const step = document.createElement("div");
+        step.className = "progress-step" + (i === state.step ? " active" : "");
+        step.textContent = `Step ${i}`;
+        progressBar.appendChild(step);
+      }
+    }
+
+    function getCurrentSectionId() {
+      if (state.step === 1) return "step1";
+      if (!state.accountType) return "step1";
+      return `step${state.step}-${state.accountType}`;
+    }
+
+    function renderView() {
+      document.querySelectorAll(".step-view").forEach(v => v.classList.add("hidden"));
+      const currentSection = document.getElementById(getCurrentSectionId());
+      if (currentSection) currentSection.classList.remove("hidden");
+
+      renderProgress();
+      stepTitle.textContent = stepsMeta[state.step][0];
+      stepDesc.textContent = stepsMeta[state.step][1];
+
+      backBtn.style.visibility = state.step === 1 ? "hidden" : "visible";
+      nextBtn.textContent = state.step === 5 ? (state.accountType === "business" ? "Submit KYB" : "Submit Verification") : (state.step === 1 ? "Continue" : "Next");
+
+      if (state.step === 3 && state.accountType === "business") {
+        renderDirectors();
+        renderOwners();
+      }
+      if (state.step === 4 && state.accountType === "business") {
+        const highRisk = ["Import / Export", "Medical", "Chemicals"].includes(state.business.industry);
+        document.getElementById("highRiskBanner").style.display = highRisk ? "block" : "none";
+      }
+      if (state.step === 5) renderSummary();
+    }
+
+    function showFieldErrors(containerId) {
+      let valid = true;
+      document.querySelectorAll(`#${containerId} [data-required='true']`).forEach(field => {
+        const input = field.querySelector("input, select, textarea");
+        let passed = true;
+
+        if (input.type === "file") passed = input.files && input.files.length > 0;
+        else passed = !!String(input.value || "").trim();
+
+        field.classList.toggle("invalid", !passed);
+        if (!passed) valid = false;
+      });
+      return valid;
+    }
+
+    function captureStepData() {
+      if (state.accountType === "individual") {
+        const k2 = document.getElementById("kycStep2Form");
+        if (k2) {
+          state.individual.fullName = k2.querySelector("[name='fullName']").value.trim();
+          state.individual.dob = k2.querySelector("[name='dob']").value;
+          state.individual.nationality = k2.querySelector("[name='nationality']").value.trim();
+          state.individual.address = k2.querySelector("[name='address']").value.trim();
+          state.individual.email = k2.querySelector("[name='email']").value.trim();
+          state.individual.phone = k2.querySelector("[name='phone']").value.trim();
+        }
+
+        const k3 = document.getElementById("kycStep3Form");
+        if (k3) {
+          state.individual.idType = k3.querySelector("[name='idType']").value;
+          state.individual.idNumber = k3.querySelector("[name='idNumber']").value.trim();
+          state.individual.issueCountry = k3.querySelector("[name='issueCountry']").value.trim();
+          const fileInput = k3.querySelector("[name='idDoc']");
+          state.individual.idDocName = fileInput.files[0] ? fileInput.files[0].name : "";
+        }
+        state.individual.confirm1 = document.getElementById("kycConfirm1").checked;
+        state.individual.confirm2 = document.getElementById("kycConfirm2").checked;
+      }
+
+      if (state.accountType === "business") {
+        const k2 = document.getElementById("kybStep2Form");
+        state.business.companyName = k2.querySelector("[name='companyName']").value.trim();
+        state.business.abn = k2.querySelector("[name='abn']").value.trim();
+        state.business.acn = k2.querySelector("[name='acn']").value.trim();
+        state.business.registeredAddress = k2.querySelector("[name='registeredAddress']").value.trim();
+        state.business.businessAddress = k2.querySelector("[name='businessAddress']").value.trim();
+        state.business.industry = k2.querySelector("[name='industry']").value;
+        state.business.website = k2.querySelector("[name='website']").value.trim();
+      }
+    }
+
+    function validateCurrentStep() {
+      captureStepData();
+      document.getElementById("accountError").style.display = "none";
+      document.getElementById("kycCheckError").style.display = "none";
+
+      if (state.step === 1) {
+        if (!state.accountType) {
+          document.getElementById("accountError").style.display = "block";
+          return false;
+        }
+        return true;
+      }
+
+      if (state.accountType === "individual") {
+        if (state.step === 2) return showFieldErrors("kycStep2Form");
+        if (state.step === 3) return showFieldErrors("kycStep3Form");
+        if (state.step === 4) {
+          const ok = state.individual.confirm1 && state.individual.confirm2;
+          if (!ok) document.getElementById("kycCheckError").style.display = "block";
+          return ok;
+        }
+      }
+
+      if (state.accountType === "business") {
+        if (state.step === 2) return showFieldErrors("kybStep2Form");
+        if (state.step === 3) {
+          let valid = true;
+          [...document.querySelectorAll(".director-row")].forEach(row => {
+            row.querySelectorAll("[data-required='true']").forEach(f => {
+              const i = f.querySelector("input");
+              const ok = !!String(i.value || "").trim();
+              f.classList.toggle("invalid", !ok);
+              if (!ok) valid = false;
+            });
+          });
+          [...document.querySelectorAll(".owner-row")].forEach(row => {
+            row.querySelectorAll("[data-required='true']").forEach(f => {
+              const i = f.querySelector("input");
+              const ok = !!String(i.value || "").trim();
+              f.classList.toggle("invalid", !ok);
+              if (!ok) valid = false;
+            });
+          });
+          if (valid) {
+            state.business.directors = [...document.querySelectorAll(".director-row")].map(row => ({
+              name: row.querySelector("[name='directorName']").value.trim(),
+              dob: row.querySelector("[name='directorDob']").value,
+              address: row.querySelector("[name='directorAddress']").value.trim()
+            }));
+            state.business.owners = [...document.querySelectorAll(".owner-row")].map(row => ({
+              name: row.querySelector("[name='ownerName']").value.trim(),
+              ownership: row.querySelector("[name='ownerOwnership']").value.trim(),
+              dob: row.querySelector("[name='ownerDob']").value,
+              country: row.querySelector("[name='ownerCountry']").value.trim()
+            }));
+          }
+          return valid;
+        }
+      }
+      return true;
+    }
+
+    function renderSummary() {
+      if (state.accountType === "individual") {
+        const p = document.getElementById("kycPersonalSummary");
+        const i = document.getElementById("kycIdentitySummary");
+        p.innerHTML = row("Full Name", state.individual.fullName) + row("Date of Birth", state.individual.dob) + row("Nationality", state.individual.nationality) + row("Address", state.individual.address) + row("Email", state.individual.email) + row("Phone", state.individual.phone);
+        i.innerHTML = row("ID Type", state.individual.idType) + row("ID Number", state.individual.idNumber) + row("Country of Issue", state.individual.issueCountry) + row("Document", state.individual.idDocName || "Uploaded");
+      } else {
+        document.getElementById("kybCompanySummary").innerHTML =
+          row("Company Legal Name", state.business.companyName) +
+          row("ABN", state.business.abn) +
+          row("ACN / ARBN", state.business.acn) +
+          row("Industry", state.business.industry) +
+          row("Registered Address", state.business.registeredAddress) +
+          row("Business Address", state.business.businessAddress) +
+          row("Website", state.business.website || "-");
+
+        document.getElementById("kybDirectorsSummary").innerHTML =
+          state.business.directors.map((d, idx) => `<div class='summary-grid' style='margin-bottom:10px'>${row("Director " + (idx + 1), d.name)}${row("Date of Birth", d.dob)}${row("Address", d.address)}</div>`).join("");
+
+        document.getElementById("kybOwnersSummary").innerHTML =
+          state.business.owners.map((o, idx) => `<div class='summary-grid' style='margin-bottom:10px'>${row("Owner " + (idx + 1), o.name)}${row("Ownership %", o.ownership)}${row("Date of Birth", o.dob)}${row("Country", o.country)}</div>`).join("");
+      }
+    }
+
+    function row(k, v) { return `<b>${k}</b><span>${escapeHTML(v || "-")}</span>`; }
+    function escapeHTML(s) {
+      return String(s).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
+    }
+
+    function renderDirectors() {
+      const wrap = document.getElementById("directorsContainer");
+      wrap.innerHTML = "";
+      state.business.directors.forEach((director, idx) => {
+        wrap.appendChild(createDirectorRow(director, idx));
+      });
+    }
+
+    function createDirectorRow(d = { name: "", dob: "", address: "" }, idx = 0) {
+      const div = document.createElement("div");
+      div.className = "director-row grid-2";
+      div.style.marginBottom = "10px";
+      div.innerHTML = `
+        <div class='field' data-required='true'><label class='required'>Director Name</label><input name='directorName' value='${escapeHTML(d.name)}' /><span class='error'>Required field</span></div>
+        <div class='field' data-required='true'><label class='required'>Date of Birth</label><input type='date' name='directorDob' value='${escapeHTML(d.dob)}' /><span class='error'>Required field</span></div>
+        <div class='field full' data-required='true'><label class='required'>Address</label><input name='directorAddress' value='${escapeHTML(d.address)}' /><span class='error'>Required field</span></div>
+      `;
+      return div;
+    }
+
+    function renderOwners() {
+      const wrap = document.getElementById("ownersContainer");
+      wrap.innerHTML = "";
+      state.business.owners.forEach((owner, idx) => {
+        wrap.appendChild(createOwnerRow(owner, idx));
+      });
+    }
+
+    function createOwnerRow(o = { name: "", ownership: "", dob: "", country: "" }, idx = 0) {
+      const div = document.createElement("div");
+      div.className = "owner-row grid-2";
+      div.style.marginBottom = "10px";
+      div.innerHTML = `
+        <div class='field' data-required='true'><label class='required'>Owner Name</label><input name='ownerName' value='${escapeHTML(o.name)}' /><span class='error'>Required field</span></div>
+        <div class='field' data-required='true'><label class='required'>Ownership Percentage</label><input name='ownerOwnership' placeholder='e.g. 30%' value='${escapeHTML(o.ownership)}' /><span class='error'>Required field</span></div>
+        <div class='field' data-required='true'><label class='required'>Date of Birth</label><input type='date' name='ownerDob' value='${escapeHTML(o.dob)}' /><span class='error'>Required field</span></div>
+        <div class='field' data-required='true'><label class='required'>Country of Residence</label><input name='ownerCountry' value='${escapeHTML(o.country)}' /><span class='error'>Required field</span></div>
+      `;
+      return div;
+    }
+
+    accountCards.forEach(card => {
+      card.addEventListener("click", () => {
+        accountCards.forEach(c => c.classList.remove("selected"));
+        card.classList.add("selected");
+        state.accountType = card.dataset.account;
+      });
     });
-    // 预测
-    let flags=pred.filter(w=>dd>=w.from&&dd<=w.to).map(w=>w.type);
-    if(visibleFlags.F&&flags.includes("孕"))cell.innerHTML+="<div style='font-size:10px;background:#81c995;color:#fff;padding:1px 3px;border-radius:4px;display:inline-block'>孕</div>";
-    if(visibleFlags.O&&flags.includes("排"))cell.innerHTML+="<div style='font-size:10px;background:#a1cfff;color:#fff;padding:1px 3px;border-radius:4px;display:inline-block'>排</div>";
-    if(visibleFlags.L&&flags.includes("黄"))cell.innerHTML+="<div style='font-size:10px;background:#fbc34a;color:#fff;padding:1px 3px;border-radius:4px;display:inline-block'>黄</div>";
-    // 关系/变化
-    let badges=document.createElement("div");badges.className="badges";
-    if(visibleFlags.SX&&sexSet.has(ds))badges.innerHTML+="<span>💗</span>";
-    if(visibleFlags.BN&&bodyMap.has(ds))badges.innerHTML+="<span>ℹ️</span>";
-    if(badges.innerHTML)cell.appendChild(badges);
-    cal.appendChild(cell);
-  }
-}
 
-/* ===== 历史表格 + 展开 ===== */
-let showAll={period:false,body:false,sex:false};
-function renderTables(f=''){f=f.trim().toLowerCase();
-  let pBody=document.querySelector("#tblPeriod tbody");pBody.innerHTML="";
-  periods.forEach((p,i)=>{if(f&&!(p.start.includes(f)||p.end.includes(f)))return;
-    if(!showAll.period&&i<3||showAll.period){
-      let cyc=i>0?daysBetween(periods[i-1].start,p.start):"—";
-      pBody.innerHTML+=`<tr><td>${p.start}</td><td>${p.end}</td><td>${p.len}天</td><td>${cyc}</td><td class="actions"><button data-act="editP" data-i="${i}">编辑</button><button data-act="delP" data-i="${i}" class="ghost">删除</button></td></tr>`;
-    }
-  });
-  document.getElementById("togglePeriod").style.display=periods.length>3?"block":"none";
-  document.getElementById("togglePeriod").textContent=showAll.period?"收起":"展开更多";
-  if(!pBody.innerHTML)pBody.innerHTML='<tr><td colspan=5 class=muted>无</td></tr>';
-  let bBody=document.querySelector("#tblBody tbody");bBody.innerHTML="";
-  bodies.forEach((b,i)=>{if(f&&!(b.date.includes(f)||(b.note||'').toLowerCase().includes(f)))return;
-    if(!showAll.body&&i<3||showAll.body){
-      bBody.innerHTML+=`<tr><td>${b.date}</td><td>${safe(b.note)}</td><td class="actions"><button data-act="editB" data-i="${i}">编辑</button><button data-act="delB" data-i="${i}" class="ghost">删除</button></td></tr>`;
-    }
-  });
-  document.getElementById("toggleBody").style.display=bodies.length>3?"block":"none";
-  document.getElementById("toggleBody").textContent=showAll.body?"收起":"展开更多";
-  if(!bBody.innerHTML)bBody.innerHTML='<tr><td colspan=3 class=muted>无</td></tr>';
-  let sBody=document.querySelector("#tblSex tbody");sBody.innerHTML="";
-  sexes.forEach((s,i)=>{if(f&&!s.date.includes(f))return;
-    if(!showAll.sex&&i<3||showAll.sex){
-      sBody.innerHTML+=`<tr><td>${s.date}</td><td class="actions"><button data-act="delS" data-i="${i}" class="ghost">删除</button></td></tr>`;
-    }
-  });
-  document.getElementById("toggleSex").style.display=sexes.length>3?"block":"none";
-  document.getElementById("toggleSex").textContent=showAll.sex?"收起":"展开更多";
-  if(!sBody.innerHTML)sBody.innerHTML='<tr><td colspan=2 class=muted>无</td></tr>';
-}
-document.getElementById("togglePeriod").onclick=()=>{showAll.period=!showAll.period;renderTables();}
-document.getElementById("toggleBody").onclick=()=>{showAll.body=!showAll.body;renderTables();}
-document.getElementById("toggleSex").onclick=()=>{showAll.sex=!showAll.sex;renderTables();}
+    backBtn.addEventListener("click", () => {
+      if (state.step > 1) state.step -= 1;
+      renderView();
+    });
 
-/* ===== 点击操作 ===== */
-document.addEventListener("click",(e)=>{let btn=e.target.closest("button[data-act]");if(!btn)return;let act=btn.dataset.act,i=+btn.dataset.i;
-  if(act==="delP"){if(confirm("删除姨妈？")){periods.splice(i,1);saveData();renderAll();}}
-  if(act==="editP"){let ns=prompt("新开始",periods[i].start);if(!ns)return;let ne=prompt("新结束",periods[i].end);if(!ne)return;periods[i]={start:ns,end:ne,len:daysBetween(ns,ne)+1};saveData();renderAll();}
-  if(act==="delB"){if(confirm("删除变化？")){bodies.splice(i,1);saveData();renderAll();}}
-  if(act==="editB"){let nd=prompt("日期",bodies[i].date);if(!nd)return;let nn=prompt("备注",bodies[i].note);if(nn===null)return;bodies[i]={date:nd,note:nn};saveData();renderAll();}
-  if(act==="delS"){if(confirm("删除关系？")){sexes.splice(i,1);saveData();renderAll();}}
-},{passive:true});
+    nextBtn.addEventListener("click", () => {
+      if (!validateCurrentStep()) return;
 
-/* ===== 添加功能 ===== */
-btnAddPeriod.onclick=()=>{let s=pStart.value,e=pEnd.value;if(!s||!e)return alert("请填写");if(parse(e)<parse(s))return alert("结束不能早于开始");periods.push({start:s,end:e,len:daysBetween(s,e)+1});saveData();renderAll();};
-btnQuickPeriod.onclick=()=>{let t=fmt(new Date());periods.push({start:t,end:t,len:1});saveData();renderAll();};
-btnAddBody.onclick=()=>{let d=bDate.value,n=bNote.value;if(!d||!n)return alert("请完整");bodies.push({date:d,note:n});saveData();renderAll();};
-btnAddSex.onclick=()=>{let d=sDate.value;if(!d)return alert("请选择");sexes.push({date:d});saveData();renderAll();};
+      if (state.step < 5) {
+        state.step += 1;
+        renderView();
+        return;
+      }
 
-/* ===== 导入导出清空 ===== */
-btnImport.onclick=()=>fileImport.click();
-fileImport.addEventListener("change",(e)=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let obj=JSON.parse(r.result);if(obj.period)periods=obj.period;if(obj.body)bodies=obj.body;if(obj.sex)sexes=obj.sex;saveData();renderAll();toast("导入成功");}catch(err){alert("导入失败");}};r.readAsText(f);});
-btnExport.onclick=()=>{let blob=new Blob([JSON.stringify({period:periods,body:bodies,sex:sexes},null,2)],{type:"application/json"});let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="tracker.json";a.click();toast("已导出");};
-btnResetSamples.onclick=()=>{periods=[{start:"2025-07-05",end:"2025-07-09",len:5},{start:"2025-08-03",end:"2025-08-07",len:5},{start:"2025-09-01",end:"2025-09-05",len:5}];bodies=[{date:"2025-09-03",note:"情绪低落"},{date:"2025-09-10",note:"皮肤出油"},{date:"2025-09-18",note:"乳房胀痛"}];sexes=[{date:"2025-09-10"},{date:"2025-09-18"}];saveData();renderAll();};
-btnClearAll.onclick=()=>{if(confirm("清空所有数据？")){periods=[];bodies=[];sexes=[];saveData();renderAll();}};
+      const label = state.accountType === "business" ? "KYB form submitted successfully." : "KYC form submitted successfully.";
+      alert(label);
+    });
 
-/* ===== 搜索过滤 ===== */
-search.addEventListener("keydown",(e)=>{if(e.key==="Enter")renderTables(e.target.value);});
+    document.getElementById("addDirectorBtn").addEventListener("click", () => {
+      state.business.directors.push({ name: "", dob: "", address: "" });
+      renderDirectors();
+    });
 
-/* ===== 月份切换 ===== */
-window.__viewDate=new Date();
-["prevM","nextM","todayM"].forEach(id=>{document.getElementById(id).onclick=()=>{if(id==="prevM")window.__viewDate.setMonth(window.__viewDate.getMonth()-1);if(id==="nextM")window.__viewDate.setMonth(window.__viewDate.getMonth()+1);if(id==="todayM")window.__viewDate=new Date();renderCalendar();}});
+    document.getElementById("addOwnerBtn").addEventListener("click", () => {
+      state.business.owners.push({ name: "", ownership: "", dob: "", country: "" });
+      renderOwners();
+    });
 
-/* ===== 图例切换 ===== */
-document.getElementById("legendToggle").addEventListener("click",(e)=>{let tag=e.target.closest(".tag");if(!tag)return;let type=tag.dataset.type;if(!type)return;visibleFlags[type]=!visibleFlags[type];tag.style.opacity=visibleFlags[type]?"1":"0.3";renderCalendar();});
-
-/* ===== 渲染聚合 ===== */
-function renderAll(f=''){renderKPIs();renderCalendar();renderTables(f);}
-renderAll();
-</script>
+    renderView();
+  </script>
 </body>
 </html>
