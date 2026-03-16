@@ -6,260 +6,84 @@
   <title>KYB Verification</title>
   <style>
     :root {
-      --bg: #050608;
-      --phone-bg: #0b0d12;
-      --card: #1b283d;
-      --line: #33486e;
-      --primary: #3678ff;
-      --success: #1ac16c;
-      --warning: #f59e0b;
-      --danger: #f6475b;
-      --text: #f4f6fb;
-      --radius: 10px;
+      --phone-bg:#0b0d12;--card:#1b283d;--line:#33486e;--primary:#3678ff;
+      --success:#1ac16c;--warning:#f59e0b;--danger:#f6475b;--text:#f4f6fb;--radius:10px;
     }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 16px;
-      background: radial-gradient(circle at 20% 0%, #131722 0%, #050608 60%);
-      color: var(--text);
-      font-family: "PingFang SC", "Microsoft YaHei", Inter, sans-serif;
-    }
-    .mobile-shell {
-      width: 390px;
-      height: 844px;
-      border-radius: 36px;
-      background: #000;
-      padding: 10px;
-      border: 1px solid #171a20;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
-    }
-    .mobile-screen {
-      height: 100%;
-      border-radius: 28px;
-      overflow: hidden;
-      background: var(--phone-bg);
-      display: flex;
-      flex-direction: column;
-      position: relative;
-    }
-    .statusbar {
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      background: #0a0c11;
-      font-size: 14px;
-      flex-shrink: 0;
-    }
-    .header {
-      padding: 6px 16px 14px;
-      border-bottom: 1px solid #1d2230;
-      background: #0a0c11;
-      flex-shrink: 0;
-    }
-    .header-row {
-      display: grid;
-      grid-template-columns: 28px 1fr 28px;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .back-icon {
-      width: 13px;
-      height: 13px;
-      border-left: 2px solid #fff;
-      border-bottom: 2px solid #fff;
-      transform: rotate(45deg);
-      margin-left: 4px;
-    }
-    .title { margin: 0; text-align: center; font-size: 20px; font-weight: 700; }
-    .progress-head { display: flex; justify-content: space-between; align-items: center; color: #c9d2e7; font-size: 13px; }
-    .dot-progress { display: flex; gap: 8px; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: #3f4042; }
-    .dot.active { background: var(--primary); box-shadow: 0 0 0 4px rgba(54,120,255,.2); }
-
-    .content { flex: 1; overflow: auto; padding: 14px 15px 126px; }
-    .step-view { display: none; }
-    .step-view.active { display: block; }
-
-    .section-card, .status-card, .summary-card, .entity-card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 14px;
-      margin-bottom: 12px;
-    }
-    .section-title { margin: 0 0 10px; font-size: 18px; }
-    .sub-title { margin: 0 0 10px; color: #c6d3ee; font-size: 13px; line-height: 1.45; }
-
-    .grid { display: grid; gap: 12px; }
-    .field { display: flex; flex-direction: column; gap: 6px; }
-    .field label { font-size: 13px; color: #d7e1f4; font-weight: 600; }
-    .required::after { content: " *"; color: var(--danger); }
-    input, select {
-      width: 100%;
-      background: #121821;
-      border: 1px solid #2c3b59;
-      color: var(--text);
-      border-radius: 10px;
-      font-size: 14px;
-      padding: 11px 12px;
-      outline: none;
-    }
-    input::placeholder { color: #6f83a8; }
-    input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(54,120,255,.18); }
-
-    .error { display:none; font-size:12px; color:#ff7a8a; }
-    .field.invalid .error, .error.show { display:block; }
-    .field.invalid input, .field.invalid select { border-color: var(--danger); }
-
-    .entity-title { margin:0 0 10px; font-size:14px; font-weight:700; }
-    .mini-btn {
-      width: 100%;
-      border: 1px solid #3f5888;
-      background: #1a2d52;
-      color: #d5e2ff;
-      border-radius: 8px;
-      padding: 9px 12px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .status-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 0;
-      border-bottom: 1px solid rgba(75,104,149,.35);
-      font-size: 14px;
-    }
-    .status-row:last-child { border-bottom: 0; }
-    .badge {
-      border-radius: 999px;
-      padding: 3px 10px;
-      font-size: 12px;
-      font-weight: 700;
-      border: 1px solid;
-      white-space: nowrap;
-    }
-    .verified { color: var(--success); border-color: rgba(26,193,108,.6); background: rgba(26,193,108,.14); }
-    .pending { color: #a8b2c4; border-color: #4e5764; background: rgba(63,64,66,.28); }
-    .review { color: #ffb547; border-color: rgba(245,158,11,.6); background: rgba(245,158,11,.14); }
-
-    .risk-card {
-      border: 1px solid #d98d2a;
-      border-radius: 10px;
-      background: #3a2b12;
-      color: #ffdba1;
-      padding: 12px;
-      line-height: 1.45;
-      display: none;
-      margin-top: 10px;
-    }
-
-    .check-line { display:flex; gap:10px; align-items:flex-start; font-size:14px; margin-bottom:10px; }
-    .check-line input { width: 16px; height:16px; margin-top:2px; }
-
-    .summary-card h4 { margin: 0 0 10px; font-size: 15px; }
-    .summary-grid { display:grid; grid-template-columns: 118px 1fr; gap:8px 10px; font-size:13px; color:#d7e2f7; }
-    .summary-grid b { color:#93a7cc; font-weight:600; }
-
-    .inline-hint { color:#ffc979; font-size:12px; display:none; }
-    .info-btn {
-      border: 1px solid #3f5888;
-      background: #1a2d52;
-      color: #d5e2ff;
-      border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      padding: 0;
-      font-size: 11px;
-      margin-left: 4px;
-      cursor: pointer;
-      vertical-align: middle;
-    }
-
-    .bottom-bar {
-      position: absolute;
-      left: 0; right: 0; bottom: 0;
-      background: rgba(22,25,31,.97);
-      border-top: 1px solid #2a3243;
-      padding: 10px 14px calc(14px + env(safe-area-inset-bottom));
-    }
-    .bar-tip { font-size:12px; color:#7f8ba0; margin-bottom:8px; }
-    .bar-actions { display:grid; grid-template-columns: 110px 1fr; gap:10px; }
-
-    .btn {
-      height: 46px;
-      border-radius: 12px;
-      border: 0;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .btn-back { background:#2d3035; color:#d2d5dc; }
-    .btn-next { background: var(--primary); color:#fff; box-shadow: 0 10px 20px rgba(54,120,255,.28); }
-
-    .toast {
-      position: absolute;
-      left: 15px; right: 15px; bottom: 94px;
-      background:#111723;
-      border:1px solid #2f3f61;
-      color:#d7e2f7;
-      border-radius:8px;
-      padding:10px 12px;
-      font-size:12px;
-      display:none;
-      z-index:9;
-    }
-
-    @media (max-width: 440px) {
-      .mobile-shell { width:100vw; height:100vh; border-radius:0; padding:0; border:0; }
-      .mobile-screen { border-radius:0; }
-      body { padding:0; }
-    }
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px;
+      background:radial-gradient(circle at 20% 0%,#131722 0%,#050608 60%);color:var(--text);
+      font-family:"PingFang SC","Microsoft YaHei",Inter,sans-serif}
+    .mobile-shell{width:390px;height:844px;border-radius:36px;background:#000;padding:10px;border:1px solid #171a20;box-shadow:0 24px 60px rgba(0,0,0,.55)}
+    .mobile-screen{height:100%;border-radius:28px;overflow:hidden;background:var(--phone-bg);display:flex;flex-direction:column;position:relative}
+    .statusbar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:#0a0c11;font-size:14px;flex-shrink:0}
+    .header{padding:6px 16px 14px;border-bottom:1px solid #1d2230;background:#0a0c11;flex-shrink:0}
+    .header-row{display:grid;grid-template-columns:28px 1fr 28px;align-items:center;margin-bottom:10px}
+    .back-icon{width:13px;height:13px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(45deg);margin-left:4px}
+    .title{margin:0;text-align:center;font-size:20px;font-weight:700}
+    .progress-head{display:flex;justify-content:space-between;align-items:center;color:#c9d2e7;font-size:13px}
+    .dot-progress{display:flex;gap:8px}.dot{width:8px;height:8px;border-radius:50%;background:#3f4042}.dot.active{background:var(--primary);box-shadow:0 0 0 4px rgba(54,120,255,.2)}
+    .content{flex:1;overflow:auto;padding:14px 15px 126px}.step-view{display:none}.step-view.active{display:block}
+    .section-card,.status-card,.summary-card,.entity-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+    .section-title{margin:0 0 10px;font-size:18px}.sub-title{margin:0 0 10px;color:#c6d3ee;font-size:13px;line-height:1.45}
+    .grid{display:grid;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:13px;color:#d7e1f4;font-weight:600}
+    .required::after{content:" *";color:var(--danger)}
+    input,select{width:100%;background:#121821;border:1px solid #2c3b59;color:var(--text);border-radius:10px;font-size:14px;padding:11px 12px;outline:none}
+    input::placeholder{color:#6f83a8} input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(54,120,255,.18)}
+    .error{display:none;font-size:12px;color:#ff7a8a}.field.invalid .error,.error.show{display:block}.field.invalid input,.field.invalid select{border-color:var(--danger)}
+    .selector-grid{display:grid;gap:10px}
+    .country-card{border:1px solid #3a4b6f;border-radius:10px;padding:12px;background:#152137;cursor:pointer;position:relative}
+    .country-card.active{border-color:var(--primary);background:#1a2d52}
+    .country-card .tag{position:absolute;right:10px;top:10px;font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid #5d7fbd;color:#cfe0ff}
+    .country-card.active .tag{background:var(--primary);border-color:var(--primary);color:#fff}
+    .entity-title{margin:0 0 10px;font-size:14px;font-weight:700}
+    .mini-btn{width:100%;border:1px solid #3f5888;background:#1a2d52;color:#d5e2ff;border-radius:8px;padding:9px 12px;font-size:13px;font-weight:600;cursor:pointer}
+    .status-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(75,104,149,.35);font-size:14px}
+    .status-row:last-child{border-bottom:0}
+    .badge{border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;border:1px solid;white-space:nowrap}
+    .verified{color:var(--success);border-color:rgba(26,193,108,.6);background:rgba(26,193,108,.14)}
+    .pending{color:#a8b2c4;border-color:#4e5764;background:rgba(63,64,66,.28)}
+    .review{color:#ffb547;border-color:rgba(245,158,11,.6);background:rgba(245,158,11,.14)}
+    .risk-card{border:1px solid #d98d2a;border-radius:10px;background:#3a2b12;color:#ffdba1;padding:12px;line-height:1.45;display:none;margin-top:10px}
+    .check-line{display:flex;gap:10px;align-items:flex-start;font-size:14px;margin-bottom:10px}.check-line input{width:16px;height:16px;margin-top:2px}
+    .summary-card h4{margin:0 0 10px;font-size:15px}.summary-grid{display:grid;grid-template-columns:118px 1fr;gap:8px 10px;font-size:13px;color:#d7e2f7}.summary-grid b{color:#93a7cc;font-weight:600}
+    .inline-hint{color:#ffc979;font-size:12px;display:none}
+    .info-btn{border:1px solid #3f5888;background:#1a2d52;color:#d5e2ff;border-radius:50%;width:18px;height:18px;padding:0;font-size:11px;margin-left:4px;cursor:pointer;vertical-align:middle}
+    .bottom-bar{position:absolute;left:0;right:0;bottom:0;background:rgba(22,25,31,.97);border-top:1px solid #2a3243;padding:10px 14px calc(14px + env(safe-area-inset-bottom))}
+    .bar-tip{font-size:12px;color:#7f8ba0;margin-bottom:8px}.bar-actions{display:grid;grid-template-columns:110px 1fr;gap:10px}
+    .btn{height:46px;border-radius:12px;border:0;font-size:16px;font-weight:700;cursor:pointer}.btn-back{background:#2d3035;color:#d2d5dc}.btn-next{background:var(--primary);color:#fff;box-shadow:0 10px 20px rgba(54,120,255,.28)}
+    .toast{position:absolute;left:15px;right:15px;bottom:94px;background:#111723;border:1px solid #2f3f61;color:#d7e2f7;border-radius:8px;padding:10px 12px;font-size:12px;display:none;z-index:9}
+    @media (max-width:440px){.mobile-shell{width:100vw;height:100vh;border-radius:0;padding:0;border:0}.mobile-screen{border-radius:0}body{padding:0}}
   </style>
 </head>
 <body>
   <div class="mobile-shell">
     <div class="mobile-screen">
       <div class="statusbar"><span>9:41</span><span>◉◉◉</span></div>
-
       <div class="header">
-        <div class="header-row">
-          <div class="back-icon"></div>
-          <h1 class="title">KYB Verification</h1>
-          <div></div>
-        </div>
-        <div class="progress-head">
-          <span id="progressText">Step 1 of 5</span>
-          <div class="dot-progress" id="dotProgress"></div>
-        </div>
+        <div class="header-row"><div class="back-icon"></div><h1 class="title">KYB Verification</h1><div></div></div>
+        <div class="progress-head"><span id="progressText">Step 1 of 5</span><div class="dot-progress" id="dotProgress"></div></div>
       </div>
 
       <div class="content">
         <section id="step1" class="step-view active">
           <div class="section-card">
-            <h2 class="section-title">企业验证流程</h2>
-            <p class="sub-title">当前仅支持 KYB（Business）验证。请按步骤完成公司信息、董事与受益所有人信息提交。</p>
-            <div class="status-row"><span>账户类型</span><span class="badge verified">Business</span></div>
+            <h2 class="section-title">选择国家</h2>
+            <p class="sub-title">请选择公司注册国家，不同国家将使用不同的 KYB 表单。</p>
+            <div class="selector-grid">
+              <div class="country-card" data-country="au"><span class="tag">Australia</span><b>澳洲</b><p class="sub-title" style="margin:6px 0 0;">使用 ABN / ACN/ARBN / ASIC / ABR 检查流程。</p></div>
+              <div class="country-card" data-country="nz"><span class="tag">New Zealand</span><b>新西兰</b><p class="sub-title" style="margin:6px 0 0;">使用 NZBN / Company Number / Companies Office 检查流程。</p></div>
+            </div>
+            <p id="countryError" class="error">请选择国家后继续。</p>
           </div>
         </section>
 
-        <section id="step2" class="step-view">
+        <section id="step2-au" class="step-view">
           <div class="section-card">
-            <h2 class="section-title">公司信息</h2>
-            <div class="grid" id="kybStep2Form">
+            <h2 class="section-title">公司信息（澳洲）</h2>
+            <div class="grid" id="kybStep2Form-au">
               <div class="field" data-required="true"><label class="required">Company Legal Name</label><input name="companyName" placeholder="请输入公司法定名称"><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="required">Company Type <button type="button" class="info-btn" data-info="Company Type：企业法律组织形式。">i</button></label><select name="companyType"><option value="">请选择</option><option>Pty Ltd</option><option>Trust</option><option>Partnership</option><option>Sole Trader</option><option>Foreign Company</option></select><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="required">ABN <button type="button" class="info-btn" data-info="ABN: Australian Business Number，澳大利亚商业号码。">i</button></label><input name="abn" placeholder="请输入 ABN"><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="required">ACN / ARBN <button type="button" class="info-btn" data-info="ACN/ARBN: 澳大利亚公司/注册外国公司编号。">i</button></label><input name="acn" placeholder="请输入 ACN / ARBN"><span class="error">必填</span></div>
+              <div class="field" data-required="true"><label class="required">Company Type</label><select name="companyType"><option value="">请选择</option><option>Pty Ltd</option><option>Trust</option><option>Partnership</option><option>Sole Trader</option><option>Foreign Company</option></select><span class="error">必填</span></div>
+              <div class="field" data-required="true"><label class="required">ABN</label><input name="abn" placeholder="请输入 ABN"><span class="error">必填</span></div>
+              <div class="field" data-required="true"><label class="required">ACN / ARBN</label><input name="acn" placeholder="请输入 ACN / ARBN"><span class="error">必填</span></div>
               <div class="field" data-required="true"><label class="required">Industry Type</label><select name="industry"><option value="">请选择</option><option>Construction</option><option>Manufacturing</option><option>Import / Export</option><option>Retail</option><option>Medical</option><option>Chemicals</option><option>Other</option></select><span class="error">必填</span></div>
               <div class="field" data-required="true"><label class="required">Registered Address</label><input name="registeredAddress" placeholder="请输入注册地址"><span class="error">必填</span></div>
               <div class="field" data-required="true"><label class="required">Business Address</label><input name="businessAddress" placeholder="请输入经营地址"><span class="error">必填</span></div>
@@ -268,320 +92,137 @@
           </div>
         </section>
 
-        <section id="step3" class="step-view">
+        <section id="step2-nz" class="step-view">
           <div class="section-card">
-            <h2 class="section-title">Directors（董事）</h2>
-            <div id="directorsContainer"></div>
-            <button type="button" id="addDirectorBtn" class="mini-btn">Add Another Director</button>
-          </div>
-
-          <div class="section-card">
-            <h2 class="section-title">Beneficial Owners（受益所有人）</h2>
-            <div id="ownersContainer"></div>
-            <button type="button" id="addOwnerBtn" class="mini-btn">Add Owner</button>
+            <h2 class="section-title">公司信息（新西兰）</h2>
+            <div class="grid" id="kybStep2Form-nz">
+              <div class="field" data-required="true"><label class="required">Company Legal Name</label><input name="companyName" placeholder="请输入公司法定名称"><span class="error">必填</span></div>
+              <div class="field" data-required="true"><label class="required">Company Structure</label><select name="companyType"><option value="">请选择</option><option>Limited Company</option><option>Partnership</option><option>Sole Trader</option><option>Overseas Company</option><option>Trust</option></select><span class="error">必填</span></div>
+              <div class="field" data-required="true"><label class="required">NZBN</label><input name="nzbn" placeholder="请输入 NZBN"><span class="error">必填</span></div>
+              <div class="field" data-required="true"><label class="required">Company Number</label><input name="companyNumber" placeholder="请输入 Company Number"><span class="error">必填</span></div>
+              <div class="field" data-required="true"><label class="required">Industry Type</label><select name="industry"><option value="">请选择</option><option>Construction</option><option>Manufacturing</option><option>Import / Export</option><option>Retail</option><option>Medical</option><option>Chemicals</option><option>Other</option></select><span class="error">必填</span></div>
+              <div class="field" data-required="true"><label class="required">Registered Office Address</label><input name="registeredAddress" placeholder="请输入注册办公地址"><span class="error">必填</span></div>
+              <div class="field" data-required="true"><label class="required">Trading Address</label><input name="businessAddress" placeholder="请输入经营地址"><span class="error">必填</span></div>
+              <div class="field"><label>IRD Number（可选）</label><input name="ird" placeholder="请输入 IRD Number"></div>
+            </div>
           </div>
         </section>
 
-        <section id="step4" class="step-view">
+        <section id="step3-au" class="step-view"><div class="section-card"><h2 class="section-title">Directors（董事）</h2><div id="directorsContainer-au"></div><button type="button" id="addDirectorBtn-au" class="mini-btn">Add Another Director</button></div><div class="section-card"><h2 class="section-title">Beneficial Owners（受益所有人）</h2><div id="ownersContainer-au"></div><button type="button" id="addOwnerBtn-au" class="mini-btn">Add Owner</button></div></section>
+        <section id="step3-nz" class="step-view"><div class="section-card"><h2 class="section-title">Directors（董事）</h2><div id="directorsContainer-nz"></div><button type="button" id="addDirectorBtn-nz" class="mini-btn">Add Another Director</button></div><div class="section-card"><h2 class="section-title">Beneficial Owners（受益所有人）</h2><div id="ownersContainer-nz"></div><button type="button" id="addOwnerBtn-nz" class="mini-btn">Add Owner</button></div></section>
+
+        <section id="step4-au" class="step-view">
           <div class="status-card">
-            <h3 class="entity-title">Verification Status</h3>
-            <div class="status-row"><span>ABR Registry Check <button type="button" class="info-btn" data-info="ABR: Australian Business Register，澳洲商业注册库。">i</button></span><span id="abrStatus" class="badge pending">Pending</span></div>
-            <div class="status-row"><span>ASIC Lookup <button type="button" class="info-btn" data-info="ASIC: Australian Securities & Investments Commission，澳洲证券与投资委员会。">i</button></span><span id="asicStatus" class="badge pending">Pending</span></div>
-            <div class="status-row"><span>GST Status <button type="button" class="info-btn" data-info="GST: Goods and Services Tax，商品与服务税状态。">i</button></span><span id="gstStatus" class="badge pending">Inactive</span></div>
+            <h3 class="entity-title">Verification Status（Australia）</h3>
+            <div class="status-row"><span>ABR Registry Check</span><span id="abrStatus" class="badge pending">Pending</span></div>
+            <div class="status-row"><span>ASIC Lookup</span><span id="asicStatus" class="badge pending">Pending</span></div>
+            <div class="status-row"><span>GST Status</span><span id="gstStatus" class="badge pending">Inactive</span></div>
             <div class="status-row"><span>PEP Screening</span><span class="badge pending">Pending</span></div>
-            <div class="status-row"><span>Sanctions Screening</span><span id="sanctionStatus" class="badge pending">Pending</span></div>
+            <div class="status-row"><span>Sanctions Screening</span><span id="sanctionStatus-au" class="badge pending">Pending</span></div>
           </div>
-
-          <div id="highRiskBanner" class="risk-card">
-            <b>High Risk Industry Detected</b><br>
-            Enhanced due diligence and manual review may be required.
-          </div>
+          <div id="highRiskBanner-au" class="risk-card"><b>High Risk Industry Detected</b><br>Enhanced due diligence and manual review may be required.</div>
         </section>
 
-        <section id="step5" class="step-view">
-          <div class="summary-card"><h4>Business Verification - Company Details</h4><div class="summary-grid" id="kybCompanySummary"></div></div>
-          <div class="summary-card"><h4>Business Verification - Directors</h4><div id="kybDirectorsSummary"></div></div>
-          <div class="summary-card"><h4>Business Verification - Beneficial Owners</h4><div id="kybOwnersSummary"></div></div>
-          <div class="summary-card"><h4>Business Verification - Risk Flags</h4><div class="summary-grid" id="kybRiskSummary"></div></div>
+        <section id="step4-nz" class="step-view">
+          <div class="status-card">
+            <h3 class="entity-title">Verification Status（New Zealand）</h3>
+            <div class="status-row"><span>NZBN Registry Check</span><span id="nzbnStatus" class="badge pending">Pending</span></div>
+            <div class="status-row"><span>Companies Office Lookup</span><span id="coStatus" class="badge pending">Pending</span></div>
+            <div class="status-row"><span>GST Registration</span><span id="gstStatus-nz" class="badge pending">Inactive</span></div>
+            <div class="status-row"><span>PEP Screening</span><span class="badge pending">Pending</span></div>
+            <div class="status-row"><span>Sanctions Screening</span><span id="sanctionStatus-nz" class="badge pending">Pending</span></div>
+          </div>
+          <div id="highRiskBanner-nz" class="risk-card"><b>High Risk Industry Detected</b><br>Enhanced due diligence and manual review may be required.</div>
         </section>
+
+        <section id="step5-au" class="step-view"><div class="summary-card"><h4>Australia KYB - Company Details</h4><div class="summary-grid" id="kybCompanySummary-au"></div></div><div class="summary-card"><h4>Directors</h4><div id="kybDirectorsSummary-au"></div></div><div class="summary-card"><h4>Beneficial Owners</h4><div id="kybOwnersSummary-au"></div></div><div class="summary-card"><h4>Risk Flags</h4><div class="summary-grid" id="kybRiskSummary-au"></div></div></section>
+        <section id="step5-nz" class="step-view"><div class="summary-card"><h4>New Zealand KYB - Company Details</h4><div class="summary-grid" id="kybCompanySummary-nz"></div></div><div class="summary-card"><h4>Directors</h4><div id="kybDirectorsSummary-nz"></div></div><div class="summary-card"><h4>Beneficial Owners</h4><div id="kybOwnersSummary-nz"></div></div><div class="summary-card"><h4>Risk Flags</h4><div class="summary-grid" id="kybRiskSummary-nz"></div></div></section>
       </div>
 
       <div class="toast" id="toast"></div>
-
-      <div class="bottom-bar">
-        <div class="bar-tip">请按步骤完成企业 KYB 验证信息填写。</div>
-        <div class="bar-actions">
-          <button type="button" id="backBtn" class="btn btn-back">Back</button>
-          <button type="button" id="nextBtn" class="btn btn-next">Continue</button>
-        </div>
-      </div>
+      <div class="bottom-bar"><div class="bar-tip">请按步骤完成企业 KYB 验证信息填写。</div><div class="bar-actions"><button type="button" id="backBtn" class="btn btn-back">Back</button><button type="button" id="nextBtn" class="btn btn-next">Continue</button></div></div>
     </div>
   </div>
 
   <script>
     const state = {
       step: 1,
-      business: {
-        companyName: "", companyType: "", abn: "", acn: "", registeredAddress: "", businessAddress: "", industry: "", website: "",
-        directors: [{ name: "", dob: "", address: "", email: "" }],
-        owners: [{ name: "", ownership: "", controller: false, dob: "", country: "" }]
+      country: '',
+      au: {
+        companyName:'',companyType:'',abn:'',acn:'',registeredAddress:'',businessAddress:'',industry:'',website:'',
+        directors:[{name:'',dob:'',address:'',email:''}], owners:[{name:'',ownership:'',controller:false,dob:'',country:''}]
+      },
+      nz: {
+        companyName:'',companyType:'',nzbn:'',companyNumber:'',registeredAddress:'',businessAddress:'',industry:'',ird:'',
+        directors:[{name:'',dob:'',address:'',email:''}], owners:[{name:'',ownership:'',controller:false,dob:'',country:''}]
       }
     };
 
-    const stepCount = 5;
-    const backBtn = document.getElementById('backBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const dotProgress = document.getElementById('dotProgress');
-    const progressText = document.getElementById('progressText');
+    const stepCount=5, backBtn=document.getElementById('backBtn'), nextBtn=document.getElementById('nextBtn');
+    const dotProgress=document.getElementById('dotProgress'), progressText=document.getElementById('progressText');
 
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.style.display = 'block';
-      clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => t.style.display = 'none', 2400);
+    const showToast=(msg)=>{const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(window.__tt);window.__tt=setTimeout(()=>t.style.display='none',2400)};
+    const esc=(s)=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+    const row=(k,v)=>`<b>${esc(k)}</b><span>${esc(v||'-')}</span>`;
+
+    function renderProgress(){progressText.textContent=`Step ${state.step} of ${stepCount}`;dotProgress.innerHTML='';for(let i=1;i<=stepCount;i++){const d=document.createElement('span');d.className='dot'+(i===state.step?' active':'');dotProgress.appendChild(d)}}
+    function sectionId(){if(state.step===1)return 'step1'; if(!state.country) return 'step1'; return `step${state.step}-${state.country}`;}
+    function activeStore(){return state[state.country||'au'];}
+
+    function updateStep(){document.querySelectorAll('.step-view').forEach(v=>v.classList.remove('active'));document.getElementById(sectionId()).classList.add('active');
+      backBtn.style.visibility=state.step===1?'hidden':'visible';nextBtn.textContent=state.step===5?'Submit KYB':(state.step===1?'Continue':'Next');renderProgress();
+      if(state.step===3&&state.country){renderDirectors();renderOwners();}
+      if(state.step===4&&state.country){renderStatus();}
+      if(state.step===5&&state.country){renderSummary();}
     }
 
-    function escapeHTML(s) {
-      return String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
-    }
+    function validateRequired(formId){let ok=true;document.querySelectorAll(`#${formId} .field[data-required='true']`).forEach(f=>{const i=f.querySelector('input,select');const p=String(i.value||'').trim()!=='';f.classList.toggle('invalid',!p);if(!p)ok=false;});return ok;}
+    function captureStep2(){if(state.country==='au'){const f=document.getElementById('kybStep2Form-au'),s=state.au;s.companyName=f.companyName.value.trim();s.companyType=f.companyType.value;s.abn=f.abn.value.trim();s.acn=f.acn.value.trim();s.industry=f.industry.value;s.registeredAddress=f.registeredAddress.value.trim();s.businessAddress=f.businessAddress.value.trim();s.website=f.website.value.trim();}
+      if(state.country==='nz'){const f=document.getElementById('kybStep2Form-nz'),s=state.nz;s.companyName=f.companyName.value.trim();s.companyType=f.companyType.value;s.nzbn=f.nzbn.value.trim();s.companyNumber=f.companyNumber.value.trim();s.industry=f.industry.value;s.registeredAddress=f.registeredAddress.value.trim();s.businessAddress=f.businessAddress.value.trim();s.ird=f.ird.value.trim();}}
 
-    function row(k, v) { return `<b>${escapeHTML(k)}</b><span>${escapeHTML(v || '-')}</span>`; }
-
-    function renderProgress() {
-      progressText.textContent = `Step ${state.step} of ${stepCount}`;
-      dotProgress.innerHTML = '';
-      for (let i = 1; i <= stepCount; i++) {
-        const d = document.createElement('span');
-        d.className = 'dot' + (i === state.step ? ' active' : '');
-        dotProgress.appendChild(d);
-      }
-    }
-
-    function updateStepVisibility() {
-      document.querySelectorAll('.step-view').forEach(v => v.classList.remove('active'));
-      document.getElementById(`step${state.step}`).classList.add('active');
-
-      backBtn.style.visibility = state.step === 1 ? 'hidden' : 'visible';
-      nextBtn.textContent = state.step === 5 ? 'Submit KYB' : (state.step === 1 ? 'Continue' : 'Next');
-      renderProgress();
-
-      if (state.step === 3) {
-        renderDirectors();
-        renderOwners();
-      }
-      if (state.step === 4) renderBusinessStatus();
-      if (state.step === 5) renderSummary();
-    }
-
-    function validateRequired(containerId) {
-      let valid = true;
-      document.querySelectorAll(`#${containerId} .field[data-required='true']`).forEach(field => {
-        const input = field.querySelector('input,select');
-        const ok = String(input.value || '').trim() !== '';
-        field.classList.toggle('invalid', !ok);
-        if (!ok) valid = false;
-      });
-      return valid;
-    }
-
-    function captureBusinessData() {
-      const f2 = document.getElementById('kybStep2Form');
-      if (f2) {
-        state.business.companyName = f2.querySelector("[name='companyName']").value.trim();
-        state.business.companyType = f2.querySelector("[name='companyType']").value;
-        state.business.abn = f2.querySelector("[name='abn']").value.trim();
-        state.business.acn = f2.querySelector("[name='acn']").value.trim();
-        state.business.industry = f2.querySelector("[name='industry']").value;
-        state.business.registeredAddress = f2.querySelector("[name='registeredAddress']").value.trim();
-        state.business.businessAddress = f2.querySelector("[name='businessAddress']").value.trim();
-        state.business.website = f2.querySelector("[name='website']").value.trim();
-      }
-    }
-
-    function validateCurrentStep() {
-      captureBusinessData();
-
-      if (state.step === 2) return validateRequired('kybStep2Form');
-
-      if (state.step === 3) {
-        let valid = true;
-
-        const directors = [...document.querySelectorAll('.director-card')].map(card => ({
-          name: card.querySelector("[name='directorName']").value.trim(),
-          dob: card.querySelector("[name='directorDob']").value,
-          address: card.querySelector("[name='directorAddress']").value.trim(),
-          email: card.querySelector("[name='directorEmail']").value.trim()
-        }));
-
-        const owners = [...document.querySelectorAll('.owner-card')].map(card => ({
-          name: card.querySelector("[name='ownerName']").value.trim(),
-          ownership: card.querySelector("[name='ownerOwnership']").value.trim(),
-          controller: card.querySelector("[name='ownerController']").checked,
-          dob: card.querySelector("[name='ownerDob']").value,
-          country: card.querySelector("[name='ownerCountry']").value.trim()
-        }));
-
-        document.querySelectorAll('.director-card .field[data-required="true"], .owner-card .field[data-required="true"]').forEach(field => {
-          const input = field.querySelector('input,select');
-          const ok = String(input.value || '').trim() !== '';
-          field.classList.toggle('invalid', !ok);
-          if (!ok) valid = false;
-        });
-
-        state.business.directors = directors;
-        state.business.owners = owners;
+    function validateCurrent(){document.getElementById('countryError').classList.remove('show'); if(state.step===1){if(!state.country){document.getElementById('countryError').classList.add('show');return false;}return true;}
+      captureStep2();
+      if(state.step===2) return validateRequired(`kybStep2Form-${state.country}`);
+      if(state.step===3){let valid=true;const s=activeStore();
+        s.directors=[...document.querySelectorAll(`#directorsContainer-${state.country} .director-card`)].map(c=>({name:c.querySelector("[name='directorName']").value.trim(),dob:c.querySelector("[name='directorDob']").value,address:c.querySelector("[name='directorAddress']").value.trim(),email:c.querySelector("[name='directorEmail']").value.trim()}));
+        s.owners=[...document.querySelectorAll(`#ownersContainer-${state.country} .owner-card`)].map(c=>({name:c.querySelector("[name='ownerName']").value.trim(),ownership:c.querySelector("[name='ownerOwnership']").value.trim(),controller:c.querySelector("[name='ownerController']").checked,dob:c.querySelector("[name='ownerDob']").value,country:c.querySelector("[name='ownerCountry']").value.trim()}));
+        document.querySelectorAll(`#directorsContainer-${state.country} .field[data-required='true'], #ownersContainer-${state.country} .field[data-required='true']`).forEach(f=>{const i=f.querySelector('input');const p=String(i.value||'').trim()!=='';f.classList.toggle('invalid',!p);if(!p)valid=false;});
         return valid;
       }
-
       return true;
     }
 
-    function createDirectorCard(data = { name: '', dob: '', address: '', email: '' }, index = 1) {
-      const card = document.createElement('div');
-      card.className = 'entity-card director-card';
-      card.innerHTML = `
-        <h4 class="entity-title">Director ${index}</h4>
-        <div class="grid">
-          <div class="field" data-required="true"><label class="required">Name</label><input name="directorName" value="${escapeHTML(data.name)}" placeholder="请输入董事姓名"><span class="error">必填</span></div>
-          <div class="field" data-required="true"><label class="required">DOB</label><input type="date" name="directorDob" value="${escapeHTML(data.dob)}"><span class="error">必填</span></div>
-          <div class="field" data-required="true"><label class="required">Address</label><input name="directorAddress" value="${escapeHTML(data.address)}" placeholder="请输入地址"><span class="error">必填</span></div>
-          <div class="field" data-required="true"><label class="required">Email</label><input type="email" name="directorEmail" value="${escapeHTML(data.email)}" placeholder="name@example.com"><span class="error">必填</span></div>
-        </div>
-      `;
-      return card;
+    function directorCard(d,idx){const el=document.createElement('div');el.className='entity-card director-card';el.innerHTML=`<h4 class='entity-title'>Director ${idx}</h4><div class='grid'><div class='field' data-required='true'><label class='required'>Name</label><input name='directorName' value='${esc(d.name)}' placeholder='请输入董事姓名'><span class='error'>必填</span></div><div class='field' data-required='true'><label class='required'>DOB</label><input type='date' name='directorDob' value='${esc(d.dob)}'><span class='error'>必填</span></div><div class='field' data-required='true'><label class='required'>Address</label><input name='directorAddress' value='${esc(d.address)}' placeholder='请输入地址'><span class='error'>必填</span></div><div class='field' data-required='true'><label class='required'>Email</label><input type='email' name='directorEmail' value='${esc(d.email)}' placeholder='name@example.com'><span class='error'>必填</span></div></div>`;return el;}
+    function ownerCard(o,idx){const el=document.createElement('div');el.className='entity-card owner-card';el.innerHTML=`<h4 class='entity-title'>Beneficial Owner ${idx}</h4><div class='grid'><div class='field' data-required='true'><label class='required'>Owner Name</label><input name='ownerName' value='${esc(o.name)}' placeholder='请输入受益人姓名'><span class='error'>必填</span></div><div class='field' data-required='true'><label class='required'>Ownership Percentage</label><input name='ownerOwnership' value='${esc(o.ownership)}' placeholder='例如 30%'><span class='inline-hint'>Required for KYB</span><span class='error'>必填</span></div><div class='field' data-required='true'><label class='required'>DOB</label><input type='date' name='ownerDob' value='${esc(o.dob)}'><span class='error'>必填</span></div><div class='field' data-required='true'><label class='required'>Country of Residence</label><input name='ownerCountry' value='${esc(o.country)}' placeholder='请输入居住国家'><span class='error'>必填</span></div><label class='check-line'><input type='checkbox' name='ownerController' ${o.controller?'checked':''}>是否为实际控制人</label></div>`;
+      const input=el.querySelector("[name='ownerOwnership']"),hint=el.querySelector('.inline-hint');const upd=()=>{const v=parseFloat(String(input.value||'').replace('%','').trim());hint.style.display=!Number.isNaN(v)&&v>=25?'block':'none'};input.addEventListener('input',upd);upd();return el;}
+    function renderDirectors(){const s=activeStore(),w=document.getElementById(`directorsContainer-${state.country}`);w.innerHTML='';s.directors.forEach((d,i)=>w.appendChild(directorCard(d,i+1)))}
+    function renderOwners(){const s=activeStore(),w=document.getElementById(`ownersContainer-${state.country}`);w.innerHTML='';s.owners.forEach((o,i)=>w.appendChild(ownerCard(o,i+1)))}
+
+    function setBadge(el,st){el.classList.remove('verified','pending','review');if(st==='Verified'||st==='Active')el.classList.add('verified');else if(st==='Review Required')el.classList.add('review');else el.classList.add('pending');el.textContent=st;}
+    function renderStatus(){const s=activeStore(),hr=['Import / Export','Medical','Chemicals'].includes(s.industry);
+      if(state.country==='au'){setBadge(document.getElementById('abrStatus'),s.abn?'Verified':'Pending');setBadge(document.getElementById('asicStatus'),s.acn?'Verified':'Pending');setBadge(document.getElementById('gstStatus'),s.abn?'Active':'Inactive');setBadge(document.getElementById('sanctionStatus-au'),hr?'Review Required':'Pending');document.getElementById('highRiskBanner-au').style.display=hr?'block':'none';}
+      if(state.country==='nz'){setBadge(document.getElementById('nzbnStatus'),s.nzbn?'Verified':'Pending');setBadge(document.getElementById('coStatus'),s.companyNumber?'Verified':'Pending');setBadge(document.getElementById('gstStatus-nz'),s.nzbn?'Active':'Inactive');setBadge(document.getElementById('sanctionStatus-nz'),hr?'Review Required':'Pending');document.getElementById('highRiskBanner-nz').style.display=hr?'block':'none';}
     }
 
-    function createOwnerCard(data = { name: '', ownership: '', controller: false, dob: '', country: '' }, index = 1) {
-      const card = document.createElement('div');
-      card.className = 'entity-card owner-card';
-      card.innerHTML = `
-        <h4 class="entity-title">Beneficial Owner ${index}</h4>
-        <div class="grid">
-          <div class="field" data-required="true"><label class="required">Owner Name</label><input name="ownerName" value="${escapeHTML(data.name)}" placeholder="请输入受益人姓名"><span class="error">必填</span></div>
-          <div class="field" data-required="true">
-            <label class="required">Ownership Percentage</label>
-            <input name="ownerOwnership" value="${escapeHTML(data.ownership)}" placeholder="例如 30%">
-            <span class="inline-hint">Required for KYB</span>
-            <span class="error">必填</span>
-          </div>
-          <div class="field" data-required="true"><label class="required">DOB</label><input type="date" name="ownerDob" value="${escapeHTML(data.dob)}"><span class="error">必填</span></div>
-          <div class="field" data-required="true"><label class="required">Country of Residence</label><input name="ownerCountry" value="${escapeHTML(data.country)}" placeholder="请输入居住国家"><span class="error">必填</span></div>
-          <label class="check-line"><input type="checkbox" name="ownerController" ${data.controller ? 'checked' : ''}>是否为实际控制人</label>
-        </div>
-      `;
-      const input = card.querySelector("[name='ownerOwnership']");
-      const hint = card.querySelector('.inline-hint');
-      const updateHint = () => {
-        const value = parseFloat(String(input.value || '').replace('%', '').trim());
-        hint.style.display = !Number.isNaN(value) && value >= 25 ? 'block' : 'none';
-      };
-      input.addEventListener('input', updateHint);
-      updateHint();
-      return card;
+    function renderSummary(){const s=activeStore(),prefix=state.country==='au'?'au':'nz';
+      if(state.country==='au'){document.getElementById('kybCompanySummary-au').innerHTML=row('Company Legal Name',s.companyName)+row('Company Type',s.companyType)+row('ABN',s.abn)+row('ACN / ARBN',s.acn)+row('Industry Type',s.industry)+row('Registered Address',s.registeredAddress)+row('Business Address',s.businessAddress)+row('Website',s.website||'-');}
+      else {document.getElementById('kybCompanySummary-nz').innerHTML=row('Company Legal Name',s.companyName)+row('Company Structure',s.companyType)+row('NZBN',s.nzbn)+row('Company Number',s.companyNumber)+row('Industry Type',s.industry)+row('Registered Office Address',s.registeredAddress)+row('Trading Address',s.businessAddress)+row('IRD Number',s.ird||'-');}
+      document.getElementById(`kybDirectorsSummary-${prefix}`).innerHTML=s.directors.map((d,i)=>`<div class='summary-grid' style='margin-bottom:10px;'>${row(`Director ${i+1} Name`,d.name)}${row('DOB',d.dob)}${row('Address',d.address)}${row('Email',d.email)}</div>`).join('');
+      document.getElementById(`kybOwnersSummary-${prefix}`).innerHTML=s.owners.map((o,i)=>`<div class='summary-grid' style='margin-bottom:10px;'>${row(`Owner ${i+1} Name`,o.name)}${row('Ownership Percentage',o.ownership)}${row('Controller',o.controller?'是':'否')}${row('DOB',o.dob)}${row('Country',o.country)}</div>`).join('');
+      const hr=['Import / Export','Medical','Chemicals'].includes(s.industry);document.getElementById(`kybRiskSummary-${prefix}`).innerHTML=row('Industry Risk',hr?'High Risk Industry Detected':'No High Risk Flag')+row('Manual Review',hr?'可能需要':'暂不需要');
     }
 
-    function renderDirectors() {
-      const wrap = document.getElementById('directorsContainer');
-      wrap.innerHTML = '';
-      state.business.directors.forEach((d, idx) => wrap.appendChild(createDirectorCard(d, idx + 1)));
-    }
+    document.querySelectorAll('.country-card').forEach(c=>c.addEventListener('click',()=>{document.querySelectorAll('.country-card').forEach(x=>x.classList.remove('active'));c.classList.add('active');state.country=c.dataset.country;}));
+    document.getElementById('addDirectorBtn-au').onclick=()=>{captureStep2();state.au.directors.push({name:'',dob:'',address:'',email:''});renderDirectors();};
+    document.getElementById('addDirectorBtn-nz').onclick=()=>{captureStep2();state.nz.directors.push({name:'',dob:'',address:'',email:''});renderDirectors();};
+    document.getElementById('addOwnerBtn-au').onclick=()=>{captureStep2();state.au.owners.push({name:'',ownership:'',controller:false,dob:'',country:''});renderOwners();};
+    document.getElementById('addOwnerBtn-nz').onclick=()=>{captureStep2();state.nz.owners.push({name:'',ownership:'',controller:false,dob:'',country:''});renderOwners();};
 
-    function renderOwners() {
-      const wrap = document.getElementById('ownersContainer');
-      wrap.innerHTML = '';
-      state.business.owners.forEach((o, idx) => wrap.appendChild(createOwnerCard(o, idx + 1)));
-    }
+    backBtn.onclick=()=>{if(state.step>1){captureStep2();state.step--;updateStep();}};
+    nextBtn.onclick=()=>{if(!validateCurrent())return;if(state.step<stepCount){state.step++;updateStep();}else showToast('KYB 提交成功');};
+    document.addEventListener('click',(e)=>{const b=e.target.closest('.info-btn');if(b?.dataset.info)showToast(b.dataset.info)});
 
-    function setBadgeStatus(el, status) {
-      el.classList.remove('verified', 'pending', 'review');
-      if (status === 'Verified' || status === 'Active') el.classList.add('verified');
-      else if (status === 'Review Required') el.classList.add('review');
-      else el.classList.add('pending');
-      el.textContent = status;
-    }
-
-    function renderBusinessStatus() {
-      const isHighRisk = ['Import / Export', 'Medical', 'Chemicals'].includes(state.business.industry);
-      setBadgeStatus(document.getElementById('abrStatus'), state.business.abn ? 'Verified' : 'Pending');
-      setBadgeStatus(document.getElementById('asicStatus'), state.business.acn ? 'Verified' : 'Pending');
-      setBadgeStatus(document.getElementById('gstStatus'), state.business.abn ? 'Active' : 'Inactive');
-      setBadgeStatus(document.getElementById('sanctionStatus'), isHighRisk ? 'Review Required' : 'Pending');
-      document.getElementById('highRiskBanner').style.display = isHighRisk ? 'block' : 'none';
-    }
-
-    function renderSummary() {
-      document.getElementById('kybCompanySummary').innerHTML =
-        row('Company Legal Name', state.business.companyName) +
-        row('Company Type', state.business.companyType) +
-        row('ABN', state.business.abn) +
-        row('ACN / ARBN', state.business.acn) +
-        row('Industry Type', state.business.industry) +
-        row('Registered Address', state.business.registeredAddress) +
-        row('Business Address', state.business.businessAddress) +
-        row('Website', state.business.website || '-');
-
-      document.getElementById('kybDirectorsSummary').innerHTML = state.business.directors.map((d, idx) =>
-        `<div class="summary-grid" style="margin-bottom:10px;">` +
-        row(`Director ${idx + 1} Name`, d.name) +
-        row('DOB', d.dob) +
-        row('Address', d.address) +
-        row('Email', d.email) +
-        `</div>`
-      ).join('');
-
-      document.getElementById('kybOwnersSummary').innerHTML = state.business.owners.map((o, idx) =>
-        `<div class="summary-grid" style="margin-bottom:10px;">` +
-        row(`Owner ${idx + 1} Name`, o.name) +
-        row('Ownership Percentage', o.ownership) +
-        row('Controller', o.controller ? '是' : '否') +
-        row('DOB', o.dob) +
-        row('Country', o.country) +
-        `</div>`
-      ).join('');
-
-      const highRisk = ['Import / Export', 'Medical', 'Chemicals'].includes(state.business.industry);
-      document.getElementById('kybRiskSummary').innerHTML =
-        row('Industry Risk', highRisk ? 'High Risk Industry Detected' : 'No High Risk Flag') +
-        row('Manual Review', highRisk ? '可能需要' : '暂不需要');
-    }
-
-    document.getElementById('addDirectorBtn').addEventListener('click', () => {
-      captureBusinessData();
-      state.business.directors.push({ name: '', dob: '', address: '', email: '' });
-      renderDirectors();
-    });
-
-    document.getElementById('addOwnerBtn').addEventListener('click', () => {
-      captureBusinessData();
-      state.business.owners.push({ name: '', ownership: '', controller: false, dob: '', country: '' });
-      renderOwners();
-    });
-
-    backBtn.addEventListener('click', () => {
-      if (state.step > 1) {
-        captureBusinessData();
-        state.step -= 1;
-        updateStepVisibility();
-      }
-    });
-
-    nextBtn.addEventListener('click', () => {
-      if (!validateCurrentStep()) return;
-      if (state.step < stepCount) {
-        state.step += 1;
-        updateStepVisibility();
-      } else {
-        showToast('KYB 提交成功');
-      }
-    });
-
-    document.addEventListener('click', (e) => {
-      const btn = e.target.closest('.info-btn');
-      if (btn && btn.dataset.info) showToast(btn.dataset.info);
-    });
-
-    updateStepVisibility();
+    updateStep();
   </script>
 </body>
 </html>
