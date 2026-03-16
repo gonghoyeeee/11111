@@ -6,64 +6,47 @@
   <title>企业认证</title>
   <style>
     :root{
-      --bg:#eef2f8;--phone:#f7f9fc;--card:#fff;--line:#e4eaf3;--text:#162238;--muted:#6f7f99;
-      --primary:#3678ff;--primary-soft:#eaf1ff;--danger:#f6475b;--warn:#b76a07;--warn-bg:#fff7e8;
-      --ok:#1ac16c;--shadow:0 4px 14px rgba(16,36,74,.08);--radius:16px;
+      --primary:#3678FF;--danger:#F6475B;--ok:#1AC16C;--bg:#f3f6fb;--phone:#f7f9fc;
+      --text:#222222;--text2:#666666;--line:#e4eaf3;--card:#ffffff;--card2:#f9fbff;
+      --shadow:0 6px 18px rgba(29,43,61,.08);--radius:16px;
     }
-    *{box-sizing:border-box} body{margin:0;background:var(--bg);font-family:"PingFang SC","Microsoft YaHei",Inter,sans-serif;color:var(--text);min-height:100vh;display:grid;place-items:center;padding:16px}
-    .shell{width:390px;height:844px;border-radius:34px;background:#111;padding:10px;box-shadow:0 24px 60px rgba(0,0,0,.25)}
-    .screen{height:100%;border-radius:26px;overflow:hidden;background:var(--phone);display:flex;flex-direction:column;position:relative}
-    .status{height:42px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 18px;color:#2c3f61;font-size:13px;flex-shrink:0}
-    .header{background:#fff;border-bottom:1px solid var(--line);padding:8px 16px 12px;flex-shrink:0}
-    .header-row{display:grid;grid-template-columns:24px 1fr 24px;align-items:center}
-    .back{width:12px;height:12px;border-left:2px solid #2a3d60;border-bottom:2px solid #2a3d60;transform:rotate(45deg)}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:"PingFang SC","Microsoft YaHei",Inter,sans-serif;color:var(--text);min-height:100vh;display:grid;place-items:center;padding:16px}
+    .shell{width:390px;height:844px;border-radius:34px;background:#0d1118;padding:10px;box-shadow:0 26px 66px rgba(0,0,0,.24)}
+    .screen{height:100%;border-radius:26px;background:var(--phone);display:flex;flex-direction:column;overflow:hidden;position:relative}
+    .status{height:42px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:13px;color:#33496f;flex-shrink:0}
+    .header{background:#fff;border-bottom:1px solid var(--line);padding:8px 15px 12px;flex-shrink:0}
+    .head-row{display:grid;grid-template-columns:24px 1fr 24px;align-items:center}.back{width:12px;height:12px;border-left:2px solid #2f4367;border-bottom:2px solid #2f4367;transform:rotate(45deg)}
     .title{margin:0;text-align:center;font-size:19px;font-weight:700}
-    .step-head{margin-top:10px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}
-    .dots{display:flex;gap:7px}.dot{width:8px;height:8px;border-radius:50%;background:#d5deea}.dot.active{background:var(--primary);box-shadow:0 0 0 4px rgba(54,120,255,.14)}
+    .progress{margin-top:10px;display:flex;justify-content:space-between;align-items:center}
+    .progress span{font-size:12px;color:#667c9e}.dots{display:flex;gap:7px}.dot{width:8px;height:8px;border-radius:50%;background:#d4deed}.dot.active{background:var(--primary);box-shadow:0 0 0 4px rgba(54,120,255,.14)}
 
-    .content{flex:1;overflow:auto;padding:14px 14px 116px}
-    .step{display:none}.step.active{display:block}
+    .content{flex:1;overflow:auto;padding:14px 15px 118px}.step{display:none}.step.active{display:block}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:15px;margin-bottom:12px}
+    .card h3{margin:0 0 8px;font-size:18px}.sub{margin:0 0 10px;color:var(--text2);font-size:13px;line-height:1.45}
 
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;margin-bottom:12px}
-    .card h3{margin:0 0 8px;font-size:17px}.sub{margin:0 0 10px;font-size:13px;color:var(--muted);line-height:1.45}
-
-    .country-grid{display:grid;gap:10px}
-    .country{border:1px solid #dce5f3;border-radius:14px;padding:12px;background:#fff;cursor:pointer;position:relative}
-    .country.active{border-color:var(--primary);background:var(--primary-soft)}
-    .country b{display:block;font-size:15px;margin-bottom:4px}
-    .country p{margin:0;color:var(--muted);font-size:12px}
-    .pick{position:absolute;right:10px;top:10px;font-size:11px;padding:2px 8px;border-radius:999px;background:#f0f4fb;color:#668}
-    .country.active .pick{background:var(--primary);color:#fff}
-
-    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
-    label{font-size:13px;font-weight:600;color:#314767}
-    .req::after{content:" *";color:var(--danger)}
-    input,select,textarea{width:100%;border:1px solid #d7e1f0;border-radius:12px;background:#fff;padding:11px 12px;font-size:14px;color:var(--text);outline:none}
-    textarea{min-height:72px;resize:vertical}
-    input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(54,120,255,.13)}
+    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}label{font-size:13px;color:#334b72;font-weight:600}.req::after{content:" *";color:var(--danger)}
+    input,select,textarea{width:100%;border:1px solid #d7e0ee;border-radius:12px;background:#fff;padding:11px 12px;font-size:14px;outline:none;color:var(--text)}
+    textarea{min-height:80px;resize:vertical}
+    input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(54,120,255,.12)}
     .error{display:none;color:var(--danger);font-size:12px}.field.invalid .error,.error.show{display:block}
 
-    .entity{border:1px solid #dbe5f3;border-radius:14px;padding:12px;background:#fbfdff;margin-bottom:10px}
-    .entity h4{margin:0 0 10px;font-size:14px}
-    .hint{display:none;font-size:12px;color:var(--warn);background:var(--warn-bg);padding:4px 8px;border-radius:8px}
-    .check-line{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#334b70;margin:6px 0}
-    .check-line input{width:16px;height:16px;margin-top:2px}
+    .section{background:var(--card2);border:1px solid #dde6f3;border-radius:14px;padding:12px;margin-top:12px}
+    .section h4{margin:0 0 8px;font-size:14px;color:#21375d}
 
-    .summary-grid{display:grid;grid-template-columns:110px 1fr;gap:8px 10px;font-size:13px}
-    .summary-grid b{color:#6980a5;font-weight:600}
-    .risk{border:1px solid #f3c879;background:#fff8e8;color:#9a5d00;border-radius:14px;padding:12px;line-height:1.45}
+    .person-card{background:#fff;border:1px solid #dbe5f3;border-radius:12px;padding:12px;margin-bottom:10px}
+    .person-card h5{margin:0 0 8px;font-size:14px;color:#273f68}
+    .hint{display:none;font-size:12px;color:#a16207;background:#fff5e6;border:1px solid #f8d5a2;border-radius:8px;padding:4px 8px}
 
-    .result{padding-top:6px}
-    .result .state{display:inline-block;padding:4px 10px;border-radius:999px;background:#eef5ff;color:#245ed4;font-weight:700;font-size:12px}
+    .check{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#35507a;margin:8px 0}.check input{width:16px;height:16px;margin-top:2px}
+    .summary{display:grid;grid-template-columns:110px 1fr;gap:8px 10px;font-size:13px}.summary b{color:#6580aa;font-weight:600}
+    .risk{border:1px solid #f0c27b;background:#fff7e8;color:#9a5d00;border-radius:12px;padding:12px;line-height:1.45}
+    .hidden{display:none!important}
+
+    .result-badge{display:inline-block;padding:4px 10px;border-radius:999px;background:#eaf1ff;color:#245ed4;font-size:12px;font-weight:700}
 
     .bottom{position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,.95);border-top:1px solid var(--line);padding:10px 14px calc(14px + env(safe-area-inset-bottom))}
-    .tip{font-size:12px;color:var(--muted);margin-bottom:8px}
-    .actions{display:grid;grid-template-columns:110px 1fr;gap:10px}
-    button{height:44px;border-radius:12px;border:0;font-size:15px;font-weight:700;cursor:pointer}
-    .btn-back{background:#edf1f7;color:#445c82}
-    .btn-next{background:var(--primary);color:#fff;box-shadow:0 8px 16px rgba(54,120,255,.28)}
-    .btn-next.secondary{background:#1c4dcc}
-    .hidden{display:none!important}
+    .tip{font-size:12px;color:#6f839f;margin-bottom:8px}.actions{display:grid;grid-template-columns:110px 1fr;gap:10px}
+    button{height:44px;border:0;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer}.btn-back{background:#eef2f7;color:#496185}.btn-next{background:var(--primary);color:#fff;box-shadow:0 8px 16px rgba(54,120,255,.28)}
 
     @media (max-width:440px){body{padding:0}.shell{width:100vw;height:100vh;border-radius:0;padding:0}.screen{border-radius:0}}
   </style>
@@ -73,106 +56,93 @@
     <div class="screen">
       <div class="status"><span>9:41</span><span>●●●</span></div>
       <div class="header">
-        <div class="header-row"><div class="back"></div><h1 class="title">企业认证</h1><div></div></div>
-        <div class="step-head"><span id="stepText">第 1 步，共 4 步</span><div class="dots" id="dots"></div></div>
+        <div class="head-row"><div class="back"></div><h1 class="title">企业认证</h1><div></div></div>
+        <div class="progress"><span id="stepText">第 1 步，共 3 步</span><div class="dots" id="dots"></div></div>
       </div>
 
       <div class="content">
         <section id="step1" class="step active">
           <div class="card">
-            <h3>选择国家/地区</h3>
-            <p class="sub">请选择企业注册国家/地区，以继续完成认证</p>
-            <div class="country-grid">
-              <div class="country" data-country="au"><span class="pick">Australia</span><b>澳大利亚</b><p>适用于在澳大利亚注册的企业</p></div>
-              <div class="country" data-country="nz"><span class="pick">New Zealand</span><b>新西兰</b><p>适用于在新西兰注册的企业</p></div>
+            <h3>企业信息</h3>
+            <p class="sub">请填写企业的基础信息以完成认证</p>
+            <div class="field" data-required="true" data-rule="len2-200"><label class="req">企业法定名称</label><input name="companyName" placeholder="请输入企业法定名称"><span class="error">请输入 2-200 字符</span></div>
+            <div class="field" data-rule="max200"><label>营业名称（选填）</label><input name="tradingName" placeholder="请输入营业名称"><span class="error">最多 200 字符</span></div>
+            <div class="field" data-required="true" data-rule="min5"><label class="req">注册地址</label><input name="registeredAddress" placeholder="请输入注册地址"><span class="error">至少 5 字符</span></div>
+            <div class="field" data-required="true" data-rule="min5"><label class="req">经营地址</label><input name="businessAddress" placeholder="请输入经营地址"><span class="error">至少 5 字符</span></div>
+            <div class="field" data-required="true"><label class="req">企业类型</label>
+              <select name="companyType"><option value="">请选择企业类型</option><option>Pty Ltd</option><option>Trust</option><option>Partnership</option><option>Sole Trader</option><option>Foreign Company</option><option>其他</option></select><span class="error">请选择企业类型</span>
             </div>
-            <p id="countryError" class="error">请选择国家/地区后继续</p>
+            <div class="field" data-required="true"><label class="req">行业类型</label>
+              <select name="industry"><option value="">请选择行业</option><option>金融服务</option><option>贸易 / 进出口</option><option>电商零售</option><option>科技 / 软件</option><option>制造业</option><option>建筑 / 工程</option><option>专业服务</option><option>医疗 / 健康</option><option>化工</option><option>其他</option></select><span class="error">请选择行业类型</span>
+            </div>
+            <div class="field" data-required="true" data-rule="len10-1000"><label class="req">业务描述</label><textarea name="businessDesc" placeholder="请简要描述主营业务"></textarea><span class="error">请输入 10-1000 字符</span></div>
+            <div class="field" data-rule="url"><label>公司官网（选填）</label><input name="website" placeholder="https://example.com"><span class="error">请输入有效网址</span></div>
+            <div class="field" data-required="true" data-rule="abn"><label class="req">ABN 编号</label><input name="abn" placeholder="11 位数字"><span class="error">ABN 必须为 11 位数字</span></div>
+            <div class="field" data-rule="acn"><label>ACN / ARBN 编号（选填）</label><input name="acn" placeholder="9 位数字"><span class="error">ACN / ARBN 需为 9 位数字</span></div>
           </div>
         </section>
 
         <section id="step2" class="step">
           <div class="card">
-            <h3>企业信息</h3>
-            <p class="sub">请填写企业的基础资料</p>
-            <div id="commonFields">
-              <div class="field" data-required="true"><label class="req">企业法定名称</label><input name="companyName" placeholder="请输入企业法定名称"><span class="error">必填</span></div>
-              <div class="field"><label>营业名称（选填）</label><input name="tradingName" placeholder="请输入营业名称"></div>
-              <div class="field" data-required="true"><label class="req">注册地址</label><input name="registeredAddress" placeholder="请输入注册地址"><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="req">经营地址</label><input name="businessAddress" placeholder="请输入经营地址"><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="req">企业类型</label><select name="companyType"></select><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="req">行业类型</label>
-                <select name="industry">
-                  <option value="">请选择行业</option><option>金融服务</option><option>贸易 / 进出口</option><option>电商零售</option><option>科技 / 软件</option><option>制造业</option><option>建筑 / 工程</option><option>专业服务</option><option>医疗 / 健康</option><option>化工</option><option>其他</option>
-                </select><span class="error">必填</span>
-              </div>
-              <div class="field" data-required="true"><label class="req">业务描述</label><textarea name="businessDesc" placeholder="请简要描述主营业务"></textarea><span class="error">必填</span></div>
-              <div class="field"><label>公司官网（选填）</label><input name="website" placeholder="https://"></div>
+            <h3>申请人及相关人员</h3>
+            <p class="sub">请填写代表申请人及企业关键相关人员信息</p>
+
+            <div class="section" id="applicantSection">
+              <h4>申请人信息</h4>
+              <div class="field" data-required="true" data-rule="len2-100"><label class="req">申请人姓名</label><input name="applicantName"><span class="error">请输入 2-100 字符</span></div>
+              <div class="field" data-required="true" data-rule="len2-100"><label class="req">职位</label><input name="applicantTitle"><span class="error">请输入 2-100 字符</span></div>
+              <div class="field" data-required="true" data-rule="phone"><label class="req">手机号</label><input name="applicantPhone" placeholder="例如 +61412345678"><span class="error">请输入有效手机号</span></div>
+              <div class="field" data-required="true" data-rule="email"><label class="req">邮箱地址</label><input type="email" name="applicantEmail"><span class="error">请输入有效邮箱</span></div>
+              <div class="field" data-required="true" data-rule="age18"><label class="req">出生日期</label><input type="date" name="applicantDob"><span class="error">年龄需满 18 岁</span></div>
+              <div class="field" data-required="true" data-rule="min5"><label class="req">居住地址</label><input name="applicantAddress"><span class="error">至少 5 字符</span></div>
+              <label class="check"><input type="checkbox" id="applicantAuth">我确认本人有权代表该企业提交认证申请</label>
+              <p id="applicantAuthError" class="error">请勾选授权确认</p>
             </div>
-            <div id="countrySpecific"></div>
+
+            <div class="section">
+              <h4>董事信息 <small style="color:#7b90b2;font-weight:500;">Director</small></h4>
+              <div id="directorsContainer"></div>
+              <button type="button" id="addDirectorBtn" class="btn-back" style="width:100%;height:40px;">新增董事</button>
+            </div>
+
+            <div class="section">
+              <h4>股东 / 实际控制人 <small style="color:#7b90b2;font-weight:500;">Shareholder / Ultimate Controller</small></h4>
+              <p class="sub" style="margin-bottom:8px;">请填写持股 25% 及以上，或对企业具有实际控制权的相关人员信息。</p>
+              <div id="shareholdersContainer"></div>
+              <button type="button" id="addShareholderBtn" class="btn-back" style="width:100%;height:40px;">新增股东/实际控制人</button>
+            </div>
           </div>
         </section>
 
         <section id="step3" class="step">
           <div class="card">
-            <h3>申请人及受益所有人</h3>
-            <p class="sub">请填写代表申请人及企业实际控制人的信息</p>
-
-            <div class="entity">
-              <h4>申请人信息</h4>
-              <div class="field" data-required="true"><label class="req">申请人姓名</label><input name="applicantName" placeholder="请输入姓名"><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="req">职位</label><input name="applicantTitle" placeholder="请输入职位"><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="req">手机号</label><input name="applicantPhone" placeholder="请输入手机号"><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="req">邮箱地址</label><input type="email" name="applicantEmail" placeholder="name@email.com"><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="req">出生日期</label><input type="date" name="applicantDob"><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="req">居住地址</label><input name="applicantAddress" placeholder="请输入居住地址"><span class="error">必填</span></div>
-              <label class="check-line"><input id="applicantAuth" type="checkbox">我确认本人有权代表该企业提交认证申请</label>
-              <p id="applicantAuthError" class="error">请确认授权声明</p>
-            </div>
-
-            <div class="entity">
-              <h4>受益所有人</h4>
-              <p class="sub" style="margin-bottom:8px;">请填写持股 25% 及以上，或对企业具有实际控制权的受益所有人信息</p>
-              <div id="ownersContainer"></div>
-              <button type="button" id="addOwnerBtn" class="btn-back" style="width:100%;height:40px;">新增受益所有人</button>
-            </div>
-          </div>
-        </section>
-
-        <section id="step4" class="step">
-          <div class="card">
             <h3>确认并提交</h3>
             <p class="sub">请确认您填写的信息无误后提交认证</p>
-
-            <div class="entity"><h4>国家/地区</h4><div class="summary-grid" id="summaryCountry"></div></div>
-            <div class="entity"><h4>企业信息</h4><div class="summary-grid" id="summaryCompany"></div></div>
-            <div class="entity"><h4>申请人信息</h4><div class="summary-grid" id="summaryApplicant"></div></div>
-            <div class="entity"><h4>受益所有人信息</h4><div id="summaryOwners"></div></div>
+            <div class="section"><h4>企业信息</h4><div class="summary" id="sumCompany"></div></div>
+            <div class="section"><h4>申请人信息</h4><div class="summary" id="sumApplicant"></div></div>
+            <div class="section"><h4>董事信息</h4><div id="sumDirectors"></div></div>
+            <div class="section"><h4>股东 / 实际控制人信息</h4><div id="sumShareholders"></div></div>
             <div id="riskCard" class="risk hidden"><b>风险提示</b><br>您所选择的行业可能需要更高等级的合规审核，平台后续可能要求补充材料。</div>
-
-            <label class="check-line"><input id="confirmTruth" type="checkbox">我确认以上信息真实、准确、完整</label>
-            <label class="check-line"><input id="confirmAuth" type="checkbox">我确认本人有权代表该企业提交认证申请</label>
+            <label class="check"><input type="checkbox" id="confirmTruth">我确认以上信息真实、准确、完整</label>
+            <label class="check"><input type="checkbox" id="confirmAuth">我确认本人有权代表该企业提交认证申请</label>
             <p id="confirmError" class="error">请勾选以上两项确认</p>
           </div>
         </section>
 
-        <section id="stepResult" class="step">
-          <div class="card result">
+        <section id="result" class="step">
+          <div class="card">
             <h3>企业认证已提交</h3>
-            <p class="sub">我们正在审核您提交的企业信息，审核完成后将通过站内消息或联系方式通知您。</p>
-            <div class="entity">
-              <h4>审核状态</h4>
-              <p><span class="state">审核中</span></p>
-              <p class="sub" style="margin-bottom:0;">审核结果通常将在资料核验完成后更新，如需补充资料，我们会通知您。</p>
-            </div>
+            <p class="sub">我们正在审核您提交的企业信息，审核完成后将通知您。</p>
+            <div class="section"><h4>当前状态</h4><p><span class="result-badge">审核中</span></p><p class="sub" style="margin-bottom:0">如需补充资料，我们会通知您。</p></div>
           </div>
         </section>
       </div>
 
       <div class="bottom">
-        <div class="tip" id="bottomTip">仅支持澳大利亚 / 新西兰企业认证</div>
+        <div class="tip">当前首版仅支持澳大利亚企业认证（新西兰逻辑已预留）</div>
         <div class="actions">
-          <button type="button" id="backBtn" class="btn-back">返回</button>
-          <button type="button" id="nextBtn" class="btn-next">继续</button>
+          <button id="backBtn" type="button" class="btn-back">返回</button>
+          <button id="nextBtn" type="button" class="btn-next">继续</button>
         </div>
       </div>
     </div>
@@ -180,206 +150,181 @@
 
   <script>
     const state={
-      step:1,country:'',
-      form:{companyName:'',tradingName:'',registeredAddress:'',businessAddress:'',companyType:'',industry:'',businessDesc:'',website:'',abn:'',acn:'',nzbn:'',companyNumber:''},
+      step:1,submitted:false,country:'au', // nz reserved
+      company:{companyName:'',tradingName:'',registeredAddress:'',businessAddress:'',companyType:'',industry:'',businessDesc:'',website:'',abn:'',acn:''},
       applicant:{name:'',title:'',phone:'',email:'',dob:'',address:'',auth:false},
-      owners:[{name:'',ownership:'',dob:'',country:'',address:'',controller:false}],
-      submitted:false
+      directors:[{name:'',dob:'',address:'',country:''}],
+      shareholders:[{name:'',ownership:'',dob:'',country:'',address:'',controller:false}]
     };
 
-    const countryTypeOptions={
-      au:['Pty Ltd','Trust','Partnership','Sole Trader','Foreign Company','其他'],
-      nz:['Limited Company','Partnership','Sole Trader','Trust','Overseas Entity','其他']
-    };
-
-    const dotsEl=document.getElementById('dots');
+    const nzReserved={enabled:false}; // 预留逻辑，不在当前首版展示
     const stepText=document.getElementById('stepText');
+    const dots=document.getElementById('dots');
     const backBtn=document.getElementById('backBtn');
     const nextBtn=document.getElementById('nextBtn');
-    const bottomTip=document.getElementById('bottomTip');
 
-    function initDots(){dotsEl.innerHTML='';for(let i=1;i<=4;i++){const d=document.createElement('span');d.className='dot'+(i===state.step?' active':'');dotsEl.appendChild(d)}}
-    function setStepUI(){
+    const escapeHtml=s=>String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+    const kv=(k,v)=>`<b>${escapeHtml(k)}</b><span>${escapeHtml(v||'-')}</span>`;
+
+    function age18(dateStr){if(!dateStr)return false;const d=new Date(dateStr);if(Number.isNaN(d.getTime()))return false;const now=new Date();let a=now.getFullYear()-d.getFullYear();const m=now.getMonth()-d.getMonth();if(m<0||(m===0&&now.getDate()<d.getDate()))a--;return a>=18;}
+    function validUrl(v){if(!v)return true;try{new URL(v);return true}catch{return false}}
+    function validPhone(v){return /^\+?[0-9\-\s()]{7,20}$/.test(v)}
+
+    function initDots(){dots.innerHTML='';for(let i=1;i<=3;i++){const d=document.createElement('span');d.className='dot'+(i===state.step?' active':'');dots.appendChild(d)}}
+    function setStep(){
       document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
-      const id=state.submitted?'stepResult':`step${state.step}`;
+      const id=state.submitted?'result':`step${state.step}`;
       document.getElementById(id).classList.add('active');
 
-      if(state.submitted){
-        stepText.textContent='企业认证已提交';
-        dotsEl.innerHTML='';
-        backBtn.classList.add('hidden');
-        nextBtn.textContent='完成';
-        nextBtn.classList.add('secondary');
-        bottomTip.textContent='感谢提交，您可以返回首页';
-        return;
-      }
-
+      if(state.submitted){stepText.textContent='提交成功';dots.innerHTML='';backBtn.classList.add('hidden');nextBtn.textContent='完成';return;}
       backBtn.classList.remove('hidden');
-      nextBtn.classList.remove('secondary');
-      stepText.textContent=`第 ${state.step} 步，共 4 步`;
+      stepText.textContent=`第 ${state.step} 步，共 3 步`;
       initDots();
       backBtn.style.visibility=state.step===1?'hidden':'visible';
-      nextBtn.textContent=state.step===4?'提交认证':'继续';
-      bottomTip.textContent='仅支持澳大利亚 / 新西兰企业认证';
-
-      if(state.step===2) renderCountrySpecific();
-      if(state.step===3) renderOwners();
-      if(state.step===4) renderSummary();
+      nextBtn.textContent=state.step===3?'提交认证':'继续';
+      if(state.step===2){renderDirectors();renderShareholders();}
+      if(state.step===3) renderSummary();
     }
 
-    function markFieldErrors(root){
+    function validateField(field){
+      const input=field.querySelector('input,select,textarea');
+      const val=String(input.value||'').trim();
+      const required=field.dataset.required==='true';
+      const rule=field.dataset.rule||'';
       let ok=true;
-      root.querySelectorAll('.field[data-required="true"]').forEach(f=>{
-        const i=f.querySelector('input,select,textarea');
-        const pass=String(i.value||'').trim()!=='';
-        f.classList.toggle('invalid',!pass);if(!pass)ok=false;
-      });
+      if(required&&!val) ok=false;
+      if(ok&&val){
+        if(rule==='len2-200') ok=val.length>=2&&val.length<=200;
+        if(rule==='max200') ok=val.length<=200;
+        if(rule==='min5') ok=val.length>=5;
+        if(rule==='len10-1000') ok=val.length>=10&&val.length<=1000;
+        if(rule==='url') ok=validUrl(val);
+        if(rule==='abn') ok=/^\d{11}$/.test(val);
+        if(rule==='acn') ok=/^\d{9}$/.test(val);
+        if(rule==='len2-100') ok=val.length>=2&&val.length<=100;
+        if(rule==='phone') ok=validPhone(val);
+        if(rule==='email') ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+        if(rule==='age18') ok=age18(val);
+        if(rule==='ownership') ok=!Number.isNaN(+val)&&+val>=0&&+val<=100;
+      }
+      field.classList.toggle('invalid',!ok);
       return ok;
     }
 
-    function captureStep2(){
-      const wrap=document.getElementById('commonFields');
-      state.form.companyName=wrap.querySelector('[name="companyName"]').value.trim();
-      state.form.tradingName=wrap.querySelector('[name="tradingName"]').value.trim();
-      state.form.registeredAddress=wrap.querySelector('[name="registeredAddress"]').value.trim();
-      state.form.businessAddress=wrap.querySelector('[name="businessAddress"]').value.trim();
-      state.form.companyType=wrap.querySelector('[name="companyType"]').value;
-      state.form.industry=wrap.querySelector('[name="industry"]').value;
-      state.form.businessDesc=wrap.querySelector('[name="businessDesc"]').value.trim();
-      state.form.website=wrap.querySelector('[name="website"]').value.trim();
-      const sp=document.getElementById('countrySpecific');
-      if(state.country==='au'){state.form.abn=sp.querySelector('[name="abn"]').value.trim();state.form.acn=sp.querySelector('[name="acn"]').value.trim();state.form.nzbn='';state.form.companyNumber='';}
-      if(state.country==='nz'){state.form.nzbn=sp.querySelector('[name="nzbn"]').value.trim();state.form.companyNumber=sp.querySelector('[name="companyNumber"]').value.trim();state.form.abn='';state.form.acn='';}
+    function validateSection(root){let ok=true;root.querySelectorAll('.field').forEach(f=>{if(!validateField(f))ok=false});return ok;}
+
+    function captureCompany(){
+      const s=document.getElementById('step1');
+      state.company.companyName=s.querySelector('[name="companyName"]').value.trim();
+      state.company.tradingName=s.querySelector('[name="tradingName"]').value.trim();
+      state.company.registeredAddress=s.querySelector('[name="registeredAddress"]').value.trim();
+      state.company.businessAddress=s.querySelector('[name="businessAddress"]').value.trim();
+      state.company.companyType=s.querySelector('[name="companyType"]').value;
+      state.company.industry=s.querySelector('[name="industry"]').value;
+      state.company.businessDesc=s.querySelector('[name="businessDesc"]').value.trim();
+      state.company.website=s.querySelector('[name="website"]').value.trim();
+      state.company.abn=s.querySelector('[name="abn"]').value.trim();
+      state.company.acn=s.querySelector('[name="acn"]').value.trim();
     }
 
-    function captureStep3(){
-      const c=document.querySelector('#step3 .entity');
-      state.applicant.name=c.querySelector('[name="applicantName"]').value.trim();
-      state.applicant.title=c.querySelector('[name="applicantTitle"]').value.trim();
-      state.applicant.phone=c.querySelector('[name="applicantPhone"]').value.trim();
-      state.applicant.email=c.querySelector('[name="applicantEmail"]').value.trim();
-      state.applicant.dob=c.querySelector('[name="applicantDob"]').value;
-      state.applicant.address=c.querySelector('[name="applicantAddress"]').value.trim();
+    function capturePeople(){
+      const sec=document.getElementById('applicantSection');
+      state.applicant.name=sec.querySelector('[name="applicantName"]').value.trim();
+      state.applicant.title=sec.querySelector('[name="applicantTitle"]').value.trim();
+      state.applicant.phone=sec.querySelector('[name="applicantPhone"]').value.trim();
+      state.applicant.email=sec.querySelector('[name="applicantEmail"]').value.trim();
+      state.applicant.dob=sec.querySelector('[name="applicantDob"]').value;
+      state.applicant.address=sec.querySelector('[name="applicantAddress"]').value.trim();
       state.applicant.auth=document.getElementById('applicantAuth').checked;
 
-      state.owners=[...document.querySelectorAll('.owner-card')].map(card=>({
-        name:card.querySelector('[name="ownerName"]').value.trim(),
-        ownership:card.querySelector('[name="ownerOwnership"]').value.trim(),
-        dob:card.querySelector('[name="ownerDob"]').value,
-        country:card.querySelector('[name="ownerCountry"]').value.trim(),
-        address:card.querySelector('[name="ownerAddress"]').value.trim(),
-        controller:card.querySelector('[name="ownerController"]').checked
+      state.directors=[...document.querySelectorAll('.director-card')].map(card=>({
+        name:card.querySelector('[name="directorName"]').value.trim(),
+        dob:card.querySelector('[name="directorDob"]').value,
+        address:card.querySelector('[name="directorAddress"]').value.trim(),
+        country:card.querySelector('[name="directorCountry"]').value.trim()
+      }));
+      state.shareholders=[...document.querySelectorAll('.shareholder-card')].map(card=>({
+        name:card.querySelector('[name="shareholderName"]').value.trim(),
+        ownership:card.querySelector('[name="ownership"]').value.trim(),
+        dob:card.querySelector('[name="shareholderDob"]').value,
+        country:card.querySelector('[name="shareholderCountry"]').value.trim(),
+        address:card.querySelector('[name="shareholderAddress"]').value.trim(),
+        controller:card.querySelector('[name="isController"]').checked
       }));
     }
 
     function validateStep(){
-      if(state.step===1){
-        document.getElementById('countryError').classList.remove('show');
-        if(!state.country){document.getElementById('countryError').classList.add('show');return false;}
-        return true;
-      }
+      if(state.step===1){const ok=validateSection(document.getElementById('step1'));captureCompany();return ok;}
       if(state.step===2){
-        const okCommon=markFieldErrors(document.getElementById('commonFields'));
-        const okSpecific=markFieldErrors(document.getElementById('countrySpecific'));
-        captureStep2();
-        return okCommon&&okSpecific;
+        const okApplicant=validateSection(document.getElementById('applicantSection'));
+        let okDir=true,okShare=true;
+        document.querySelectorAll('.director-card .field').forEach(f=>{if(!validateField(f))okDir=false});
+        document.querySelectorAll('.shareholder-card .field').forEach(f=>{if(!validateField(f))okShare=false});
+        const auth=document.getElementById('applicantAuth').checked;document.getElementById('applicantAuthError').classList.toggle('show',!auth);
+        capturePeople();
+        return okApplicant&&okDir&&okShare&&auth&&state.directors.length>0&&state.shareholders.length>0;
       }
       if(state.step===3){
-        const okApplicant=markFieldErrors(document.querySelector('#step3 .entity'));
-        let okOwners=true;
-        document.querySelectorAll('.owner-card').forEach(card=>{
-          card.querySelectorAll('.field[data-required="true"]').forEach(f=>{const i=f.querySelector('input');const pass=String(i.value||'').trim()!=='';f.classList.toggle('invalid',!pass);if(!pass)okOwners=false;});
-        });
-        captureStep3();
-        document.getElementById('applicantAuthError').classList.toggle('show',!state.applicant.auth);
-        return okApplicant&&okOwners&&state.applicant.auth;
-      }
-      if(state.step===4){
-        const c1=document.getElementById('confirmTruth').checked;
-        const c2=document.getElementById('confirmAuth').checked;
+        const c1=document.getElementById('confirmTruth').checked,c2=document.getElementById('confirmAuth').checked;
         document.getElementById('confirmError').classList.toggle('show',!(c1&&c2));
         return c1&&c2;
       }
       return true;
     }
 
-    function ownerCard(o,idx){
-      const d=document.createElement('div');d.className='entity owner-card';
-      d.innerHTML=`
-        <h4>受益所有人 ${idx}</h4>
-        <div class='field' data-required='true'><label class='req'>姓名</label><input name='ownerName' value='${escapeHtml(o.name)}' placeholder='请输入姓名'><span class='error'>必填</span></div>
-        <div class='field' data-required='true'><label class='req'>持股比例</label><input name='ownerOwnership' value='${escapeHtml(o.ownership)}' placeholder='例如 30%'><span class='hint'>需纳入认证</span><span class='error'>必填</span></div>
-        <div class='field' data-required='true'><label class='req'>出生日期</label><input type='date' name='ownerDob' value='${escapeHtml(o.dob)}'><span class='error'>必填</span></div>
-        <div class='field' data-required='true'><label class='req'>居住国家</label><input name='ownerCountry' value='${escapeHtml(o.country)}' placeholder='请输入居住国家'><span class='error'>必填</span></div>
-        <div class='field' data-required='true'><label class='req'>居住地址</label><input name='ownerAddress' value='${escapeHtml(o.address)}' placeholder='请输入居住地址'><span class='error'>必填</span></div>
-        <label class='check-line'><input type='checkbox' name='ownerController' ${o.controller?'checked':''}>是否为实际控制人</label>
-      `;
-      const ip=d.querySelector('[name="ownerOwnership"]');const h=d.querySelector('.hint');
-      const upd=()=>{const v=parseFloat(String(ip.value||'').replace('%','').trim());h.style.display=!Number.isNaN(v)&&v>=25?'inline-block':'none'};
-      ip.addEventListener('input',upd);upd();
+    function directorCard(data,idx){
+      const d=document.createElement('div');d.className='person-card director-card';
+      d.innerHTML=`<h5>董事 ${idx}</h5>
+      <div class='field' data-required='true' data-rule='len2-100'><label class='req'>董事姓名</label><input name='directorName' value='${escapeHtml(data.name)}'><span class='error'>请输入 2-100 字符</span></div>
+      <div class='field' data-required='true' data-rule='age18'><label class='req'>出生日期</label><input type='date' name='directorDob' value='${escapeHtml(data.dob)}'><span class='error'>年龄需满 18 岁</span></div>
+      <div class='field' data-required='true' data-rule='min5'><label class='req'>居住地址</label><input name='directorAddress' value='${escapeHtml(data.address)}'><span class='error'>至少 5 字符</span></div>
+      <div class='field' data-required='true' data-rule='len2-100'><label class='req'>居住国家</label><input name='directorCountry' value='${escapeHtml(data.country)}'><span class='error'>请输入 2-100 字符</span></div>`;
       return d;
     }
 
-    function renderOwners(){
-      const c=document.getElementById('ownersContainer');c.innerHTML='';
-      state.owners.forEach((o,i)=>c.appendChild(ownerCard(o,i+1)));
+    function shareholderCard(data,idx){
+      const d=document.createElement('div');d.className='person-card shareholder-card';
+      d.innerHTML=`<h5>股东 / 实际控制人 ${idx}</h5>
+      <div class='field' data-required='true' data-rule='len2-100'><label class='req'>姓名</label><input name='shareholderName' value='${escapeHtml(data.name)}'><span class='error'>请输入 2-100 字符</span></div>
+      <div class='field' data-required='true' data-rule='ownership'><label class='req'>持股比例</label><input name='ownership' value='${escapeHtml(data.ownership)}' placeholder='0-100'><span class='hint'>需纳入认证</span><span class='error'>请输入 0-100 的数值</span></div>
+      <div class='field' data-required='true' data-rule='age18'><label class='req'>出生日期</label><input type='date' name='shareholderDob' value='${escapeHtml(data.dob)}'><span class='error'>年龄需满 18 岁</span></div>
+      <div class='field' data-required='true' data-rule='len2-100'><label class='req'>居住国家</label><input name='shareholderCountry' value='${escapeHtml(data.country)}'><span class='error'>请输入 2-100 字符</span></div>
+      <div class='field' data-required='true' data-rule='min5'><label class='req'>居住地址</label><input name='shareholderAddress' value='${escapeHtml(data.address)}'><span class='error'>至少 5 字符</span></div>
+      <label class='check'><input type='checkbox' name='isController' ${data.controller?'checked':''}>是否为实际控制人</label>`;
+      const ip=d.querySelector('[name="ownership"]'),h=d.querySelector('.hint');
+      const up=()=>{const v=parseFloat(ip.value);h.style.display=!Number.isNaN(v)&&v>=25?'inline-block':'none'};ip.addEventListener('input',up);up();
+      return d;
     }
 
-    function renderCountrySpecific(){
-      const holder=document.getElementById('countrySpecific');holder.innerHTML='';
-      const typeSelect=document.querySelector('#commonFields [name="companyType"]');
-      const old=state.form.companyType;
-      typeSelect.innerHTML='<option value="">请选择企业类型</option>'+countryTypeOptions[state.country].map(v=>`<option ${v===old?'selected':''}>${v}</option>`).join('');
+    function renderDirectors(){const c=document.getElementById('directorsContainer');c.innerHTML='';state.directors.forEach((x,i)=>c.appendChild(directorCard(x,i+1)))}
+    function renderShareholders(){const c=document.getElementById('shareholdersContainer');c.innerHTML='';state.shareholders.forEach((x,i)=>c.appendChild(shareholderCard(x,i+1)))}
 
-      if(state.country==='au'){
-        holder.innerHTML=`
-          <div class='field' data-required='true'><label class='req'>ABN 编号</label><input name='abn' value='${escapeHtml(state.form.abn)}' placeholder='请输入 ABN 编号'><span class='error'>必填</span></div>
-          <div class='field' data-required='true'><label class='req'>ACN / ARBN 编号</label><input name='acn' value='${escapeHtml(state.form.acn)}' placeholder='请输入 ACN / ARBN 编号'><span class='error'>必填</span></div>
-        `;
-      } else {
-        holder.innerHTML=`
-          <div class='field' data-required='true'><label class='req'>NZBN 编号</label><input name='nzbn' value='${escapeHtml(state.form.nzbn)}' placeholder='请输入 NZBN 编号'><span class='error'>必填</span></div>
-          <div class='field' data-required='true'><label class='req'>Company Number（公司编号）</label><input name='companyNumber' value='${escapeHtml(state.form.companyNumber)}' placeholder='请输入公司编号'><span class='error'>必填</span></div>
-        `;
-      }
-    }
-
-    function kv(k,v){return `<b>${escapeHtml(k)}</b><span>${escapeHtml(v||'-')}</span>`}
-    function renderSummary(){
-      captureStep2();captureStep3();
-      document.getElementById('summaryCountry').innerHTML=kv('国家/地区',state.country==='au'?'澳大利亚':'新西兰');
-
-      let company=kv('企业法定名称',state.form.companyName)+kv('营业名称',state.form.tradingName||'-')+kv('注册地址',state.form.registeredAddress)+kv('经营地址',state.form.businessAddress)+kv('企业类型',state.form.companyType)+kv('行业类型',state.form.industry)+kv('业务描述',state.form.businessDesc)+kv('公司官网',state.form.website||'-');
-      company += state.country==='au' ? kv('ABN 编号',state.form.abn)+kv('ACN / ARBN 编号',state.form.acn) : kv('NZBN 编号',state.form.nzbn)+kv('Company Number',state.form.companyNumber);
-      document.getElementById('summaryCompany').innerHTML=company;
-
-      document.getElementById('summaryApplicant').innerHTML=
+    function renderSummary(){captureCompany();capturePeople();
+      document.getElementById('sumCompany').innerHTML=
+        kv('企业法定名称',state.company.companyName)+kv('营业名称',state.company.tradingName||'-')+kv('注册地址',state.company.registeredAddress)+kv('经营地址',state.company.businessAddress)+kv('企业类型',state.company.companyType)+kv('行业类型',state.company.industry)+kv('业务描述',state.company.businessDesc)+kv('公司官网',state.company.website||'-')+kv('ABN 编号',state.company.abn)+kv('ACN / ARBN',state.company.acn||'-');
+      document.getElementById('sumApplicant').innerHTML=
         kv('申请人姓名',state.applicant.name)+kv('职位',state.applicant.title)+kv('手机号',state.applicant.phone)+kv('邮箱地址',state.applicant.email)+kv('出生日期',state.applicant.dob)+kv('居住地址',state.applicant.address)+kv('授权确认',state.applicant.auth?'是':'否');
-
-      document.getElementById('summaryOwners').innerHTML=state.owners.map((o,i)=>`<div class='summary-grid' style='margin-bottom:10px'>${kv(`受益所有人 ${i+1}`,o.name)}${kv('持股比例',o.ownership)}${kv('出生日期',o.dob)}${kv('居住国家',o.country)}${kv('居住地址',o.address)}${kv('实际控制人',o.controller?'是':'否')}</div>`).join('');
-
-      const highRisk=['贸易 / 进出口','医疗 / 健康','化工'].includes(state.form.industry);
-      document.getElementById('riskCard').classList.toggle('hidden',!highRisk);
+      document.getElementById('sumDirectors').innerHTML=state.directors.map((d,i)=>`<div class='summary' style='margin-bottom:10px'>${kv(`董事 ${i+1}`,d.name)}${kv('出生日期',d.dob)}${kv('居住地址',d.address)}${kv('居住国家',d.country)}</div>`).join('');
+      document.getElementById('sumShareholders').innerHTML=state.shareholders.map((s,i)=>`<div class='summary' style='margin-bottom:10px'>${kv(`股东/实控人 ${i+1}`,s.name)}${kv('持股比例',s.ownership)}${kv('出生日期',s.dob)}${kv('居住国家',s.country)}${kv('居住地址',s.address)}${kv('实际控制人',s.controller?'是':'否')}</div>`).join('');
+      const risk=['贸易 / 进出口','医疗 / 健康','化工'].includes(state.company.industry);
+      document.getElementById('riskCard').classList.toggle('hidden',!risk);
     }
 
-    function escapeHtml(s){return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');}
-
-    document.querySelectorAll('.country').forEach(el=>el.addEventListener('click',()=>{document.querySelectorAll('.country').forEach(c=>c.classList.remove('active'));el.classList.add('active');state.country=el.dataset.country;}));
-    document.getElementById('addOwnerBtn').addEventListener('click',()=>{captureStep3();state.owners.push({name:'',ownership:'',dob:'',country:'',address:'',controller:false});renderOwners();});
+    document.getElementById('addDirectorBtn').addEventListener('click',()=>{capturePeople();state.directors.push({name:'',dob:'',address:'',country:''});renderDirectors();});
+    document.getElementById('addShareholderBtn').addEventListener('click',()=>{capturePeople();state.shareholders.push({name:'',ownership:'',dob:'',country:'',address:'',controller:false});renderShareholders();});
 
     backBtn.addEventListener('click',()=>{
-      if(state.submitted){window.location.reload();return;}
-      if(state.step>1){state.step--;setStepUI();}
+      if(state.submitted){location.reload();return;}
+      if(state.step>1){state.step--;setStep();}
     });
-
     nextBtn.addEventListener('click',()=>{
-      if(state.submitted){window.location.reload();return;}
+      if(state.submitted){location.reload();return;}
       if(!validateStep())return;
-      if(state.step<4){state.step++;setStepUI();}
-      else {state.submitted=true;setStepUI();}
+      if(state.step<3){state.step++;setStep();}
+      else{state.submitted=true;setStep();}
     });
 
-    setStepUI();
+    setStep();
   </script>
 </body>
 </html>
