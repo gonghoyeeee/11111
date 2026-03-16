@@ -1,267 +1,335 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
-<meta name="format-detection" content="telephone=no, email=no, address=no"/>
-<title>周期日历</title>
-<style>
-:root{
-  --bg:#0b0d10;--card:#11151a;--muted:#8ea0b4;--text:#e9eef5;
-  --accent:#6ea8fe;--accent2:#ff99c8;--danger:#ff6b6b;--ok:#21c98a;
-  --border:#1b222b;--border-soft:#1f2a37;--shadow:0 8px 20px rgba(0,0,0,.2);
-}
-@media(prefers-color-scheme:light){
-  :root{
-    --bg:#f5f7fa;--card:#fff;--muted:#6b7a8a;--text:#10131a;
-    --accent:#4c83ff;--accent2:#ff7fb5;--danger:#ff5f74;--ok:#1fb47c;
-    --border:#e6eaf0;--border-soft:#e9eef5;--shadow:0 6px 16px rgba(0,0,0,.08);
-  }
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;min-height:100svh;background:var(--bg);color:var(--text);
-  font:14px/1.5 -apple-system,system-ui,Segoe UI,Roboto,Helvetica,Arial;
-  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-}
-.wrap{max-width:1100px;margin:0 auto;padding:12px}
-.topbar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.brand{font-weight:800;color:var(--accent);font-size:16px}
-.grid{display:grid;gap:12px;grid-template-columns:380px 1fr}
-@media(max-width:768px){.grid{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
-.section-head{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px;flex-wrap:wrap}
-.section-head h2{margin:0;font-size:14px;color:var(--accent)}
-.inner{padding:12px}
-label{display:block;margin:6px 0 4px;font-size:12px;font-weight:600}
-input,textarea,select{width:100%;padding:8px;border:1px solid var(--border-soft);border-radius:8px;background:#0c1116;color:var(--text);font-size:13px}
-textarea{resize:vertical;min-height:48px}
-button{cursor:pointer;padding:8px 12px;font-size:13px;border-radius:8px;font-weight:600}
-button{border:1px solid var(--accent);background:linear-gradient(90deg,var(--accent),#8fd0ff);color:#00132b}
-button.ghost{background:transparent;color:var(--accent)}
-button.min{padding:4px 8px;font-size:12px}
-.muted{color:var(--muted)}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.cell{aspect-ratio:1/1;border:1px solid var(--border);border-radius:6px;padding:2px;position:relative;font-size:11px}
-.cell.today{outline:2px solid var(--accent)}
-.cell .d{position:absolute;top:2px;right:4px;font-size:11px;color:var(--muted)}
-.badges{position:absolute;left:4px;bottom:4px;display:flex;gap:4px;font-size:12px}
-.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;font-size:11px}
-.legend .tag{display:flex;align-items:center;gap:4px;padding:4px 6px;border-radius:999px;border:1px solid var(--border);cursor:pointer}
-.kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.kpi .item{padding:8px;border:1px solid var(--border);border-radius:8px}
-.kpi .item b{color:var(--accent);font-size:13px}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th,td{padding:6px 4px;border-bottom:1px solid var(--border)}
-th{color:var(--muted);font-weight:700;background:var(--card);position:sticky;top:0}
-td.actions{white-space:nowrap}
-.toast{position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--card);border:1px solid var(--border);padding:6px 8px;border-radius:8px;display:none;font-size:12px}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>企业认证</title>
+  <style>
+    :root{
+      --primary:#3678FF;--danger:#F6475B;--ok:#1AC16C;--bg:#050608;--phone:#0b0f16;
+      --text:#F4F6FB;--text2:#9aa7bd;--line:#33486E;--card:#1B283D;--card2:#162338;
+      --shadow:0 8px 22px rgba(0,0,0,.35);--radius:16px;
+    }
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:"PingFang SC","Microsoft YaHei",Inter,sans-serif;color:var(--text);min-height:100vh;display:grid;place-items:center;padding:16px}
+    .shell{width:390px;height:844px;border-radius:34px;background:#000;padding:10px;box-shadow:0 26px 66px rgba(0,0,0,.55)}
+    .screen{height:100%;border-radius:26px;background:var(--phone);display:flex;flex-direction:column;overflow:hidden;position:relative}
+    .status{height:42px;background:#0a0e15;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:12px;color:#c2d0e8;flex-shrink:0}
+    .header{background:#0a0e15;border-bottom:1px solid #202c43;padding:8px 15px 12px;flex-shrink:0}
+    .head-row{display:grid;grid-template-columns:24px 1fr 24px;align-items:center}.back{width:12px;height:12px;border-left:2px solid #d8e4fb;border-bottom:2px solid #d8e4fb;transform:rotate(45deg)}
+    .title{margin:0;text-align:center;font-size:17px;font-weight:700;color:#fff}
+    .progress{margin-top:10px;display:flex;justify-content:space-between;align-items:center}
+    .progress span{font-size:12px;color:#8ea0bd}.dots{display:flex;gap:7px}.dot{width:8px;height:8px;border-radius:50%;background:#3a4d74}.dot.active{background:var(--primary);box-shadow:0 0 0 4px rgba(54,120,255,.2)}
+
+    .content{flex:1;overflow:auto;padding:14px 15px 118px}.step{display:none}.step.active{display:block}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:15px;margin-bottom:12px}
+    .card h3{margin:0 0 8px;font-size:16px;color:#fff}.sub{margin:0 0 10px;color:var(--text2);font-size:12px;line-height:1.45}
+
+    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}label{font-size:12px;font-weight:600;color:#c5d4ef}
+    .req::after{content:" *";color:var(--danger)}
+    input,select,textarea{width:100%;border:1px solid #3a4f76;border-radius:12px;background:#111a29;padding:11px 12px;font-size:13px;outline:none;color:#f3f7ff}
+    input::placeholder,textarea::placeholder{color:#6f86ad}
+    textarea{min-height:80px;resize:vertical}
+    input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(54,120,255,.16)}
+    .error{display:none;color:#ff8897;font-size:12px}.field.invalid .error,.error.show{display:block}
+
+    .section{background:var(--card2);border:1px solid #2f4468;border-radius:14px;padding:12px;margin-top:12px}
+    .section h4{margin:0 0 8px;font-size:13px;color:#e1ebff}
+
+    .person-card{background:#1a2a42;border:1px solid #38517a;border-radius:12px;padding:12px;margin-bottom:10px}
+    .person-card h5{margin:0 0 8px;font-size:13px;color:#e7efff}
+    .hint{display:none;font-size:12px;color:#ffd08c;background:#3c2b10;border:1px solid #c0802f;border-radius:8px;padding:4px 8px}
+
+    .check{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:#c8d7f1;margin:8px 0}.check input{width:16px;height:16px;margin-top:2px}
+    .summary{display:grid;grid-template-columns:110px 1fr;gap:8px 10px;font-size:12px;color:#e5edff}.summary b{color:#9fb6da;font-weight:600}
+    .risk{border:1px solid #f0c27b;background:#3e2d11;color:#ffdca8;border-radius:12px;padding:12px;line-height:1.45}
+    .hidden{display:none!important}
+
+    .result-badge{display:inline-block;padding:4px 10px;border-radius:999px;background:#203a67;color:#8fbcff;font-size:12px;font-weight:700}
+
+    .bottom{position:absolute;left:0;right:0;bottom:0;background:rgba(10,14,21,.95);border-top:1px solid #243452;padding:10px 14px calc(14px + env(safe-area-inset-bottom))}
+    .tip{font-size:12px;color:#8ea0bc;margin-bottom:8px}.actions{display:grid;grid-template-columns:110px 1fr;gap:10px}
+    button{height:44px;border:0;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer}.btn-back{background:#3F4042;color:#d8dfeb}.btn-next{background:var(--primary);color:#fff;box-shadow:0 8px 16px rgba(54,120,255,.35)}
+
+    @media (max-width:440px){body{padding:0}.shell{width:100vw;height:100vh;border-radius:0;padding:0}.screen{border-radius:0}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="topbar">
-    <div class="brand">周期日历</div>
-  </div>
-  <div class="grid">
-    <!-- 左侧：表单 -->
-    <section class="card">
-      <div class="section-head"><h2>记录中心</h2></div>
-      <div class="inner">
-        <label>姨妈</label>
-        <input id="pStart" type="date"><input id="pEnd" type="date" style="margin-top:4px">
-        <button id="btnAddPeriod" style="margin-top:6px">添加姨妈</button>
-        <button id="btnQuickPeriod" class="ghost min">今天</button>
-        <label style="margin-top:6px">身体变化</label>
-        <input id="bDate" type="date"><textarea id="bNote"></textarea>
-        <button id="btnAddBody" style="margin-top:6px">添加变化</button>
-        <label style="margin-top:6px">关系</label>
-        <input id="sDate" type="date">
-        <button id="btnAddSex" style="margin-top:6px">添加关系</button>
+  <div class="shell">
+    <div class="screen">
+      <div class="status"><span>9:41</span><span>●●●</span></div>
+      <div class="header">
+        <div class="head-row"><div class="back"></div><h1 class="title">企业认证</h1><div></div></div>
+        <div class="progress"><span id="stepText">第 1 步，共 3 步</span><div class="dots" id="dots"></div></div>
       </div>
-      <div class="section-head"><h2>统计与数据</h2></div>
-      <div class="inner">
-        <div class="kpi">
-          <div class="item"><div class="muted">记录周期数</div><b id="kCycles">0</b></div>
-          <div class="item"><div class="muted">平均周期</div><b id="kAvg">—</b></div>
-          <div class="item"><div class="muted">下次月经</div><b id="kNext">—</b></div>
-          <div class="item"><div class="muted">易孕期</div><b id="kFertile">—</b></div>
-        </div>
-        <div style="margin-top:6px">
-          <button id="btnExport" class="ghost min">导出</button>
-          <input type="file" id="fileImport" accept="application/json" style="display:none"/>
-          <button id="btnImport" class="ghost min">导入</button>
-          <button id="btnResetSamples" class="ghost min">恢复示例</button>
-          <button id="btnClearAll" class="ghost min">清空</button>
-        </div>
-      </div>
-    </section>
-    <!-- 右侧：日历 + 历史 -->
-    <section class="card cal">
-      <div class="section-head"><h2 id="calTitle">日历</h2>
-        <div><button id="prevM" class="ghost min">上月</button><button id="todayM" class="ghost min">今天</button><button id="nextM" class="ghost min">下月</button></div>
-      </div>
-      <div class="inner">
-        <div class="cal-grid" id="dow"></div>
-        <div class="cal-grid" id="cal"></div>
-        <div class="legend muted" id="legendToggle">
-          <span class="tag" data-type="M" style="background:#f28b82;color:#fff;">经</span>
-          <span class="tag" data-type="F" style="background:#81c995;color:#fff;">孕</span>
-          <span class="tag" data-type="O" style="background:#a1cfff;color:#fff;">排</span>
-          <span class="tag" data-type="L" style="background:#fbc34a;color:#fff;">黄</span>
-          <span class="tag" data-type="SX">💗</span>
-          <span class="tag" data-type="BN">ℹ️</span>
-        </div>
-      </div>
-      <div class="section-head"><h2>历史与编辑</h2></div>
-      <div class="inner">
-        <input id="search" placeholder="搜索备注或日期">
-        <h3>姨妈历史</h3>
-        <table id="tblPeriod"><thead><tr><th>开始</th><th>结束</th><th>经期</th><th>周期</th><th class="actions">操作</th></tr></thead><tbody></tbody></table>
-        <button id="togglePeriod" class="ghost min">展开更多</button>
-        <h3>身体变化</h3>
-        <table id="tblBody"><thead><tr><th>日期</th><th>备注</th><th class="actions">操作</th></tr></thead><tbody></tbody></table>
-        <button id="toggleBody" class="ghost min">展开更多</button>
-        <h3>关系历史</h3>
-        <table id="tblSex"><thead><tr><th>日期</th><th class="actions">操作</th></tr></thead><tbody></tbody></table>
-        <button id="toggleSex" class="ghost min">展开更多</button>
-      </div>
-    </section>
-  </div>
-</div>
-<div id="toast" class="toast"></div>
-<script>
-/* ===== 数据存储 ===== */
-let periods=JSON.parse(localStorage.getItem("period")||"[]");
-let bodies=JSON.parse(localStorage.getItem("body")||"[]");
-let sexes=JSON.parse(localStorage.getItem("sex")||"[]");
-function saveData(){localStorage.setItem("period",JSON.stringify(periods));localStorage.setItem("body",JSON.stringify(bodies));localStorage.setItem("sex",JSON.stringify(sexes));}
-function toast(m){let t=document.getElementById("toast");t.textContent=m;t.style.display="block";clearTimeout(t._h);t._h=setTimeout(()=>t.style.display="none",1500);}
-const fmt=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-const parse=s=>{let [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d,12);};
-const add=(d,n)=>{let x=new Date(d);x.setDate(x.getDate()+n);return x;}
-const daysBetween=(a,b)=>Math.round((parse(b)-parse(a))/86400000);
-const safe=s=>(s||"").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 
-/* ===== KPI与预测 ===== */
-function getCycleLens(){let arr=[...periods].sort((a,b)=>a.start.localeCompare(b.start)),res=[];for(let i=1;i<arr.length;i++)res.push(daysBetween(arr[i-1].start,arr[i].start));return res;}
-function avg(a){return a.length?Math.round(a.reduce((x,y)=>x+y)/a.length):null;}
-function getAvgC(){return avg(getCycleLens())}
-function getPred(){let last=[...periods].sort((a,b)=>a.start.localeCompare(b.start)).at(-1);if(!last)return{windows:[]};let avgC=getAvgC()||28;let pLen=last.len||5;let next=add(parse(last.start),avgC);let ovu=add(next,-14);let wins=[{from:parse(last.start),to:parse(last.end),type:"经"}];wins.push({from:add(ovu,-5),to:add(ovu,1),type:"孕"});wins.push({from:ovu,to:ovu,type:"排"});wins.push({from:add(ovu,2),to:add(next,-1),type:"黄"});return{next,windows:wins};}
-function renderKPIs(){let cyc=getCycleLens();document.getElementById("kCycles").textContent=cyc.length;document.getElementById("kAvg").textContent=getAvgC()?getAvgC()+"天":"—";let pred=getPred();document.getElementById("kNext").textContent=pred.next?fmt(pred.next):"—";}
+      <div class="content">
+        <section id="step1" class="step active">
+          <div class="card">
+            <h3>企业信息</h3>
+            <p class="sub">请填写企业的基础信息以完成认证</p>
+            <div class="field" data-required="true" data-rule="len2-200"><label class="req">企业法定名称</label><input name="companyName" placeholder="请输入企业法定名称"><span class="error">请输入 2-200 字符</span></div>
+            <div class="field" data-rule="max200"><label>营业名称（选填）</label><input name="tradingName" placeholder="请输入营业名称"><span class="error">最多 200 字符</span></div>
+            <div class="field" data-required="true" data-rule="min5"><label class="req">注册地址</label><input name="registeredAddress" placeholder="请输入注册地址"><span class="error">至少 5 字符</span></div>
+            <div class="field" data-required="true" data-rule="min5"><label class="req">经营地址</label><input name="businessAddress" placeholder="请输入经营地址"><span class="error">至少 5 字符</span></div>
+            <div class="field" data-required="true"><label class="req">企业类型</label>
+              <select name="companyType"><option value="">请选择企业类型</option><option>Pty Ltd</option><option>Trust</option><option>Partnership</option><option>Sole Trader</option><option>Foreign Company</option><option>其他</option></select><span class="error">请选择企业类型</span>
+            </div>
+            <div class="field" data-required="true"><label class="req">行业类型</label>
+              <select name="industry"><option value="">请选择行业</option><option>金融服务</option><option>贸易 / 进出口</option><option>电商零售</option><option>科技 / 软件</option><option>制造业</option><option>建筑 / 工程</option><option>专业服务</option><option>医疗 / 健康</option><option>化工</option><option>其他</option></select><span class="error">请选择行业类型</span>
+            </div>
+            <div class="field" data-required="true" data-rule="len10-1000"><label class="req">业务描述</label><textarea name="businessDesc" placeholder="请简要描述主营业务"></textarea><span class="error">请输入 10-1000 字符</span></div>
+            <div class="field" data-rule="url"><label>公司官网（选填）</label><input name="website" placeholder="https://example.com"><span class="error">请输入有效网址</span></div>
+            <div class="field" data-required="true" data-rule="abn"><label class="req">ABN 编号</label><input name="abn" placeholder="11 位数字"><span class="error">ABN 必须为 11 位数字</span></div>
+            <div class="field" data-rule="acn"><label>ACN / ARBN 编号（选填）</label><input name="acn" placeholder="9 位数字"><span class="error">ACN / ARBN 需为 9 位数字</span></div>
+          </div>
+        </section>
 
-/* ===== 日历渲染 ===== */
-let visibleFlags={M:true,F:true,O:true,L:true,SX:true,BN:true};
-function ensureDow(){let el=document.getElementById("dow");if(el.dataset.ok)return;["一","二","三","四","五","六","日"].forEach(d=>{let x=document.createElement("div");x.textContent=d;x.className="muted";x.style.textAlign="center";el.appendChild(x)});el.dataset.ok=1;}
-function renderCalendar(){
-  ensureDow();
-  let cal=document.getElementById("cal");cal.innerHTML="";
-  let view=window.__viewDate||new Date(),cur=new Date(view);cur.setDate(1);
-  let y=cur.getFullYear(),m=cur.getMonth();
-  document.getElementById("calTitle").textContent=y+"年"+(m+1)+"月";
-  let start=(cur.getDay()+6)%7,days=new Date(y,m+1,0).getDate();
-  let today=fmt(new Date());
-  let pred=getPred().windows;
-  let bodyMap=new Map();bodies.forEach(b=>bodyMap.set(b.date,(bodyMap.get(b.date)||0)+1));
-  let sexSet=new Set(sexes.map(s=>s.date));
-  for(let i=0;i<start;i++)cal.appendChild(document.createElement("div"));
-  for(let d=1;d<=days;d++){
-    let cell=document.createElement("div");cell.className="cell";
-    let dd=new Date(y,m,d,12),ds=fmt(dd);
-    if(ds===today)cell.classList.add("today");
-    let num=document.createElement("div");num.className="d";num.textContent=d;cell.appendChild(num);
-    // 历史周期
-    periods.forEach(p=>{
-      if(parse(ds)>=parse(p.start)&&parse(ds)<=parse(p.end)){
-        if(visibleFlags.M)cell.innerHTML+="<div style='font-size:10px;background:#f28b82;color:#fff;padding:1px 3px;border-radius:4px;display:inline-block'>经</div>";
+        <section id="step2" class="step">
+          <div class="card">
+            <h3>申请人及相关人员</h3>
+            <p class="sub">请填写代表申请人及企业关键相关人员信息</p>
+
+            <div class="section" id="applicantSection">
+              <h4>申请人信息</h4>
+              <div class="field" data-required="true" data-rule="len2-100"><label class="req">申请人姓名</label><input name="applicantName"><span class="error">请输入 2-100 字符</span></div>
+              <div class="field" data-required="true" data-rule="len2-100"><label class="req">职位</label><input name="applicantTitle"><span class="error">请输入 2-100 字符</span></div>
+              <div class="field" data-required="true" data-rule="phone"><label class="req">手机号</label><input name="applicantPhone" placeholder="例如 +61412345678"><span class="error">请输入有效手机号</span></div>
+              <div class="field" data-required="true" data-rule="email"><label class="req">邮箱地址</label><input type="email" name="applicantEmail"><span class="error">请输入有效邮箱</span></div>
+              <div class="field" data-required="true" data-rule="age18"><label class="req">出生日期</label><input type="date" name="applicantDob"><span class="error">年龄需满 18 岁</span></div>
+              <div class="field" data-required="true" data-rule="min5"><label class="req">居住地址</label><input name="applicantAddress"><span class="error">至少 5 字符</span></div>
+              <div class="field"><label>申请人证件上传（预留）</label><input type="file" name="applicantDoc" accept=".pdf,.jpg,.jpeg,.png"><span class="sub" style="margin:0">支持 PDF / JPG / PNG</span></div>
+              <label class="check"><input type="checkbox" id="applicantAuth">我确认本人有权代表该企业提交认证申请</label>
+              <p id="applicantAuthError" class="error">请勾选授权确认</p>
+            </div>
+
+            <div class="section">
+              <h4>董事信息 <small style="color:#7b90b2;font-weight:500;">Director</small></h4>
+              <div id="directorsContainer"></div>
+              <button type="button" id="addDirectorBtn" class="btn-back" style="width:100%;height:40px;">新增董事</button>
+            </div>
+
+            <div class="section">
+              <h4>股东 / 实际控制人 <small style="color:#7b90b2;font-weight:500;">Shareholder / Ultimate Controller</small></h4>
+              <p class="sub" style="margin-bottom:8px;">请填写持股 25% 及以上，或对企业具有实际控制权的相关人员信息。</p>
+              <div id="shareholdersContainer"></div>
+              <button type="button" id="addShareholderBtn" class="btn-back" style="width:100%;height:40px;">新增股东/实际控制人</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="step3" class="step">
+          <div class="card">
+            <h3>确认并提交</h3>
+            <p class="sub">请确认您填写的信息无误后提交认证</p>
+            <div class="section"><h4>企业信息</h4><div class="summary" id="sumCompany"></div></div>
+            <div class="section"><h4>申请人信息</h4><div class="summary" id="sumApplicant"></div></div>
+            <div class="section"><h4>董事信息</h4><div id="sumDirectors"></div></div>
+            <div class="section"><h4>股东 / 实际控制人信息</h4><div id="sumShareholders"></div></div>
+            <div id="riskCard" class="risk hidden"><b>风险提示</b><br>您所选择的行业可能需要更高等级的合规审核，平台后续可能要求补充材料。</div>
+            <label class="check"><input type="checkbox" id="confirmTruth">我确认以上信息真实、准确、完整</label>
+            <label class="check"><input type="checkbox" id="confirmAuth">我确认本人有权代表该企业提交认证申请</label>
+            <p id="confirmError" class="error">请勾选以上两项确认</p>
+          </div>
+        </section>
+
+        <section id="result" class="step">
+          <div class="card">
+            <h3>企业认证已提交</h3>
+            <p class="sub">我们正在审核您提交的企业信息，审核完成后将通知您。</p>
+            <div class="section"><h4>当前状态</h4><p><span class="result-badge">审核中</span></p><p class="sub" style="margin-bottom:0">如需补充资料，我们会通知您。</p></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="bottom">
+        <div class="tip">当前首版仅支持澳大利亚企业认证（新西兰逻辑已预留）</div>
+        <div class="actions">
+          <button id="backBtn" type="button" class="btn-back">返回</button>
+          <button id="nextBtn" type="button" class="btn-next">继续</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state={
+      step:1,submitted:false,country:'au', // nz reserved
+      company:{companyName:'',tradingName:'',registeredAddress:'',businessAddress:'',companyType:'',industry:'',businessDesc:'',website:'',abn:'',acn:''},
+      applicant:{name:'',title:'',phone:'',email:'',dob:'',address:'',auth:false},
+      directors:[{name:'',dob:'',address:'',country:''}],
+      shareholders:[{name:'',ownership:'',dob:'',country:'',address:'',controller:false}]
+    };
+
+    const nzReserved={enabled:false}; // 预留逻辑，不在当前首版展示
+    const stepText=document.getElementById('stepText');
+    const dots=document.getElementById('dots');
+    const backBtn=document.getElementById('backBtn');
+    const nextBtn=document.getElementById('nextBtn');
+
+    const escapeHtml=s=>String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+    const kv=(k,v)=>`<b>${escapeHtml(k)}</b><span>${escapeHtml(v||'-')}</span>`;
+
+    function age18(dateStr){if(!dateStr)return false;const d=new Date(dateStr);if(Number.isNaN(d.getTime()))return false;const now=new Date();let a=now.getFullYear()-d.getFullYear();const m=now.getMonth()-d.getMonth();if(m<0||(m===0&&now.getDate()<d.getDate()))a--;return a>=18;}
+    function validUrl(v){if(!v)return true;try{new URL(v);return true}catch{return false}}
+    function validPhone(v){return /^\+?[0-9\-\s()]{7,20}$/.test(v)}
+
+    function initDots(){dots.innerHTML='';for(let i=1;i<=3;i++){const d=document.createElement('span');d.className='dot'+(i===state.step?' active':'');dots.appendChild(d)}}
+    function setStep(){
+      document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+      const id=state.submitted?'result':`step${state.step}`;
+      document.getElementById(id).classList.add('active');
+
+      if(state.submitted){stepText.textContent='提交成功';dots.innerHTML='';backBtn.classList.add('hidden');nextBtn.textContent='完成';return;}
+      backBtn.classList.remove('hidden');
+      stepText.textContent=`第 ${state.step} 步，共 3 步`;
+      initDots();
+      backBtn.style.visibility=state.step===1?'hidden':'visible';
+      nextBtn.textContent=state.step===3?'提交认证':'继续';
+      if(state.step===2){renderDirectors();renderShareholders();}
+      if(state.step===3) renderSummary();
+    }
+
+    function validateField(field){
+      const input=field.querySelector('input,select,textarea');
+      const val=String(input.value||'').trim();
+      const required=field.dataset.required==='true';
+      const rule=field.dataset.rule||'';
+      let ok=true;
+      if(required&&!val) ok=false;
+      if(ok&&val){
+        if(rule==='len2-200') ok=val.length>=2&&val.length<=200;
+        if(rule==='max200') ok=val.length<=200;
+        if(rule==='min5') ok=val.length>=5;
+        if(rule==='len10-1000') ok=val.length>=10&&val.length<=1000;
+        if(rule==='url') ok=validUrl(val);
+        if(rule==='abn') ok=/^\d{11}$/.test(val);
+        if(rule==='acn') ok=/^\d{9}$/.test(val);
+        if(rule==='len2-100') ok=val.length>=2&&val.length<=100;
+        if(rule==='phone') ok=validPhone(val);
+        if(rule==='email') ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+        if(rule==='age18') ok=age18(val);
+        if(rule==='ownership') ok=!Number.isNaN(+val)&&+val>=0&&+val<=100;
       }
+      field.classList.toggle('invalid',!ok);
+      return ok;
+    }
+
+    function validateSection(root){let ok=true;root.querySelectorAll('.field').forEach(f=>{if(!validateField(f))ok=false});return ok;}
+
+    function captureCompany(){
+      const s=document.getElementById('step1');
+      state.company.companyName=s.querySelector('[name="companyName"]').value.trim();
+      state.company.tradingName=s.querySelector('[name="tradingName"]').value.trim();
+      state.company.registeredAddress=s.querySelector('[name="registeredAddress"]').value.trim();
+      state.company.businessAddress=s.querySelector('[name="businessAddress"]').value.trim();
+      state.company.companyType=s.querySelector('[name="companyType"]').value;
+      state.company.industry=s.querySelector('[name="industry"]').value;
+      state.company.businessDesc=s.querySelector('[name="businessDesc"]').value.trim();
+      state.company.website=s.querySelector('[name="website"]').value.trim();
+      state.company.abn=s.querySelector('[name="abn"]').value.trim();
+      state.company.acn=s.querySelector('[name="acn"]').value.trim();
+    }
+
+    function capturePeople(){
+      const sec=document.getElementById('applicantSection');
+      state.applicant.name=sec.querySelector('[name="applicantName"]').value.trim();
+      state.applicant.title=sec.querySelector('[name="applicantTitle"]').value.trim();
+      state.applicant.phone=sec.querySelector('[name="applicantPhone"]').value.trim();
+      state.applicant.email=sec.querySelector('[name="applicantEmail"]').value.trim();
+      state.applicant.dob=sec.querySelector('[name="applicantDob"]').value;
+      state.applicant.address=sec.querySelector('[name="applicantAddress"]').value.trim();
+      state.applicant.auth=document.getElementById('applicantAuth').checked;
+
+      state.directors=[...document.querySelectorAll('.director-card')].map(card=>({
+        name:card.querySelector('[name="directorName"]').value.trim(),
+        dob:card.querySelector('[name="directorDob"]').value,
+        address:card.querySelector('[name="directorAddress"]').value.trim(),
+        country:card.querySelector('[name="directorCountry"]').value.trim()
+      }));
+      state.shareholders=[...document.querySelectorAll('.shareholder-card')].map(card=>({
+        name:card.querySelector('[name="shareholderName"]').value.trim(),
+        ownership:card.querySelector('[name="ownership"]').value.trim(),
+        dob:card.querySelector('[name="shareholderDob"]').value,
+        country:card.querySelector('[name="shareholderCountry"]').value.trim(),
+        address:card.querySelector('[name="shareholderAddress"]').value.trim(),
+        controller:card.querySelector('[name="isController"]').checked
+      }));
+    }
+
+    function validateStep(){
+      if(state.step===1){const ok=validateSection(document.getElementById('step1'));captureCompany();return ok;}
+      if(state.step===2){
+        const okApplicant=validateSection(document.getElementById('applicantSection'));
+        let okDir=true,okShare=true;
+        document.querySelectorAll('.director-card .field').forEach(f=>{if(!validateField(f))okDir=false});
+        document.querySelectorAll('.shareholder-card .field').forEach(f=>{if(!validateField(f))okShare=false});
+        const auth=document.getElementById('applicantAuth').checked;document.getElementById('applicantAuthError').classList.toggle('show',!auth);
+        capturePeople();
+        return okApplicant&&okDir&&okShare&&auth&&state.directors.length>0&&state.shareholders.length>0;
+      }
+      if(state.step===3){
+        const c1=document.getElementById('confirmTruth').checked,c2=document.getElementById('confirmAuth').checked;
+        document.getElementById('confirmError').classList.toggle('show',!(c1&&c2));
+        return c1&&c2;
+      }
+      return true;
+    }
+
+    function directorCard(data,idx){
+      const d=document.createElement('div');d.className='person-card director-card';
+      d.innerHTML=`<h5>董事 ${idx}</h5>
+      <div class='field' data-required='true' data-rule='len2-100'><label class='req'>董事姓名</label><input name='directorName' value='${escapeHtml(data.name)}'><span class='error'>请输入 2-100 字符</span></div>
+      <div class='field' data-required='true' data-rule='age18'><label class='req'>出生日期</label><input type='date' name='directorDob' value='${escapeHtml(data.dob)}'><span class='error'>年龄需满 18 岁</span></div>
+      <div class='field' data-required='true' data-rule='min5'><label class='req'>居住地址</label><input name='directorAddress' value='${escapeHtml(data.address)}'><span class='error'>至少 5 字符</span></div>
+      <div class='field' data-required='true' data-rule='len2-100'><label class='req'>居住国家</label><input name='directorCountry' value='${escapeHtml(data.country)}'><span class='error'>请输入 2-100 字符</span></div>
+      <div class='field'><label>董事证件上传（预留）</label><input type='file' name='directorDoc' accept='.pdf,.jpg,.jpeg,.png'></div>`;
+      return d;
+    }
+
+    function shareholderCard(data,idx){
+      const d=document.createElement('div');d.className='person-card shareholder-card';
+      d.innerHTML=`<h5>股东 / 实际控制人 ${idx}</h5>
+      <div class='field' data-required='true' data-rule='len2-100'><label class='req'>姓名</label><input name='shareholderName' value='${escapeHtml(data.name)}'><span class='error'>请输入 2-100 字符</span></div>
+      <div class='field' data-required='true' data-rule='ownership'><label class='req'>持股比例</label><input name='ownership' value='${escapeHtml(data.ownership)}' placeholder='0-100'><span class='hint'>需纳入认证</span><span class='error'>请输入 0-100 的数值</span></div>
+      <div class='field' data-required='true' data-rule='age18'><label class='req'>出生日期</label><input type='date' name='shareholderDob' value='${escapeHtml(data.dob)}'><span class='error'>年龄需满 18 岁</span></div>
+      <div class='field' data-required='true' data-rule='len2-100'><label class='req'>居住国家</label><input name='shareholderCountry' value='${escapeHtml(data.country)}'><span class='error'>请输入 2-100 字符</span></div>
+      <div class='field' data-required='true' data-rule='min5'><label class='req'>居住地址</label><input name='shareholderAddress' value='${escapeHtml(data.address)}'><span class='error'>至少 5 字符</span></div>
+      <div class='field'><label>股东/实控人证件上传（预留）</label><input type='file' name='shareholderDoc' accept='.pdf,.jpg,.jpeg,.png'></div>
+      <label class='check'><input type='checkbox' name='isController' ${data.controller?'checked':''}>是否为实际控制人</label>`;
+      const ip=d.querySelector('[name="ownership"]'),h=d.querySelector('.hint');
+      const up=()=>{const v=parseFloat(ip.value);h.style.display=!Number.isNaN(v)&&v>=25?'inline-block':'none'};ip.addEventListener('input',up);up();
+      return d;
+    }
+
+    function renderDirectors(){const c=document.getElementById('directorsContainer');c.innerHTML='';state.directors.forEach((x,i)=>c.appendChild(directorCard(x,i+1)))}
+    function renderShareholders(){const c=document.getElementById('shareholdersContainer');c.innerHTML='';state.shareholders.forEach((x,i)=>c.appendChild(shareholderCard(x,i+1)))}
+
+    function renderSummary(){captureCompany();capturePeople();
+      document.getElementById('sumCompany').innerHTML=
+        kv('企业法定名称',state.company.companyName)+kv('营业名称',state.company.tradingName||'-')+kv('注册地址',state.company.registeredAddress)+kv('经营地址',state.company.businessAddress)+kv('企业类型',state.company.companyType)+kv('行业类型',state.company.industry)+kv('业务描述',state.company.businessDesc)+kv('公司官网',state.company.website||'-')+kv('ABN 编号',state.company.abn)+kv('ACN / ARBN',state.company.acn||'-');
+      document.getElementById('sumApplicant').innerHTML=
+        kv('申请人姓名',state.applicant.name)+kv('职位',state.applicant.title)+kv('手机号',state.applicant.phone)+kv('邮箱地址',state.applicant.email)+kv('出生日期',state.applicant.dob)+kv('居住地址',state.applicant.address)+kv('授权确认',state.applicant.auth?'是':'否');
+      document.getElementById('sumDirectors').innerHTML=state.directors.map((d,i)=>`<div class='summary' style='margin-bottom:10px'>${kv(`董事 ${i+1}`,d.name)}${kv('出生日期',d.dob)}${kv('居住地址',d.address)}${kv('居住国家',d.country)}</div>`).join('');
+      document.getElementById('sumShareholders').innerHTML=state.shareholders.map((s,i)=>`<div class='summary' style='margin-bottom:10px'>${kv(`股东/实控人 ${i+1}`,s.name)}${kv('持股比例',s.ownership)}${kv('出生日期',s.dob)}${kv('居住国家',s.country)}${kv('居住地址',s.address)}${kv('实际控制人',s.controller?'是':'否')}</div>`).join('');
+      const risk=['贸易 / 进出口','医疗 / 健康','化工'].includes(state.company.industry);
+      document.getElementById('riskCard').classList.toggle('hidden',!risk);
+    }
+
+    document.getElementById('addDirectorBtn').addEventListener('click',()=>{capturePeople();state.directors.push({name:'',dob:'',address:'',country:''});renderDirectors();});
+    document.getElementById('addShareholderBtn').addEventListener('click',()=>{capturePeople();state.shareholders.push({name:'',ownership:'',dob:'',country:'',address:'',controller:false});renderShareholders();});
+
+    backBtn.addEventListener('click',()=>{
+      if(state.submitted){location.reload();return;}
+      if(state.step>1){state.step--;setStep();}
     });
-    // 预测
-    let flags=pred.filter(w=>dd>=w.from&&dd<=w.to).map(w=>w.type);
-    if(visibleFlags.F&&flags.includes("孕"))cell.innerHTML+="<div style='font-size:10px;background:#81c995;color:#fff;padding:1px 3px;border-radius:4px;display:inline-block'>孕</div>";
-    if(visibleFlags.O&&flags.includes("排"))cell.innerHTML+="<div style='font-size:10px;background:#a1cfff;color:#fff;padding:1px 3px;border-radius:4px;display:inline-block'>排</div>";
-    if(visibleFlags.L&&flags.includes("黄"))cell.innerHTML+="<div style='font-size:10px;background:#fbc34a;color:#fff;padding:1px 3px;border-radius:4px;display:inline-block'>黄</div>";
-    // 关系/变化
-    let badges=document.createElement("div");badges.className="badges";
-    if(visibleFlags.SX&&sexSet.has(ds))badges.innerHTML+="<span>💗</span>";
-    if(visibleFlags.BN&&bodyMap.has(ds))badges.innerHTML+="<span>ℹ️</span>";
-    if(badges.innerHTML)cell.appendChild(badges);
-    cal.appendChild(cell);
-  }
-}
+    nextBtn.addEventListener('click',()=>{
+      if(state.submitted){location.reload();return;}
+      if(!validateStep())return;
+      if(state.step<3){state.step++;setStep();}
+      else{state.submitted=true;setStep();}
+    });
 
-/* ===== 历史表格 + 展开 ===== */
-let showAll={period:false,body:false,sex:false};
-function renderTables(f=''){f=f.trim().toLowerCase();
-  let pBody=document.querySelector("#tblPeriod tbody");pBody.innerHTML="";
-  periods.forEach((p,i)=>{if(f&&!(p.start.includes(f)||p.end.includes(f)))return;
-    if(!showAll.period&&i<3||showAll.period){
-      let cyc=i>0?daysBetween(periods[i-1].start,p.start):"—";
-      pBody.innerHTML+=`<tr><td>${p.start}</td><td>${p.end}</td><td>${p.len}天</td><td>${cyc}</td><td class="actions"><button data-act="editP" data-i="${i}">编辑</button><button data-act="delP" data-i="${i}" class="ghost">删除</button></td></tr>`;
-    }
-  });
-  document.getElementById("togglePeriod").style.display=periods.length>3?"block":"none";
-  document.getElementById("togglePeriod").textContent=showAll.period?"收起":"展开更多";
-  if(!pBody.innerHTML)pBody.innerHTML='<tr><td colspan=5 class=muted>无</td></tr>';
-  let bBody=document.querySelector("#tblBody tbody");bBody.innerHTML="";
-  bodies.forEach((b,i)=>{if(f&&!(b.date.includes(f)||(b.note||'').toLowerCase().includes(f)))return;
-    if(!showAll.body&&i<3||showAll.body){
-      bBody.innerHTML+=`<tr><td>${b.date}</td><td>${safe(b.note)}</td><td class="actions"><button data-act="editB" data-i="${i}">编辑</button><button data-act="delB" data-i="${i}" class="ghost">删除</button></td></tr>`;
-    }
-  });
-  document.getElementById("toggleBody").style.display=bodies.length>3?"block":"none";
-  document.getElementById("toggleBody").textContent=showAll.body?"收起":"展开更多";
-  if(!bBody.innerHTML)bBody.innerHTML='<tr><td colspan=3 class=muted>无</td></tr>';
-  let sBody=document.querySelector("#tblSex tbody");sBody.innerHTML="";
-  sexes.forEach((s,i)=>{if(f&&!s.date.includes(f))return;
-    if(!showAll.sex&&i<3||showAll.sex){
-      sBody.innerHTML+=`<tr><td>${s.date}</td><td class="actions"><button data-act="delS" data-i="${i}" class="ghost">删除</button></td></tr>`;
-    }
-  });
-  document.getElementById("toggleSex").style.display=sexes.length>3?"block":"none";
-  document.getElementById("toggleSex").textContent=showAll.sex?"收起":"展开更多";
-  if(!sBody.innerHTML)sBody.innerHTML='<tr><td colspan=2 class=muted>无</td></tr>';
-}
-document.getElementById("togglePeriod").onclick=()=>{showAll.period=!showAll.period;renderTables();}
-document.getElementById("toggleBody").onclick=()=>{showAll.body=!showAll.body;renderTables();}
-document.getElementById("toggleSex").onclick=()=>{showAll.sex=!showAll.sex;renderTables();}
-
-/* ===== 点击操作 ===== */
-document.addEventListener("click",(e)=>{let btn=e.target.closest("button[data-act]");if(!btn)return;let act=btn.dataset.act,i=+btn.dataset.i;
-  if(act==="delP"){if(confirm("删除姨妈？")){periods.splice(i,1);saveData();renderAll();}}
-  if(act==="editP"){let ns=prompt("新开始",periods[i].start);if(!ns)return;let ne=prompt("新结束",periods[i].end);if(!ne)return;periods[i]={start:ns,end:ne,len:daysBetween(ns,ne)+1};saveData();renderAll();}
-  if(act==="delB"){if(confirm("删除变化？")){bodies.splice(i,1);saveData();renderAll();}}
-  if(act==="editB"){let nd=prompt("日期",bodies[i].date);if(!nd)return;let nn=prompt("备注",bodies[i].note);if(nn===null)return;bodies[i]={date:nd,note:nn};saveData();renderAll();}
-  if(act==="delS"){if(confirm("删除关系？")){sexes.splice(i,1);saveData();renderAll();}}
-},{passive:true});
-
-/* ===== 添加功能 ===== */
-btnAddPeriod.onclick=()=>{let s=pStart.value,e=pEnd.value;if(!s||!e)return alert("请填写");if(parse(e)<parse(s))return alert("结束不能早于开始");periods.push({start:s,end:e,len:daysBetween(s,e)+1});saveData();renderAll();};
-btnQuickPeriod.onclick=()=>{let t=fmt(new Date());periods.push({start:t,end:t,len:1});saveData();renderAll();};
-btnAddBody.onclick=()=>{let d=bDate.value,n=bNote.value;if(!d||!n)return alert("请完整");bodies.push({date:d,note:n});saveData();renderAll();};
-btnAddSex.onclick=()=>{let d=sDate.value;if(!d)return alert("请选择");sexes.push({date:d});saveData();renderAll();};
-
-/* ===== 导入导出清空 ===== */
-btnImport.onclick=()=>fileImport.click();
-fileImport.addEventListener("change",(e)=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let obj=JSON.parse(r.result);if(obj.period)periods=obj.period;if(obj.body)bodies=obj.body;if(obj.sex)sexes=obj.sex;saveData();renderAll();toast("导入成功");}catch(err){alert("导入失败");}};r.readAsText(f);});
-btnExport.onclick=()=>{let blob=new Blob([JSON.stringify({period:periods,body:bodies,sex:sexes},null,2)],{type:"application/json"});let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="tracker.json";a.click();toast("已导出");};
-btnResetSamples.onclick=()=>{periods=[{start:"2025-07-05",end:"2025-07-09",len:5},{start:"2025-08-03",end:"2025-08-07",len:5},{start:"2025-09-01",end:"2025-09-05",len:5}];bodies=[{date:"2025-09-03",note:"情绪低落"},{date:"2025-09-10",note:"皮肤出油"},{date:"2025-09-18",note:"乳房胀痛"}];sexes=[{date:"2025-09-10"},{date:"2025-09-18"}];saveData();renderAll();};
-btnClearAll.onclick=()=>{if(confirm("清空所有数据？")){periods=[];bodies=[];sexes=[];saveData();renderAll();}};
-
-/* ===== 搜索过滤 ===== */
-search.addEventListener("keydown",(e)=>{if(e.key==="Enter")renderTables(e.target.value);});
-
-/* ===== 月份切换 ===== */
-window.__viewDate=new Date();
-["prevM","nextM","todayM"].forEach(id=>{document.getElementById(id).onclick=()=>{if(id==="prevM")window.__viewDate.setMonth(window.__viewDate.getMonth()-1);if(id==="nextM")window.__viewDate.setMonth(window.__viewDate.getMonth()+1);if(id==="todayM")window.__viewDate=new Date();renderCalendar();}});
-
-/* ===== 图例切换 ===== */
-document.getElementById("legendToggle").addEventListener("click",(e)=>{let tag=e.target.closest(".tag");if(!tag)return;let type=tag.dataset.type;if(!type)return;visibleFlags[type]=!visibleFlags[type];tag.style.opacity=visibleFlags[type]?"1":"0.3";renderCalendar();});
-
-/* ===== 渲染聚合 ===== */
-function renderAll(f=''){renderKPIs();renderCalendar();renderTables(f);}
-renderAll();
-</script>
+    setStep();
+  </script>
 </body>
 </html>
