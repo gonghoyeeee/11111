@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Verification</title>
+  <title>KYB Verification</title>
   <style>
     :root {
       --bg: #050608;
@@ -11,37 +11,32 @@
       --card: #1b283d;
       --line: #33486e;
       --primary: #3678ff;
-      --danger: #f6475b;
       --success: #1ac16c;
       --warning: #f59e0b;
+      --danger: #f6475b;
       --text: #f4f6fb;
-      --muted: #999999;
-      --dim: #666666;
       --radius: 10px;
     }
-
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      background: radial-gradient(circle at 20% 0%, #131722 0%, #050608 60%);
-      color: var(--text);
-      font-family: "PingFang SC", "Microsoft YaHei", Inter, "SF Pro Display", sans-serif;
       min-height: 100vh;
       display: grid;
       place-items: center;
       padding: 16px;
+      background: radial-gradient(circle at 20% 0%, #131722 0%, #050608 60%);
+      color: var(--text);
+      font-family: "PingFang SC", "Microsoft YaHei", Inter, sans-serif;
     }
-
     .mobile-shell {
       width: 390px;
       height: 844px;
       border-radius: 36px;
       background: #000;
       padding: 10px;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
       border: 1px solid #171a20;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
     }
-
     .mobile-screen {
       height: 100%;
       border-radius: 28px;
@@ -51,33 +46,28 @@
       flex-direction: column;
       position: relative;
     }
-
     .statusbar {
       height: 44px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 20px;
-      font-size: 14px;
-      color: #fff;
-      flex-shrink: 0;
       background: #0a0c11;
+      font-size: 14px;
+      flex-shrink: 0;
     }
-
     .header {
       padding: 6px 16px 14px;
       border-bottom: 1px solid #1d2230;
       background: #0a0c11;
       flex-shrink: 0;
     }
-
     .header-row {
       display: grid;
       grid-template-columns: 28px 1fr 28px;
       align-items: center;
       margin-bottom: 10px;
     }
-
     .back-icon {
       width: 13px;
       height: 13px;
@@ -86,148 +76,50 @@
       transform: rotate(45deg);
       margin-left: 4px;
     }
+    .title { margin: 0; text-align: center; font-size: 20px; font-weight: 700; }
+    .progress-head { display: flex; justify-content: space-between; align-items: center; color: #c9d2e7; font-size: 13px; }
+    .dot-progress { display: flex; gap: 8px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #3f4042; }
+    .dot.active { background: var(--primary); box-shadow: 0 0 0 4px rgba(54,120,255,.2); }
 
-    .title {
-      text-align: center;
-      margin: 0;
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: .4px;
-    }
-
-    .progress-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      color: #c9d2e7;
-      font-size: 13px;
-    }
-
-    .dot-progress {
-      display: flex;
-      gap: 8px;
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #3f4042;
-    }
-
-    .dot.active { background: var(--primary); box-shadow: 0 0 0 4px rgba(54, 120, 255, 0.2); }
-
-    .content {
-      flex: 1;
-      overflow: auto;
-      padding: 14px 15px 126px;
-      scrollbar-width: thin;
-    }
-
+    .content { flex: 1; overflow: auto; padding: 14px 15px 126px; }
     .step-view { display: none; }
     .step-view.active { display: block; }
 
-    .section-card {
+    .section-card, .status-card, .summary-card, .entity-card {
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 14px;
       margin-bottom: 12px;
     }
+    .section-title { margin: 0 0 10px; font-size: 18px; }
+    .sub-title { margin: 0 0 10px; color: #c6d3ee; font-size: 13px; line-height: 1.45; }
 
-    .section-title {
-      margin: 0 0 10px;
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .sub-title {
-      margin: 0 0 10px;
-      color: #c6d3ee;
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-
+    .grid { display: grid; gap: 12px; }
     .field { display: flex; flex-direction: column; gap: 6px; }
     .field label { font-size: 13px; color: #d7e1f4; font-weight: 600; }
-    .field label.required::after { content: " *"; color: var(--danger); }
-
-    input, select, textarea {
+    .required::after { content: " *"; color: var(--danger); }
+    input, select {
       width: 100%;
       background: #121821;
-      color: var(--text);
       border: 1px solid #2c3b59;
+      color: var(--text);
       border-radius: 10px;
       font-size: 14px;
       padding: 11px 12px;
       outline: none;
-      transition: .15s;
     }
+    input::placeholder { color: #6f83a8; }
+    input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(54,120,255,.18); }
 
-    input::placeholder, textarea::placeholder { color: #6f83a8; }
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(54, 120, 255, 0.18);
-    }
+    .error { display:none; font-size:12px; color:#ff7a8a; }
+    .field.invalid .error, .error.show { display:block; }
+    .field.invalid input, .field.invalid select { border-color: var(--danger); }
 
-    .error {
-      display: none;
-      font-size: 12px;
-      color: #ff7a8a;
-      margin-top: 2px;
-    }
-
-    .field.invalid .error,
-    .field.invalid + .error,
-    .error.show { display: block; }
-
-    .field.invalid input,
-    .field.invalid select,
-    .field.invalid textarea { border-color: var(--danger); }
-
-    .account-options { display: grid; gap: 12px; }
-
-    .option-card {
-      border: 1px solid #304362;
-      border-radius: 12px;
-      padding: 14px;
-      background: #152036;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .option-card h3 { margin: 0 0 6px; font-size: 17px; }
-    .option-card p { margin: 0; color: #9db0ce; font-size: 13px; line-height: 1.5; }
-
-    .option-card .check {
-      position: absolute;
-      right: 12px;
-      top: 12px;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      border: 1px solid #5476b2;
-      display: grid;
-      place-items: center;
-      font-size: 12px;
-      color: transparent;
-    }
-
-    .option-card.selected {
-      border-color: var(--primary);
-      background: #1a2d52;
-    }
-
-    .option-card.selected .check {
-      border-color: var(--primary);
-      color: #fff;
-      background: var(--primary);
-    }
-
+    .entity-title { margin:0 0 10px; font-size:14px; font-weight:700; }
     .mini-btn {
+      width: 100%;
       border: 1px solid #3f5888;
       background: #1a2d52;
       color: #d5e2ff;
@@ -235,31 +127,7 @@
       padding: 9px 12px;
       font-size: 13px;
       font-weight: 600;
-      width: 100%;
       cursor: pointer;
-    }
-
-    .entity-card {
-      border: 1px solid #324664;
-      border-radius: 10px;
-      padding: 12px;
-      background: #152137;
-      margin-bottom: 10px;
-    }
-
-    .entity-title {
-      margin: 0 0 10px;
-      font-size: 14px;
-      color: #dfe8fb;
-      font-weight: 700;
-    }
-
-    .status-card {
-      border: 1px solid #324664;
-      border-radius: 10px;
-      padding: 12px;
-      background: #152137;
-      margin-bottom: 10px;
     }
 
     .status-row {
@@ -268,12 +136,10 @@
       align-items: center;
       gap: 10px;
       padding: 8px 0;
-      border-bottom: 1px solid rgba(75, 104, 149, 0.35);
+      border-bottom: 1px solid rgba(75,104,149,.35);
       font-size: 14px;
     }
-
     .status-row:last-child { border-bottom: 0; }
-
     .badge {
       border-radius: 999px;
       padding: 3px 10px;
@@ -282,10 +148,9 @@
       border: 1px solid;
       white-space: nowrap;
     }
-
-    .badge.verified { color: var(--success); border-color: rgba(26, 193, 108, .6); background: rgba(26, 193, 108, .14); }
-    .badge.pending { color: #a8b2c4; border-color: #4e5764; background: rgba(63, 64, 66, .28); }
-    .badge.review { color: #ffb547; border-color: rgba(245, 158, 11, .6); background: rgba(245, 158, 11, .14); }
+    .verified { color: var(--success); border-color: rgba(26,193,108,.6); background: rgba(26,193,108,.14); }
+    .pending { color: #a8b2c4; border-color: #4e5764; background: rgba(63,64,66,.28); }
+    .review { color: #ffb547; border-color: rgba(245,158,11,.6); background: rgba(245,158,11,.14); }
 
     .risk-card {
       border: 1px solid #d98d2a;
@@ -298,48 +163,14 @@
       margin-top: 10px;
     }
 
-    .check-line {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      font-size: 14px;
-      margin-bottom: 10px;
-      color: #dbe5f6;
-    }
+    .check-line { display:flex; gap:10px; align-items:flex-start; font-size:14px; margin-bottom:10px; }
+    .check-line input { width: 16px; height:16px; margin-top:2px; }
 
-    .check-line input { width: 16px; height: 16px; margin-top: 2px; }
+    .summary-card h4 { margin: 0 0 10px; font-size: 15px; }
+    .summary-grid { display:grid; grid-template-columns: 118px 1fr; gap:8px 10px; font-size:13px; color:#d7e2f7; }
+    .summary-grid b { color:#93a7cc; font-weight:600; }
 
-    .summary-card {
-      border: 1px solid #324664;
-      background: #17243a;
-      border-radius: 10px;
-      padding: 12px;
-      margin-bottom: 10px;
-    }
-
-    .summary-card h4 {
-      margin: 0 0 10px;
-      font-size: 15px;
-      color: #f0f5ff;
-    }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: 118px 1fr;
-      gap: 8px 10px;
-      font-size: 13px;
-      color: #d7e2f7;
-    }
-
-    .summary-grid b { color: #93a7cc; font-weight: 600; }
-
-    .inline-hint {
-      color: #ffc979;
-      font-size: 12px;
-      display: none;
-      margin-top: 4px;
-    }
-
+    .inline-hint { color:#ffc979; font-size:12px; display:none; }
     .info-btn {
       border: 1px solid #3f5888;
       background: #1a2d52;
@@ -349,7 +180,6 @@
       height: 18px;
       padding: 0;
       font-size: 11px;
-      line-height: 1;
       margin-left: 4px;
       cursor: pointer;
       vertical-align: middle;
@@ -357,83 +187,54 @@
 
     .bottom-bar {
       position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(22, 25, 31, 0.97);
+      left: 0; right: 0; bottom: 0;
+      background: rgba(22,25,31,.97);
       border-top: 1px solid #2a3243;
       padding: 10px 14px calc(14px + env(safe-area-inset-bottom));
     }
-
-    .bar-tip {
-      font-size: 12px;
-      color: #7f8ba0;
-      margin-bottom: 8px;
-    }
-
-    .bar-actions { display: grid; grid-template-columns: 110px 1fr; gap: 10px; }
+    .bar-tip { font-size:12px; color:#7f8ba0; margin-bottom:8px; }
+    .bar-actions { display:grid; grid-template-columns: 110px 1fr; gap:10px; }
 
     .btn {
+      height: 46px;
       border-radius: 12px;
       border: 0;
       font-size: 16px;
       font-weight: 700;
-      height: 46px;
       cursor: pointer;
     }
-
-    .btn-back {
-      background: #2d3035;
-      color: #d2d5dc;
-    }
-
-    .btn-next {
-      background: var(--primary);
-      color: #fff;
-      box-shadow: 0 10px 20px rgba(54, 120, 255, .28);
-    }
+    .btn-back { background:#2d3035; color:#d2d5dc; }
+    .btn-next { background: var(--primary); color:#fff; box-shadow: 0 10px 20px rgba(54,120,255,.28); }
 
     .toast {
       position: absolute;
-      left: 15px;
-      right: 15px;
-      bottom: 94px;
-      background: #111723;
-      border: 1px solid #2f3f61;
-      color: #d7e2f7;
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 12px;
-      display: none;
-      z-index: 9;
+      left: 15px; right: 15px; bottom: 94px;
+      background:#111723;
+      border:1px solid #2f3f61;
+      color:#d7e2f7;
+      border-radius:8px;
+      padding:10px 12px;
+      font-size:12px;
+      display:none;
+      z-index:9;
     }
 
     @media (max-width: 440px) {
-      .mobile-shell {
-        width: 100vw;
-        height: 100vh;
-        border-radius: 0;
-        padding: 0;
-        border: 0;
-      }
-
-      .mobile-screen { border-radius: 0; }
-      body { padding: 0; }
+      .mobile-shell { width:100vw; height:100vh; border-radius:0; padding:0; border:0; }
+      .mobile-screen { border-radius:0; }
+      body { padding:0; }
     }
   </style>
 </head>
 <body>
   <div class="mobile-shell">
     <div class="mobile-screen">
-      <div class="statusbar">
-        <span>9:41</span>
-        <span>◉◉◉</span>
-      </div>
+      <div class="statusbar"><span>9:41</span><span>◉◉◉</span></div>
 
       <div class="header">
         <div class="header-row">
           <div class="back-icon"></div>
-          <h1 class="title">Verification</h1>
+          <h1 class="title">KYB Verification</h1>
           <div></div>
         </div>
         <div class="progress-head">
@@ -445,73 +246,13 @@
       <div class="content">
         <section id="step1" class="step-view active">
           <div class="section-card">
-            <h2 class="section-title">选择账户类型</h2>
-            <p class="sub-title">请选择验证流程：个人账户 KYC 或企业账户 KYB。</p>
-            <div class="account-options">
-              <div class="option-card" data-account="individual">
-                <span class="check">✓</span>
-                <h3>Individual（个人账户）</h3>
-                <p>个人实名认证与身份核验流程，适用于个人用户开户。</p>
-              </div>
-              <div class="option-card" data-account="business">
-                <span class="check">✓</span>
-                <h3>Business（企业账户）</h3>
-                <p>企业尽职调查流程，包含公司信息、董事与受益所有人核验。</p>
-              </div>
-            </div>
-            <p id="accountError" class="error">请先选择账户类型。</p>
+            <h2 class="section-title">企业验证流程</h2>
+            <p class="sub-title">当前仅支持 KYB（Business）验证。请按步骤完成公司信息、董事与受益所有人信息提交。</p>
+            <div class="status-row"><span>账户类型</span><span class="badge verified">Business</span></div>
           </div>
         </section>
 
-        <section id="step2-individual" class="step-view">
-          <div class="section-card">
-            <h2 class="section-title">个人信息</h2>
-            <div class="grid" id="kycStep2Form">
-              <div class="field" data-required="true"><label class="required">姓名</label><input name="fullName" placeholder="请输入姓名"><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="required">出生日期</label><input type="date" name="dob"><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="required">国籍</label><input name="nationality" placeholder="请输入国籍"><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="required">居住地址</label><input name="address" placeholder="请输入居住地址"><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="required">邮箱</label><input type="email" name="email" placeholder="example@email.com"><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="required">手机号</label><input name="phone" placeholder="请输入手机号"><span class="error">必填</span></div>
-            </div>
-          </div>
-        </section>
-
-        <section id="step3-individual" class="step-view">
-          <div class="section-card">
-            <h2 class="section-title">身份验证</h2>
-            <div class="grid" id="kycStep3Form">
-              <div class="field" data-required="true"><label class="required">ID Type</label><select name="idType"><option value="">请选择</option><option>Passport</option><option>Driver Licence</option></select><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="required">ID Number</label><input name="idNumber" placeholder="请输入证件号码"><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="required">Country of Issue</label><input name="issueCountry" placeholder="请输入签发国家"><span class="error">必填</span></div>
-              <div class="field" data-required="true"><label class="required">Upload ID Document</label><input type="file" name="idDoc"><span class="error">请上传证件文件</span></div>
-            </div>
-            <p class="sub-title" style="margin-top: 10px;">平台将进行电子身份验证（100-point ID check）。</p>
-          </div>
-        </section>
-
-        <section id="step4-individual" class="step-view">
-          <div class="section-card">
-            <h2 class="section-title">合规检查</h2>
-            <label class="check-line"><input type="checkbox" id="kycConfirm1">我确认不是代表他人开户</label>
-            <label class="check-line"><input type="checkbox" id="kycConfirm2">我确认所提供信息真实且准确</label>
-            <p class="error" id="kycCheckError">请勾选以上两项确认。</p>
-          </div>
-
-          <div class="status-card">
-            <h3 class="entity-title">Verification Status</h3>
-            <div class="status-row"><span>ID Verification</span><span class="badge pending">Pending</span></div>
-            <div class="status-row"><span>PEP Screening <button type="button" class="info-btn" data-info="PEP: Politically Exposed Person，政治公众人物及其关联人。">i</button></span><span class="badge pending">Pending</span></div>
-            <div class="status-row"><span>Sanctions Screening</span><span class="badge pending">Pending</span></div>
-          </div>
-        </section>
-
-        <section id="step5-individual" class="step-view">
-          <div class="summary-card"><h4>Personal Verification - Personal Details</h4><div class="summary-grid" id="kycPersonalSummary"></div></div>
-          <div class="summary-card"><h4>Personal Verification - Identity Details</h4><div class="summary-grid" id="kycIdentitySummary"></div></div>
-        </section>
-
-        <section id="step2-business" class="step-view">
+        <section id="step2" class="step-view">
           <div class="section-card">
             <h2 class="section-title">公司信息</h2>
             <div class="grid" id="kybStep2Form">
@@ -527,7 +268,7 @@
           </div>
         </section>
 
-        <section id="step3-business" class="step-view">
+        <section id="step3" class="step-view">
           <div class="section-card">
             <h2 class="section-title">Directors（董事）</h2>
             <div id="directorsContainer"></div>
@@ -541,7 +282,7 @@
           </div>
         </section>
 
-        <section id="step4-business" class="step-view">
+        <section id="step4" class="step-view">
           <div class="status-card">
             <h3 class="entity-title">Verification Status</h3>
             <div class="status-row"><span>ABR Registry Check <button type="button" class="info-btn" data-info="ABR: Australian Business Register，澳洲商业注册库。">i</button></span><span id="abrStatus" class="badge pending">Pending</span></div>
@@ -557,7 +298,7 @@
           </div>
         </section>
 
-        <section id="step5-business" class="step-view">
+        <section id="step5" class="step-view">
           <div class="summary-card"><h4>Business Verification - Company Details</h4><div class="summary-grid" id="kybCompanySummary"></div></div>
           <div class="summary-card"><h4>Business Verification - Directors</h4><div id="kybDirectorsSummary"></div></div>
           <div class="summary-card"><h4>Business Verification - Beneficial Owners</h4><div id="kybOwnersSummary"></div></div>
@@ -568,7 +309,7 @@
       <div class="toast" id="toast"></div>
 
       <div class="bottom-bar">
-        <div class="bar-tip">请按步骤完成验证信息填写。</div>
+        <div class="bar-tip">请按步骤完成企业 KYB 验证信息填写。</div>
         <div class="bar-actions">
           <button type="button" id="backBtn" class="btn btn-back">Back</button>
           <button type="button" id="nextBtn" class="btn btn-next">Continue</button>
@@ -579,12 +320,7 @@
 
   <script>
     const state = {
-      accountType: "",
       step: 1,
-      individual: {
-        fullName: "", dob: "", nationality: "", address: "", email: "", phone: "",
-        idType: "", idNumber: "", issueCountry: "", idDocName: "", confirm1: false, confirm2: false
-      },
       business: {
         companyName: "", companyType: "", abn: "", acn: "", registeredAddress: "", businessAddress: "", industry: "", website: "",
         directors: [{ name: "", dob: "", address: "", email: "" }],
@@ -593,7 +329,6 @@
     };
 
     const stepCount = 5;
-    const accountCards = [...document.querySelectorAll('.option-card')];
     const backBtn = document.getElementById('backBtn');
     const nextBtn = document.getElementById('nextBtn');
     const dotProgress = document.getElementById('dotProgress');
@@ -607,17 +342,11 @@
       window.__toastTimer = setTimeout(() => t.style.display = 'none', 2400);
     }
 
-    function row(k, v) {
-      return `<b>${escapeHTML(k)}</b><span>${escapeHTML(v || '-')}</span>`;
+    function escapeHTML(s) {
+      return String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
     }
 
-    function escapeHTML(s) {
-      return String(s)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;');
-    }
+    function row(k, v) { return `<b>${escapeHTML(k)}</b><span>${escapeHTML(v || '-')}</span>`; }
 
     function renderProgress() {
       progressText.textContent = `Step ${state.step} of ${stepCount}`;
@@ -629,69 +358,36 @@
       }
     }
 
-    function getCurrentSectionId() {
-      if (state.step === 1 || !state.accountType) return 'step1';
-      return `step${state.step}-${state.accountType}`;
-    }
-
     function updateStepVisibility() {
       document.querySelectorAll('.step-view').forEach(v => v.classList.remove('active'));
-      const el = document.getElementById(getCurrentSectionId());
-      if (el) el.classList.add('active');
+      document.getElementById(`step${state.step}`).classList.add('active');
 
       backBtn.style.visibility = state.step === 1 ? 'hidden' : 'visible';
-      nextBtn.textContent = state.step === 5 ? (state.accountType === 'business' ? 'Submit KYB' : 'Submit Verification') : (state.step === 1 ? 'Continue' : 'Next');
-
+      nextBtn.textContent = state.step === 5 ? 'Submit KYB' : (state.step === 1 ? 'Continue' : 'Next');
       renderProgress();
 
-      if (state.step === 3 && state.accountType === 'business') {
+      if (state.step === 3) {
         renderDirectors();
         renderOwners();
       }
-      if (state.step === 4 && state.accountType === 'business') {
-        renderBusinessStatus();
-      }
-      if (state.step === 5) {
-        renderSummary();
-      }
+      if (state.step === 4) renderBusinessStatus();
+      if (state.step === 5) renderSummary();
     }
 
     function validateRequired(containerId) {
       let valid = true;
       document.querySelectorAll(`#${containerId} .field[data-required='true']`).forEach(field => {
-        const input = field.querySelector('input,select,textarea');
-        const ok = input.type === 'file' ? input.files && input.files.length > 0 : String(input.value || '').trim() !== '';
+        const input = field.querySelector('input,select');
+        const ok = String(input.value || '').trim() !== '';
         field.classList.toggle('invalid', !ok);
         if (!ok) valid = false;
       });
       return valid;
     }
 
-    function captureData() {
-      if (state.accountType === 'individual') {
-        const f2 = document.getElementById('kycStep2Form');
-        if (f2) {
-          state.individual.fullName = f2.querySelector("[name='fullName']").value.trim();
-          state.individual.dob = f2.querySelector("[name='dob']").value;
-          state.individual.nationality = f2.querySelector("[name='nationality']").value.trim();
-          state.individual.address = f2.querySelector("[name='address']").value.trim();
-          state.individual.email = f2.querySelector("[name='email']").value.trim();
-          state.individual.phone = f2.querySelector("[name='phone']").value.trim();
-        }
-        const f3 = document.getElementById('kycStep3Form');
-        if (f3) {
-          state.individual.idType = f3.querySelector("[name='idType']").value;
-          state.individual.idNumber = f3.querySelector("[name='idNumber']").value.trim();
-          state.individual.issueCountry = f3.querySelector("[name='issueCountry']").value.trim();
-          const file = f3.querySelector("[name='idDoc']");
-          state.individual.idDocName = file.files[0] ? file.files[0].name : '';
-        }
-        state.individual.confirm1 = document.getElementById('kycConfirm1').checked;
-        state.individual.confirm2 = document.getElementById('kycConfirm2').checked;
-      }
-
-      if (state.accountType === 'business') {
-        const f2 = document.getElementById('kybStep2Form');
+    function captureBusinessData() {
+      const f2 = document.getElementById('kybStep2Form');
+      if (f2) {
         state.business.companyName = f2.querySelector("[name='companyName']").value.trim();
         state.business.companyType = f2.querySelector("[name='companyType']").value;
         state.business.abn = f2.querySelector("[name='abn']").value.trim();
@@ -704,60 +400,40 @@
     }
 
     function validateCurrentStep() {
-      captureData();
-      document.getElementById('accountError').classList.remove('show');
-      document.getElementById('kycCheckError').classList.remove('show');
+      captureBusinessData();
 
-      if (state.step === 1) {
-        if (!state.accountType) {
-          document.getElementById('accountError').classList.add('show');
-          return false;
-        }
-        return true;
+      if (state.step === 2) return validateRequired('kybStep2Form');
+
+      if (state.step === 3) {
+        let valid = true;
+
+        const directors = [...document.querySelectorAll('.director-card')].map(card => ({
+          name: card.querySelector("[name='directorName']").value.trim(),
+          dob: card.querySelector("[name='directorDob']").value,
+          address: card.querySelector("[name='directorAddress']").value.trim(),
+          email: card.querySelector("[name='directorEmail']").value.trim()
+        }));
+
+        const owners = [...document.querySelectorAll('.owner-card')].map(card => ({
+          name: card.querySelector("[name='ownerName']").value.trim(),
+          ownership: card.querySelector("[name='ownerOwnership']").value.trim(),
+          controller: card.querySelector("[name='ownerController']").checked,
+          dob: card.querySelector("[name='ownerDob']").value,
+          country: card.querySelector("[name='ownerCountry']").value.trim()
+        }));
+
+        document.querySelectorAll('.director-card .field[data-required="true"], .owner-card .field[data-required="true"]').forEach(field => {
+          const input = field.querySelector('input,select');
+          const ok = String(input.value || '').trim() !== '';
+          field.classList.toggle('invalid', !ok);
+          if (!ok) valid = false;
+        });
+
+        state.business.directors = directors;
+        state.business.owners = owners;
+        return valid;
       }
 
-      if (state.accountType === 'individual') {
-        if (state.step === 2) return validateRequired('kycStep2Form');
-        if (state.step === 3) return validateRequired('kycStep3Form');
-        if (state.step === 4) {
-          const ok = state.individual.confirm1 && state.individual.confirm2;
-          if (!ok) document.getElementById('kycCheckError').classList.add('show');
-          return ok;
-        }
-      }
-
-      if (state.accountType === 'business') {
-        if (state.step === 2) return validateRequired('kybStep2Form');
-        if (state.step === 3) {
-          let valid = true;
-
-          const directors = [...document.querySelectorAll('.director-card')].map(card => ({
-            name: card.querySelector("[name='directorName']").value.trim(),
-            dob: card.querySelector("[name='directorDob']").value,
-            address: card.querySelector("[name='directorAddress']").value.trim(),
-            email: card.querySelector("[name='directorEmail']").value.trim()
-          }));
-
-          const owners = [...document.querySelectorAll('.owner-card')].map(card => ({
-            name: card.querySelector("[name='ownerName']").value.trim(),
-            ownership: card.querySelector("[name='ownerOwnership']").value.trim(),
-            controller: card.querySelector("[name='ownerController']").checked,
-            dob: card.querySelector("[name='ownerDob']").value,
-            country: card.querySelector("[name='ownerCountry']").value.trim()
-          }));
-
-          document.querySelectorAll('.director-card .field[data-required="true"], .owner-card .field[data-required="true"]').forEach(field => {
-            const input = field.querySelector('input,select');
-            const ok = String(input.value || '').trim() !== '';
-            field.classList.toggle('invalid', !ok);
-            if (!ok) valid = false;
-          });
-
-          state.business.directors = directors;
-          state.business.owners = owners;
-          return valid;
-        }
-      }
       return true;
     }
 
@@ -794,7 +470,6 @@
           <label class="check-line"><input type="checkbox" name="ownerController" ${data.controller ? 'checked' : ''}>是否为实际控制人</label>
         </div>
       `;
-
       const input = card.querySelector("[name='ownerOwnership']");
       const hint = card.querySelector('.inline-hint');
       const updateHint = () => {
@@ -803,7 +478,6 @@
       };
       input.addEventListener('input', updateHint);
       updateHint();
-
       return card;
     }
 
@@ -837,81 +511,56 @@
     }
 
     function renderSummary() {
-      if (state.accountType === 'individual') {
-        document.getElementById('kycPersonalSummary').innerHTML =
-          row('Full Name', state.individual.fullName) +
-          row('Date of Birth', state.individual.dob) +
-          row('Nationality', state.individual.nationality) +
-          row('Residential Address', state.individual.address) +
-          row('Email', state.individual.email) +
-          row('Phone Number', state.individual.phone);
+      document.getElementById('kybCompanySummary').innerHTML =
+        row('Company Legal Name', state.business.companyName) +
+        row('Company Type', state.business.companyType) +
+        row('ABN', state.business.abn) +
+        row('ACN / ARBN', state.business.acn) +
+        row('Industry Type', state.business.industry) +
+        row('Registered Address', state.business.registeredAddress) +
+        row('Business Address', state.business.businessAddress) +
+        row('Website', state.business.website || '-');
 
-        document.getElementById('kycIdentitySummary').innerHTML =
-          row('ID Type', state.individual.idType) +
-          row('ID Number', state.individual.idNumber) +
-          row('Country of Issue', state.individual.issueCountry) +
-          row('Upload ID Document', state.individual.idDocName || '已上传');
-      } else {
-        document.getElementById('kybCompanySummary').innerHTML =
-          row('Company Legal Name', state.business.companyName) +
-          row('Company Type', state.business.companyType) +
-          row('ABN', state.business.abn) +
-          row('ACN / ARBN', state.business.acn) +
-          row('Industry Type', state.business.industry) +
-          row('Registered Address', state.business.registeredAddress) +
-          row('Business Address', state.business.businessAddress) +
-          row('Website', state.business.website || '-');
+      document.getElementById('kybDirectorsSummary').innerHTML = state.business.directors.map((d, idx) =>
+        `<div class="summary-grid" style="margin-bottom:10px;">` +
+        row(`Director ${idx + 1} Name`, d.name) +
+        row('DOB', d.dob) +
+        row('Address', d.address) +
+        row('Email', d.email) +
+        `</div>`
+      ).join('');
 
-        document.getElementById('kybDirectorsSummary').innerHTML = state.business.directors.map((d, idx) => (
-          `<div class="summary-grid" style="margin-bottom:10px;">` +
-          row(`Director ${idx + 1} Name`, d.name) +
-          row('DOB', d.dob) +
-          row('Address', d.address) +
-          row('Email', d.email) +
-          `</div>`
-        )).join('');
+      document.getElementById('kybOwnersSummary').innerHTML = state.business.owners.map((o, idx) =>
+        `<div class="summary-grid" style="margin-bottom:10px;">` +
+        row(`Owner ${idx + 1} Name`, o.name) +
+        row('Ownership Percentage', o.ownership) +
+        row('Controller', o.controller ? '是' : '否') +
+        row('DOB', o.dob) +
+        row('Country', o.country) +
+        `</div>`
+      ).join('');
 
-        document.getElementById('kybOwnersSummary').innerHTML = state.business.owners.map((o, idx) => (
-          `<div class="summary-grid" style="margin-bottom:10px;">` +
-          row(`Owner ${idx + 1} Name`, o.name) +
-          row('Ownership Percentage', o.ownership) +
-          row('Controller', o.controller ? '是' : '否') +
-          row('DOB', o.dob) +
-          row('Country', o.country) +
-          `</div>`
-        )).join('');
-
-        const risk = ['Import / Export', 'Medical', 'Chemicals'].includes(state.business.industry)
-          ? 'High Risk Industry Detected'
-          : 'No High Risk Flag';
-        document.getElementById('kybRiskSummary').innerHTML =
-          row('Industry Risk', risk) + row('Manual Review', risk.includes('High') ? '可能需要' : '暂不需要');
-      }
+      const highRisk = ['Import / Export', 'Medical', 'Chemicals'].includes(state.business.industry);
+      document.getElementById('kybRiskSummary').innerHTML =
+        row('Industry Risk', highRisk ? 'High Risk Industry Detected' : 'No High Risk Flag') +
+        row('Manual Review', highRisk ? '可能需要' : '暂不需要');
     }
 
-    accountCards.forEach(card => {
-      card.addEventListener('click', () => {
-        accountCards.forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        state.accountType = card.dataset.account;
-      });
-    });
-
     document.getElementById('addDirectorBtn').addEventListener('click', () => {
-      captureData();
+      captureBusinessData();
       state.business.directors.push({ name: '', dob: '', address: '', email: '' });
       renderDirectors();
     });
 
     document.getElementById('addOwnerBtn').addEventListener('click', () => {
-      captureData();
+      captureBusinessData();
       state.business.owners.push({ name: '', ownership: '', controller: false, dob: '', country: '' });
       renderOwners();
     });
 
     backBtn.addEventListener('click', () => {
       if (state.step > 1) {
-        captureData();
+        captureBusinessData();
         state.step -= 1;
         updateStepVisibility();
       }
@@ -923,15 +572,13 @@
         state.step += 1;
         updateStepVisibility();
       } else {
-        showToast(state.accountType === 'business' ? 'KYB 提交成功' : 'KYC 提交成功');
+        showToast('KYB 提交成功');
       }
     });
 
     document.addEventListener('click', (e) => {
       const btn = e.target.closest('.info-btn');
-      if (btn && btn.dataset.info) {
-        showToast(btn.dataset.info);
-      }
+      if (btn && btn.dataset.info) showToast(btn.dataset.info);
     });
 
     updateStepVisibility();
