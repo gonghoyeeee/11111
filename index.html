@@ -13,34 +13,34 @@
     *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:"PingFang SC","Microsoft YaHei",Inter,sans-serif;color:var(--text);min-height:100vh;display:grid;place-items:center;padding:16px}
     .shell{width:390px;height:844px;border-radius:34px;background:#000;padding:10px;box-shadow:0 26px 66px rgba(0,0,0,.55)}
     .screen{height:100%;border-radius:26px;background:var(--phone);display:flex;flex-direction:column;overflow:hidden;position:relative}
-    .status{height:42px;background:#0a0e15;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:13px;color:#c2d0e8;flex-shrink:0}
+    .status{height:42px;background:#0a0e15;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:12px;color:#c2d0e8;flex-shrink:0}
     .header{background:#0a0e15;border-bottom:1px solid #202c43;padding:8px 15px 12px;flex-shrink:0}
     .head-row{display:grid;grid-template-columns:24px 1fr 24px;align-items:center}.back{width:12px;height:12px;border-left:2px solid #d8e4fb;border-bottom:2px solid #d8e4fb;transform:rotate(45deg)}
-    .title{margin:0;text-align:center;font-size:19px;font-weight:700;color:#fff}
+    .title{margin:0;text-align:center;font-size:17px;font-weight:700;color:#fff}
     .progress{margin-top:10px;display:flex;justify-content:space-between;align-items:center}
     .progress span{font-size:12px;color:#8ea0bd}.dots{display:flex;gap:7px}.dot{width:8px;height:8px;border-radius:50%;background:#3a4d74}.dot.active{background:var(--primary);box-shadow:0 0 0 4px rgba(54,120,255,.2)}
 
     .content{flex:1;overflow:auto;padding:14px 15px 118px}.step{display:none}.step.active{display:block}
     .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:15px;margin-bottom:12px}
-    .card h3{margin:0 0 8px;font-size:18px;color:#fff}.sub{margin:0 0 10px;color:var(--text2);font-size:13px;line-height:1.45}
+    .card h3{margin:0 0 8px;font-size:16px;color:#fff}.sub{margin:0 0 10px;color:var(--text2);font-size:12px;line-height:1.45}
 
-    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}label{font-size:13px;font-weight:600;color:#c5d4ef}
+    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}label{font-size:12px;font-weight:600;color:#c5d4ef}
     .req::after{content:" *";color:var(--danger)}
-    input,select,textarea{width:100%;border:1px solid #3a4f76;border-radius:12px;background:#111a29;padding:11px 12px;font-size:14px;outline:none;color:#f3f7ff}
+    input,select,textarea{width:100%;border:1px solid #3a4f76;border-radius:12px;background:#111a29;padding:11px 12px;font-size:13px;outline:none;color:#f3f7ff}
     input::placeholder,textarea::placeholder{color:#6f86ad}
     textarea{min-height:80px;resize:vertical}
     input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(54,120,255,.16)}
     .error{display:none;color:#ff8897;font-size:12px}.field.invalid .error,.error.show{display:block}
 
     .section{background:var(--card2);border:1px solid #2f4468;border-radius:14px;padding:12px;margin-top:12px}
-    .section h4{margin:0 0 8px;font-size:14px;color:#e1ebff}
+    .section h4{margin:0 0 8px;font-size:13px;color:#e1ebff}
 
     .person-card{background:#1a2a42;border:1px solid #38517a;border-radius:12px;padding:12px;margin-bottom:10px}
-    .person-card h5{margin:0 0 8px;font-size:14px;color:#e7efff}
+    .person-card h5{margin:0 0 8px;font-size:13px;color:#e7efff}
     .hint{display:none;font-size:12px;color:#ffd08c;background:#3c2b10;border:1px solid #c0802f;border-radius:8px;padding:4px 8px}
 
-    .check{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#c8d7f1;margin:8px 0}.check input{width:16px;height:16px;margin-top:2px}
-    .summary{display:grid;grid-template-columns:110px 1fr;gap:8px 10px;font-size:13px;color:#e5edff}.summary b{color:#9fb6da;font-weight:600}
+    .check{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:#c8d7f1;margin:8px 0}.check input{width:16px;height:16px;margin-top:2px}
+    .summary{display:grid;grid-template-columns:110px 1fr;gap:8px 10px;font-size:12px;color:#e5edff}.summary b{color:#9fb6da;font-weight:600}
     .risk{border:1px solid #f0c27b;background:#3e2d11;color:#ffdca8;border-radius:12px;padding:12px;line-height:1.45}
     .hidden{display:none!important}
 
@@ -48,7 +48,7 @@
 
     .bottom{position:absolute;left:0;right:0;bottom:0;background:rgba(10,14,21,.95);border-top:1px solid #243452;padding:10px 14px calc(14px + env(safe-area-inset-bottom))}
     .tip{font-size:12px;color:#8ea0bc;margin-bottom:8px}.actions{display:grid;grid-template-columns:110px 1fr;gap:10px}
-    button{height:44px;border:0;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer}.btn-back{background:#3F4042;color:#d8dfeb}.btn-next{background:var(--primary);color:#fff;box-shadow:0 8px 16px rgba(54,120,255,.35)}
+    button{height:44px;border:0;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer}.btn-back{background:#3F4042;color:#d8dfeb}.btn-next{background:var(--primary);color:#fff;box-shadow:0 8px 16px rgba(54,120,255,.35)}
 
     @media (max-width:440px){body{padding:0}.shell{width:100vw;height:100vh;border-radius:0;padding:0}.screen{border-radius:0}}
 </style>
@@ -97,6 +97,7 @@
               <div class="field" data-required="true" data-rule="email"><label class="req">邮箱地址</label><input type="email" name="applicantEmail"><span class="error">请输入有效邮箱</span></div>
               <div class="field" data-required="true" data-rule="age18"><label class="req">出生日期</label><input type="date" name="applicantDob"><span class="error">年龄需满 18 岁</span></div>
               <div class="field" data-required="true" data-rule="min5"><label class="req">居住地址</label><input name="applicantAddress"><span class="error">至少 5 字符</span></div>
+              <div class="field"><label>申请人证件上传（预留）</label><input type="file" name="applicantDoc" accept=".pdf,.jpg,.jpeg,.png"><span class="sub" style="margin:0">支持 PDF / JPG / PNG</span></div>
               <label class="check"><input type="checkbox" id="applicantAuth">我确认本人有权代表该企业提交认证申请</label>
               <p id="applicantAuthError" class="error">请勾选授权确认</p>
             </div>
@@ -280,7 +281,8 @@
       <div class='field' data-required='true' data-rule='len2-100'><label class='req'>董事姓名</label><input name='directorName' value='${escapeHtml(data.name)}'><span class='error'>请输入 2-100 字符</span></div>
       <div class='field' data-required='true' data-rule='age18'><label class='req'>出生日期</label><input type='date' name='directorDob' value='${escapeHtml(data.dob)}'><span class='error'>年龄需满 18 岁</span></div>
       <div class='field' data-required='true' data-rule='min5'><label class='req'>居住地址</label><input name='directorAddress' value='${escapeHtml(data.address)}'><span class='error'>至少 5 字符</span></div>
-      <div class='field' data-required='true' data-rule='len2-100'><label class='req'>居住国家</label><input name='directorCountry' value='${escapeHtml(data.country)}'><span class='error'>请输入 2-100 字符</span></div>`;
+      <div class='field' data-required='true' data-rule='len2-100'><label class='req'>居住国家</label><input name='directorCountry' value='${escapeHtml(data.country)}'><span class='error'>请输入 2-100 字符</span></div>
+      <div class='field'><label>董事证件上传（预留）</label><input type='file' name='directorDoc' accept='.pdf,.jpg,.jpeg,.png'></div>`;
       return d;
     }
 
@@ -292,6 +294,7 @@
       <div class='field' data-required='true' data-rule='age18'><label class='req'>出生日期</label><input type='date' name='shareholderDob' value='${escapeHtml(data.dob)}'><span class='error'>年龄需满 18 岁</span></div>
       <div class='field' data-required='true' data-rule='len2-100'><label class='req'>居住国家</label><input name='shareholderCountry' value='${escapeHtml(data.country)}'><span class='error'>请输入 2-100 字符</span></div>
       <div class='field' data-required='true' data-rule='min5'><label class='req'>居住地址</label><input name='shareholderAddress' value='${escapeHtml(data.address)}'><span class='error'>至少 5 字符</span></div>
+      <div class='field'><label>股东/实控人证件上传（预留）</label><input type='file' name='shareholderDoc' accept='.pdf,.jpg,.jpeg,.png'></div>
       <label class='check'><input type='checkbox' name='isController' ${data.controller?'checked':''}>是否为实际控制人</label>`;
       const ip=d.querySelector('[name="ownership"]'),h=d.querySelector('.hint');
       const up=()=>{const v=parseFloat(ip.value);h.style.display=!Number.isNaN(v)&&v>=25?'inline-block':'none'};ip.addEventListener('input',up);up();
